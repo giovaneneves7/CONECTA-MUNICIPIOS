@@ -1,0 +1,8 @@
+# WARN: This is the PRODUCTION profile, watch out!!!
+services:
+  api:
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/conecta_irece_api_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password

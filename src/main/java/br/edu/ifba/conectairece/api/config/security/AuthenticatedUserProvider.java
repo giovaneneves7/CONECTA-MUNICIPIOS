@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.auth.security;
+package br.edu.ifba.conectairece.api.config.security;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import org.springframework.security.core.Authentication;

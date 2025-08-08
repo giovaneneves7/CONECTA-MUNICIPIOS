@@ -2,7 +2,7 @@ package br.edu.ifba.conectairece.api.config.security;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
-import br.edu.ifba.conectairece.api.features.auth.service.TokenAuthenticationService;
+import br.edu.ifba.conectairece.api.features.auth.domain.service.TokenAuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

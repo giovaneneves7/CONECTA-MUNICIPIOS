@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.auth.cors;
+package br.edu.ifba.conectairece.api.config.cors;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

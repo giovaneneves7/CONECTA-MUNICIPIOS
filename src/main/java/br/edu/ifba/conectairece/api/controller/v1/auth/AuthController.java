@@ -3,7 +3,7 @@ package br.edu.ifba.conectairece.api.controller.v1.auth;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.request.UserLoginRequestDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.request.UserRegisterRequestDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserLoginResponseDTO;
-import br.edu.ifba.conectairece.api.features.auth.service.AuthenticationService;
+import br.edu.ifba.conectairece.api.features.auth.domain.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

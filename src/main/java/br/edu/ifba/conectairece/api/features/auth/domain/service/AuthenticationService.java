@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.auth.service;
+package br.edu.ifba.conectairece.api.features.auth.domain.service;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.request.UserLoginRequestDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.request.UserRegisterRequestDTO;

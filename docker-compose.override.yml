@@ -6,3 +6,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/conecta_irece_api_db
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+
+      API_SECURITY_TOKEN_SECRET: secretKey
+      API_SECURITY_TOKEN_EXPIRATION_HOURS: 1
+      API_SECURITY_TOKEN_TIMEZONE: -03:00

@@ -8,6 +8,8 @@ import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
 
+import br.edu.ifba.conectairece.api.features.auth.domain.service.AuthenticationService;
+import br.edu.ifba.conectairece.api.features.auth.domain.service.TokenService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,11 +1,22 @@
 package br.edu.ifba.conectairece.api.features.auth.domain.model;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.enums.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -54,9 +65,9 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
     @Column(nullable = false, length = 20)
     private UserStatus status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private Role role;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    Role role;
 
     // Data/hora em que o usuário foi criado
     @CreatedDate
@@ -81,7 +92,7 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + this.role.name());
+        return List.of(() -> "ROLE_" + this.role.getName());
     }
 
     @Override

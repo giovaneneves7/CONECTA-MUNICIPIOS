@@ -1,6 +1,8 @@
 package br.edu.ifba.conectairece.api.features.auth.domain.dto.request;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.enums.Role;
+import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
+import br.edu.ifba.conectairece.api.features.person.domain.dto.request.PersonRequestDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +12,6 @@ import lombok.*;
 
 /**
  * DTO to register new users.
- * Contains name, email, password and role.
  *
  * @author Jorge Roberto
  */
@@ -19,19 +20,21 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRegisterRequestDTO {
-    @NotBlank
+    @NotNull(message = "Username is mandatory.")
+    @NotBlank(message = "Username cannot be blank.")
     @Size(max = 100)
-    private String name;
+    private String username;
 
-    @NotBlank
     @Email
     @Size(max = 150)
     private String email;
 
-    @NotBlank
-    @Size(min = 6, message = "Password must have at least 6 characters.")
+    @NotNull(message = "Password is mandatory.")
+    @NotBlank(message = "Password cannot be blank.")
+    @Size(min = 6, max= 40, message = "Password must have at least 6 characters.")
     private String password;
 
-    @NotNull
-    private Role role;
+    @NotNull(message = "Person is mandatory.")
+    @Valid
+    PersonRequestDTO person;
 }

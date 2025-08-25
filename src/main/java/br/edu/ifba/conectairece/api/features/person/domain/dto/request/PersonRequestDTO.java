@@ -27,7 +27,6 @@ public class PersonRequestDTO {
 
     @JsonProperty("birthDate")
     @NotNull(message = "Birth is mandatory.")
-    @NotBlank(message = "Birth cannot be blank.")
     @Past(message = "Birth date must be in the past")
     private LocalDate birthDate;
 

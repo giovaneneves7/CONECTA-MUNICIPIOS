@@ -23,7 +23,7 @@ import java.time.LocalDate;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public abstract class Person extends PersistenceEntity implements Serializable {
+public class Person extends PersistenceEntity implements Serializable {
 
     @Column(name = "cpf", nullable = false, unique = true, length = 11)
     private String cpf;

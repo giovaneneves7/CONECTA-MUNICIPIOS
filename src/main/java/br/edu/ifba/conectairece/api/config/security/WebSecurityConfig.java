@@ -9,6 +9,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,15 +52,18 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         // CORS and generic public endpoints
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Pré-voo CORS
                         // Authentication
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+
+                        //Employees function /api/v1/function
+                        .requestMatchers(HttpMethod.POST, "/api/v1/function/save").permitAll()
 
                         // Database console for testing
                         //TODO: Remove it
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .addFilterBefore(jwtLoginFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

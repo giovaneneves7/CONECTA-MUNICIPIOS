@@ -21,9 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Entity representing a user in the system.
@@ -71,6 +68,10 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
     @LastModifiedDate
     @Column(name = "update_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "profile_id", nullable = false)
+    private Profile profile;
 
     //TODO: Implementar lógica de autoridades
     @Override

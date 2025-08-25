@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.model;
 
+import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import br.edu.ifba.conectairece.api.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.*;
@@ -38,4 +39,8 @@ public class Profile extends SimplePersistenceEntity implements Serializable {
 
     @OneToMany(mappedBy = "profile")
     private List<User> users = new ArrayList<>();
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 }

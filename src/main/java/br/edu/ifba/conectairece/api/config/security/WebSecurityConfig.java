@@ -9,6 +9,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -46,7 +47,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         // CORS and generic public endpoints
@@ -57,6 +58,10 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
                         //Employees function /api/v1/function
                         .requestMatchers(HttpMethod.POST, "/api/v1/function/save").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/function/update").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/function/findall").permitAll()
 
                         // Database console for testing
                         //TODO: Remove it

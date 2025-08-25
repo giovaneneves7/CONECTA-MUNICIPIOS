@@ -1,15 +1,10 @@
 package br.edu.ifba.conectairece.api.features.auth.domain.model;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
+import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
+import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,9 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entity representing a user in the system.
@@ -51,12 +46,12 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class) //Auditoria
 public class User extends PersistenceEntity implements UserDetails, Serializable {
 
-    @Column(name = "name",  nullable = false, length = 100)
-    private String name;
-
     @Email
     @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
+
+    @Column(name = "username",  nullable = false, length = 100)
+    private String username;
 
     @Column(name = "password", nullable = false, length = 255)
     private String password;
@@ -65,34 +60,22 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
     @Column(nullable = false, length = 20)
     private UserStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    Role role;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "person_id", unique = true, nullable = false)
+    private Person person;
 
-    // Data/hora em que o usuário foi criado
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // Data/hora da última atualização no usuário
     @LastModifiedDate
-    @Column(name = "updated_at")
+    @Column(name = "update_at")
     private LocalDateTime updatedAt;
 
-    // Usuário responsável pela criação
-    @CreatedBy
-    @Column(name = "created_by")
-    private String createdBy;
-
-    // Usuário responsável pela última atualização
-    @LastModifiedBy
-    @Column(name = "updated_by")
-    private String updatedBy;
-
-
+    //TODO: Implementar lógica de autoridades
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> "ROLE_" + this.role.getName());
+        return null;
     }
 
     @Override

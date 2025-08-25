@@ -8,7 +8,6 @@ import lombok.Setter;
 
 /**
  * Data Transfer Object (DTO) for sending function data in API responses.
- * Contains basic person information without sensitive data.
  *
  * @author Jorge Roberto
  */
@@ -17,6 +16,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FunctionResponseDTO {
+
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty("name")
     private String name;
 

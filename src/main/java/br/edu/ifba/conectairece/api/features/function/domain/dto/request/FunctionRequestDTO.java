@@ -18,6 +18,9 @@ import lombok.Setter;
 @Getter @Setter
 public class FunctionRequestDTO {
 
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty("name")
     @NotNull(message = "Name is mandatory.")
     @NotBlank(message = "Name cannot be blank.")

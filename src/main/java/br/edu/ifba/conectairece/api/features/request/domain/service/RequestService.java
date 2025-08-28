@@ -7,9 +7,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.dto.response.MunicipalServiceResponseDto;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.model.MunicipalService;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;

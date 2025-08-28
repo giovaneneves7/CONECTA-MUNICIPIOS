@@ -3,7 +3,7 @@ package br.edu.ifba.conectairece.api.features.category.domain.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

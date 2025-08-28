@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.municipal_service.domain.service;
+package br.edu.ifba.conectairece.api.features.municipalservice.domain.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.features.category.domain.repository.CategoryRepository;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.dto.request.MunicipalServiceRequestDto;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.dto.response.MunicipalServiceResponseDto;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.model.MunicipalService;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
 import lombok.RequiredArgsConstructor;
 
 /**

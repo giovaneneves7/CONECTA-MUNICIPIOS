@@ -1,9 +1,9 @@
-package br.edu.ifba.conectairece.api.features.municipal_service.domain.repository;
+package br.edu.ifba.conectairece.api.features.municipalservice.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 
 /**
  * Data access repository for the {@link MunicipalService} entity.

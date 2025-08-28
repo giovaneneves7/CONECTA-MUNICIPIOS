@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.dto.request.MunicipalServiceRequestDto;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.dto.response.MunicipalServiceResponseDto;
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.service.MunicipalServiceService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.MunicipalServiceService;
 import lombok.RequiredArgsConstructor;
 
 /**

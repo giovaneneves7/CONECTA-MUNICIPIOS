@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.municipal_service.domain.model;
+package br.edu.ifba.conectairece.api.features.municipalservice.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;

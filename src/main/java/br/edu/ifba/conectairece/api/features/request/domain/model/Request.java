@@ -3,7 +3,7 @@ package br.edu.ifba.conectairece.api.features.request.domain.model;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

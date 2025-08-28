@@ -1,6 +1,6 @@
 package br.edu.ifba.conectairece.api.features.function.domain.model;
 
-import br.edu.ifba.conectairece.api.features.public_servant_profile.domain.model.PublicServantProfile;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
 import br.edu.ifba.conectairece.api.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -3,7 +3,7 @@ package br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import br.edu.ifba.conectairece.api.features.municipal_service.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

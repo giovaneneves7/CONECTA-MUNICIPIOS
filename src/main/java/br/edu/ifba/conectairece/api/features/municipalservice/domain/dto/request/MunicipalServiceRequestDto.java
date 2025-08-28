@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.municipal_service.domain.dto.request;
+package br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request;
 
 import java.util.List;
 

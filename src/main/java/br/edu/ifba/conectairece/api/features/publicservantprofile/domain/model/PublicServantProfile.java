@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.public_servant_profile.domain.model;
+package br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model;
 
 import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;

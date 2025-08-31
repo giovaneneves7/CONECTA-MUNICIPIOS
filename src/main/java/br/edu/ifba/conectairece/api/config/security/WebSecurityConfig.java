@@ -50,6 +50,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+
+                        // Authorization to access Swagger
+                        .requestMatchers("/swagger-ui/**","/v3/api-docs/**","/swagger-resources/**","/swagger-resources","/webjars/**").permitAll()
                         // CORS and generic public endpoints
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Pré-voo CORS
                         // Authentication
@@ -62,6 +65,25 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/function/findall").permitAll()
+
+                        // Functions for Category /api/v1/categories
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/*").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
+
+                        // Functions for Municipal Services /api/v1/municipal-services
+                        .requestMatchers(HttpMethod.POST, "/api/v1/municipal-services").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/*").permitAll()
+
+                        // Functions for Requests /api/v1/requests
+                        .requestMatchers(HttpMethod.POST, "/api/v1/requests").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requests").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/*").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/*").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/*").permitAll()
 
                         // Database console for testing
                         //TODO: Remove it

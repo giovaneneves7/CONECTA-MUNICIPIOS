@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.features.category.domain.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDto;
@@ -37,6 +39,7 @@ public class CategoryService {
      * @return DTO with saved category information
      */
 
+     @CacheEvict(value = "categories", allEntries = true)
      public CategoryResponseDto save(CategoryRequestDto dto) {
         Category category = new Category();
         category.setName(dto.getName());
@@ -53,7 +56,9 @@ public class CategoryService {
      * @return list of category DTOs
      */
 
+     @Cacheable(value = "categories")
     public List<CategoryResponseDto> findAll() {
+        System.out.println(">>> Buscando categorias no banco (sem cache)");
         return categoryRepository.findAll().stream().map(this::toDto).toList();
     }
 
@@ -64,7 +69,9 @@ public class CategoryService {
      * @return optional containing category DTO if found
      */
 
+    @Cacheable(value = "category", key = "#id")
     public Optional<CategoryResponseDto> findById(Integer id) {
+        System.out.println(">>> Buscando categoria " + id + " no banco (sem cache)");
         return categoryRepository.findById(id).map(this::toDto);
     }
 
@@ -74,6 +81,7 @@ public class CategoryService {
      * @param id category ID
      */
 
+     @CacheEvict(value = {"categories", "category"}, key = "#id", allEntries = true)
     public void delete(Integer id) {
         categoryRepository.deleteById(id);
     }

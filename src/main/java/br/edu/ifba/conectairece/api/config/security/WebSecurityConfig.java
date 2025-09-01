@@ -56,8 +56,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         // CORS and generic public endpoints
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Pré-voo CORS
                         // Authentication
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/sessions/session").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/users/user").permitAll()
 
                         //Employees function /api/v1/function
                         .requestMatchers(HttpMethod.POST, "/api/v1/function/save").permitAll()

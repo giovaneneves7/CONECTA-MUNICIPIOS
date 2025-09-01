@@ -12,6 +12,8 @@ import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.person.domain.repository.PersonRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EmailUniqueViolationException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.custom.PasswordInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,14 +47,14 @@ public class AuthenticationService {
     @Transactional
     public UserLoginResponseDTO login(UserLoginRequestDTO request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadCredentialsException("Email ou senha inválidos."));
+                .orElseThrow(() -> new BadCredentialsException("Credenciais inválidas."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Email ou senha inválidos.");
+            throw new PasswordInvalidException("Credenciais inválidas.");
         }
 
         if (user.getStatus() == UserStatus.INACTIVE) {
-            throw new BadCredentialsException("Usuário suspenso ou inativo.");
+            throw new BadCredentialsException("Credenciais inválidas.");
         }
 
 
@@ -71,7 +73,7 @@ public class AuthenticationService {
     public UserLoginResponseDTO register(UserRegisterRequestDTO request) {
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new IllegalStateException("E-mail já cadastrado");
+            throw new EmailUniqueViolationException("E-mail já cadastrado");
         }
 
         User user = new User();

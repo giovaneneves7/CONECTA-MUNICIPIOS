@@ -4,6 +4,7 @@ import br.edu.ifba.conectairece.api.features.function.domain.dto.response.Functi
 import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.FunctionRepository;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.projection.FunctionProjection;
+import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,25 +40,17 @@ public class FunctionService implements FunctionIService{
 
     @Override @Transactional
     public FunctionResponseDTO update(Function function) {
-        try {
-            Function existing = this.findById(function.getId());
-            existing.setName(function.getName());
-            existing.setDescription(function.getDescription());
-            functionRepository.save(existing);
-            return objectMapperUtil.map(function, FunctionResponseDTO.class);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error when updating Function");
-        }
+        Function existing = this.findById(function.getId());
+        existing.setName(function.getName());
+        existing.setDescription(function.getDescription());
+        functionRepository.save(existing);
+        return objectMapperUtil.map(function, FunctionResponseDTO.class);
     }
 
     @Override @Transactional
     public void delete(Long id) {
-        try {
-            Function function = findById(id);
-            functionRepository.delete(function);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error when deleting Function");
-        }
+        Function function = findById(id);
+        functionRepository.delete(function);
     }
 
     @Override @Transactional(readOnly = true)
@@ -69,7 +62,7 @@ public class FunctionService implements FunctionIService{
     public Function findById(Long id) {
         Optional<Function> function = functionRepository.findById(id);
         if (function.isEmpty()) {
-            throw new RuntimeException("Function not found");
+            throw new EntityNotFoundException("Function not found");
         }
         return function.get();
     }

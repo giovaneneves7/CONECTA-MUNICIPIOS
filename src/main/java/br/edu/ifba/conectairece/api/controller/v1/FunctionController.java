@@ -47,11 +47,14 @@ public class FunctionController {
             @ApiResponse(responseCode = "200", description = "Function successfully created",
                     content = @Content(schema = @Schema(implementation = FunctionResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
+                    content = @Content),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid",
                     content = @Content)
     })
     @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FunctionResponseDTO> save(@RequestBody @Valid FunctionRequestDTO body) {
         try {
+            body.setId(null);
             Function function = objectMapperUtil.map(body, Function.class);
             FunctionResponseDTO dto = functionService.save(function);
             return ResponseEntity.ok(dto);
@@ -70,7 +73,8 @@ public class FunctionController {
             description = "Updates a function by replacing its data with the provided payload.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Function successfully updated"),
-            @ApiResponse(responseCode = "404", description = "Function not found")
+            @ApiResponse(responseCode = "404", description = "Function not found"),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
     @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> update(@RequestBody @Valid FunctionRequestDTO body) {

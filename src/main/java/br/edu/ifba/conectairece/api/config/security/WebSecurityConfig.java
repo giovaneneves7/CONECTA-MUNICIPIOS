@@ -60,11 +60,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/users/user").permitAll()
 
                         //Employees function /api/v1/function
-                        .requestMatchers(HttpMethod.POST, "/api/v1/function/save").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/function/update").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/function/findall").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/functions/function").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/functions/function").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/functions/function/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/functions/function").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/functions/function/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/functions").permitAll()
 
                         // Functions for Category /api/v1/categories
                         .requestMatchers(HttpMethod.POST, "/api/v1/categories/category").permitAll()

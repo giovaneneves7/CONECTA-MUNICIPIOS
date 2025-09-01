@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Jorge Roberto
  */
 @RestController
-@RequestMapping("/api/v1/function")
+@RequestMapping("/api/v1/functions")
 @RequiredArgsConstructor
 public class FunctionController {
     private final FunctionService functionService;
@@ -51,7 +51,7 @@ public class FunctionController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid",
                     content = @Content)
     })
-    @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/function", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FunctionResponseDTO> save(@RequestBody @Valid FunctionRequestDTO body) {
         try {
             body.setId(null);
@@ -76,8 +76,9 @@ public class FunctionController {
             @ApiResponse(responseCode = "404", description = "Function not found"),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
-    @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> update(@RequestBody @Valid FunctionRequestDTO body) {
+    @PutMapping(value = "/function/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> update(@RequestBody @Valid FunctionRequestDTO body, @PathVariable("id") Long id) {
+        body.setId(id);
         Function function = objectMapperUtil.map(body, Function.class);
         functionService.update(function);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -95,7 +96,7 @@ public class FunctionController {
             @ApiResponse(responseCode = "204", description = "Function successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Function not found")
     })
-    @DeleteMapping(path = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/function/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         functionService.delete(id);
         return ResponseEntity.noContent().build();
@@ -113,7 +114,7 @@ public class FunctionController {
             @ApiResponse(responseCode = "200", description = "Paginated list of functions",
                     content = @Content(schema = @Schema(implementation = PageableDTO.class)))
     })
-    @GetMapping("/findall")
+    @GetMapping
     public ResponseEntity<PageableDTO> findAll(
             @PageableDefault(size = 5, sort="name", direction = Sort.Direction.ASC)
             Pageable pageable) {

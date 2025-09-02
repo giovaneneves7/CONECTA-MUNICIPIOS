@@ -76,9 +76,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
 
                         // Functions for Municipal Services /api/v1/municipal-services
-                        .requestMatchers(HttpMethod.POST, "/api/v1/municipal-services").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/municipal-services/municipal-service").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services/municipal-service").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services/municipal-service/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/municipal-service").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/municipal-service/**").permitAll()
 
                         // Functions for Requests /api/v1/requests
                         .requestMatchers(HttpMethod.POST, "/api/v1/requests").permitAll()

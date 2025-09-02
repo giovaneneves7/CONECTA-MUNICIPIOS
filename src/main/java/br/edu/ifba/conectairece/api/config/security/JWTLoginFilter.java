@@ -35,7 +35,8 @@ public class JWTLoginFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTLoginFilter.class);
     private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/auth/users/user", "/api/v1/auth/sessions/session",
-            "/h2-console/**", "/api/v1/auth/**", "/api/v1/functions/**", "/api/v1/functions", "/api/v1/categories/**", "/api/v1/categories");
+            "/h2-console/**", "/api/v1/auth/**", "/api/v1/functions/**", "/api/v1/functions", "/api/v1/categories/**", "/api/v1/categories"
+            , "/api/v1/municipal-services/**", "/api/v1/municipal-services");
 
     private static final String AUTH_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";

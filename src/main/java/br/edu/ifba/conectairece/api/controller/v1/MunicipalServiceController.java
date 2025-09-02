@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ import lombok.RequiredArgsConstructor;
  * Controller responsible for handling MunicipalService endpoints.
  * Provides operations to create, list, retrieve, and delete municipal services.
  *
- * @author Caio Alves
+ * @author Caio Alves, Jorge Roberto
  */
 
 @RestController
@@ -36,8 +37,7 @@ public class MunicipalServiceController {
      * @param dto DTO containing municipal service data.
      * @return Response with created municipal service data.
      */
-
-    @PostMapping
+    @PostMapping(path = "/municipal-service", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MunicipalServiceResponseDto> create(@RequestBody MunicipalServiceRequestDto dto){
         return ResponseEntity.ok(municipalServiceService.save(dto));
     }
@@ -47,7 +47,6 @@ public class MunicipalServiceController {
      *
      * @return List of all registered municipal services.
      */
-
     @GetMapping
     public ResponseEntity<List<MunicipalServiceResponseDto>> getAll() {
         return ResponseEntity.ok(municipalServiceService.findAll());
@@ -59,9 +58,8 @@ public class MunicipalServiceController {
      * @param id Municipal service ID.
      * @return No content if deletion is successful.
      */
-
-    @GetMapping("/{id}")
-    public ResponseEntity<MunicipalServiceResponseDto> getById(@PathVariable Integer id) {
+    @GetMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MunicipalServiceResponseDto> getById(@PathVariable("id") Integer id) {
         return municipalServiceService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -73,9 +71,8 @@ public class MunicipalServiceController {
      * @param id Municipal service ID.
      * @return No content if deletion is successful.
      */
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    @DeleteMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         municipalServiceService.delete(id);
         return ResponseEntity.noContent().build();
     }

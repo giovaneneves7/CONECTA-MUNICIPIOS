@@ -84,11 +84,14 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/municipal-service/**").permitAll()
 
                         // Functions for Requests /api/v1/requests
-                        .requestMatchers(HttpMethod.POST, "/api/v1/requests").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/requests/request").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requests").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/*").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/*").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/request").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/request/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/request").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/request/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request/**").permitAll()
 
                         // Database console for testing
                         //TODO: Remove it

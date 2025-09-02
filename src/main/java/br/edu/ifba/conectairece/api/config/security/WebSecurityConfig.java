@@ -69,10 +69,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
                         // Functions for Category /api/v1/categories
                         .requestMatchers(HttpMethod.POST, "/api/v1/categories/category").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/*").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/*").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/category/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/category/**").permitAll()
+
 
                         // Functions for Municipal Services /api/v1/municipal-services
                         .requestMatchers(HttpMethod.POST, "/api/v1/municipal-services").permitAll()

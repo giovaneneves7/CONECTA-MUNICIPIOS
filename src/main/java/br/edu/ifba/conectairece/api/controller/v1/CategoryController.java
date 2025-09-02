@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
  * Controller responsible for handling Category endpoints.
  * Provides operations to create, list, retrieve, and delete categories.
  *
- * @author Caio Alves
+ * @author Caio Alves, Jorge Roberto
  */
 
 @RestController
@@ -36,8 +36,7 @@ public class CategoryController {
      * @param dto DTO containing category data.
      * @return Response with created category data.
      */
-
-    @PostMapping
+    @PostMapping(path ="/category")
     public ResponseEntity<CategoryResponseDto> create(@RequestBody CategoryRequestDto dto) {
         System.out.println(">>> Recebido DTO: " + dto.getName() + " - " + dto.getDescription());
         return ResponseEntity.ok(categoryService.save(dto));
@@ -48,7 +47,6 @@ public class CategoryController {
      *
      * @return List of all registered categories.
      */
-
     @GetMapping
     public ResponseEntity<List<CategoryResponseDto>> getAll() {
         return ResponseEntity.ok(categoryService.findAll());
@@ -60,8 +58,7 @@ public class CategoryController {
      * @param id Category ID.
      * @return Category data if found, otherwise 404.
      */
-
-    @GetMapping("/{id}")
+    @GetMapping("/category/{id}")
     public ResponseEntity<CategoryResponseDto> getById(@PathVariable Integer id) {
         return categoryService.findById(id)
                 .map(ResponseEntity::ok)
@@ -74,9 +71,8 @@ public class CategoryController {
      * @param id Category ID.
      * @return No content if deletion is successful.
      */
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    @DeleteMapping("/category/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }

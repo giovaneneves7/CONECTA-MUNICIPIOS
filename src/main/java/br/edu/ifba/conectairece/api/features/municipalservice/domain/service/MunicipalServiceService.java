@@ -5,13 +5,14 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.features.category.domain.repository.CategoryRepository;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
+import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -29,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MunicipalServiceService {
+public class MunicipalServiceService implements MunicipalServiceIService{
+
+    private final ObjectMapperUtil objectMapperUtilmMapperUtil;
 
     private final MunicipalServiceRepository municipalServiceRepository;
     private final CategoryRepository categoryRepository;
@@ -41,6 +44,7 @@ public class MunicipalServiceService {
      * @return DTO with saved municipal service information
      */
 
+    @Override
     public MunicipalServiceResponseDto save(MunicipalServiceRequestDto dto) {
         MunicipalService service = new MunicipalService();
         service.setName(dto.getName());
@@ -51,8 +55,8 @@ public class MunicipalServiceService {
             service.setCategories(categories);
         }
 
-        MunicipalService saved = municipalServiceRepository.save(service);
-        return toDto(saved);
+        municipalServiceRepository.save(service);
+        return objectMapperUtilmMapperUtil.map(service, MunicipalServiceResponseDto.class);
     }
 
     /**
@@ -61,8 +65,10 @@ public class MunicipalServiceService {
      * @return list of municipal service DTOs
      */
 
+    @Override
     public List<MunicipalServiceResponseDto> findAll() {
-        return municipalServiceRepository.findAll().stream().map(this::toDto).toList();
+        List<MunicipalService> services = municipalServiceRepository.findAll();
+        return objectMapperUtilmMapperUtil.mapAll(services, MunicipalServiceResponseDto.class);
     }
 
      /**
@@ -72,8 +78,13 @@ public class MunicipalServiceService {
      * @return optional containing municipal service DTO if found
      */
 
-    public Optional<MunicipalServiceResponseDto> findById(Integer id) {
-        return municipalServiceRepository.findById(id).map(this::toDto);
+    @Override
+    public MunicipalService findById(Integer id) {
+        Optional<MunicipalService> municipalService = municipalServiceRepository.findById(id);
+        if(municipalService.isEmpty()){
+            throw new EntityNotFoundException("Municipal Service not found");
+        }
+        return municipalService.get();
     }
 
      /**
@@ -82,22 +93,10 @@ public class MunicipalServiceService {
      * @param id service ID
      */
 
+     @Override
     public void delete(Integer id) {
-        municipalServiceRepository.deleteById(id);
+        MunicipalService municipalService = findById(id);
+        municipalServiceRepository.delete(municipalService);
     }
-
-     private MunicipalServiceResponseDto toDto(MunicipalService entity) {
-        List<CategoryResponseDto> categoryDtos = entity.getCategories().stream()
-                .map(c -> new CategoryResponseDto(c.getId(), c.getName(), c.getDescription(), c.getImageUrl()))
-                .toList();
-
-        return new MunicipalServiceResponseDto(
-                entity.getId(),
-                entity.getName(),
-                entity.getDescription(),
-                categoryDtos
-        );
-    }
-
 
 }

@@ -2,6 +2,10 @@ package br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.reques
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +24,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MunicipalServiceRequestDto {
+    @JsonProperty("id")
+    private Long id;
+
+    @JsonProperty("name")
+    @NotNull(message = "Name is mandatory.")
+    @NotNull(message = "Name is cannot be blank.")
     private String name;
+
+    @JsonProperty("description")
     private String description;
+
+    @NotEmpty(message = "At least one category must be informed.")
     private List<Integer> categoryIds;
 }

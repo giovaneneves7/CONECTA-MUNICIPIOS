@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
-import br.edu.ifba.conectairece.api.features.request.domain.service.RequestService;
+import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
+import br.edu.ifba.conectairece.api.features.request.domain.service.RequestIService;
+import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -30,7 +33,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RequestController {
 
-    private final RequestService requestService;
+    private final ObjectMapperUtil objectMapperUtil;
+
+    private final RequestIService requestService;
+
 
      /**
      * Endpoint to create a new request.
@@ -63,10 +69,9 @@ public class RequestController {
      */
 
      @GetMapping("/{id}")
-    public ResponseEntity<RequestResponseDto> getById(@PathVariable UUID id) {
-        return requestService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<RequestResponseDto> getById(@Valid @PathVariable UUID id) {
+        Request request = requestService.findById(id);
+        return ResponseEntity.ok(objectMapperUtil.map(request, RequestResponseDto.class));
     }
 
     /**
@@ -78,8 +83,8 @@ public class RequestController {
      */
 
     @PutMapping("/{id}")
-    public ResponseEntity<RequestResponseDto> update(@PathVariable UUID id,
-                                                     @RequestBody RequestPostRequestDto dto) {
+    public ResponseEntity<RequestResponseDto> update(@Valid @PathVariable UUID id,
+                                                     @RequestBody RequestPostRequestDto dto ) {
         return ResponseEntity.ok(requestService.update(id, dto));
     }
 
@@ -92,7 +97,7 @@ public class RequestController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@Valid @PathVariable UUID id) {
         requestService.delete(id);
         return ResponseEntity.noContent().build();
     }

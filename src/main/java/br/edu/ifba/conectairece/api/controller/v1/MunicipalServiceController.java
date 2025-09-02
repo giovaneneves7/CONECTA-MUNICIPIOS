@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.MunicipalServiceIService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.MunicipalServiceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -28,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MunicipalServiceController {
 
-    private final MunicipalServiceService municipalServiceService;
+    private final MunicipalServiceIService municipalServiceService;
 
     /**
      * Endpoint to create a new municipal service.
@@ -38,7 +41,7 @@ public class MunicipalServiceController {
      */
 
     @PostMapping
-    public ResponseEntity<MunicipalServiceResponseDto> create(@RequestBody MunicipalServiceRequestDto dto){
+    public ResponseEntity<MunicipalServiceResponseDto> create(@Valid @RequestBody MunicipalServiceRequestDto dto){
         return ResponseEntity.ok(municipalServiceService.save(dto));
     }
 
@@ -61,10 +64,9 @@ public class MunicipalServiceController {
      */
 
     @GetMapping("/{id}")
-    public ResponseEntity<MunicipalServiceResponseDto> getById(@PathVariable Integer id) {
-        return municipalServiceService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<MunicipalService> getById(@Valid @PathVariable Integer id) {
+        return ResponseEntity.ok(municipalServiceService.findById(id));
+                
     }
 
     /**
@@ -75,7 +77,7 @@ public class MunicipalServiceController {
      */
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@Valid @PathVariable Integer id) {
         municipalServiceService.delete(id);
         return ResponseEntity.noContent().build();
     }

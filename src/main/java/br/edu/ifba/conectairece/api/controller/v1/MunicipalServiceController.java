@@ -63,19 +63,10 @@ public class MunicipalServiceController {
      * @param id Municipal service ID.
      * @return No content if deletion is successful.
      */
-<<<<<<< HEAD
     @GetMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MunicipalServiceResponseDto> getById(@PathVariable("id") Integer id) {
-        return municipalServiceService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-=======
-
-    @GetMapping("/{id}")
     public ResponseEntity<MunicipalService> getById(@Valid @PathVariable Integer id) {
         return ResponseEntity.ok(municipalServiceService.findById(id));
                 
->>>>>>> patterns
     }
 
     /**
@@ -84,14 +75,8 @@ public class MunicipalServiceController {
      * @param id Municipal service ID.
      * @return No content if deletion is successful.
      */
-<<<<<<< HEAD
     @DeleteMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
-=======
-
-    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@Valid @PathVariable Integer id) {
->>>>>>> patterns
         municipalServiceService.delete(id);
         return ResponseEntity.noContent().build();
     }

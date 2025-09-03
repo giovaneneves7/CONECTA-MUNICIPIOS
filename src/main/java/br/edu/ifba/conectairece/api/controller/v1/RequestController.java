@@ -81,16 +81,9 @@ public class RequestController {
      * @param dto DTO containing updated request data.
      * @return Updated request data.
      */
-
-<<<<<<< HEAD
     @PutMapping("request/{id}")
-    public ResponseEntity<RequestResponseDto> update(@PathVariable UUID id,
-                                                     @RequestBody RequestPostRequestDto dto) {
-=======
-    @PutMapping("/{id}")
     public ResponseEntity<RequestResponseDto> update(@Valid @PathVariable UUID id,
                                                      @RequestBody RequestPostRequestDto dto ) {
->>>>>>> patterns
         return ResponseEntity.ok(requestService.update(id, dto));
     }
 
@@ -102,13 +95,8 @@ public class RequestController {
      */
 
 
-<<<<<<< HEAD
     @DeleteMapping("request/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-=======
-    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@Valid @PathVariable UUID id) {
->>>>>>> patterns
         requestService.delete(id);
         return ResponseEntity.noContent().build();
     }

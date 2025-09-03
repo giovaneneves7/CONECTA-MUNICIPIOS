@@ -1,9 +1,12 @@
 package br.edu.ifba.conectairece.api.features.request.domain.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
+import br.edu.ifba.conectairece.api.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +17,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,11 +42,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Request {
-
-    @Id
-    @GeneratedValue
-    private UUID id;
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
+public class Request extends PersistenceEntity{
 
     @Column(nullable = false, unique = true)
     private String protocolNumber;

@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.infraestructure.exception;
 
 import br.edu.ifba.conectairece.api.infraestructure.exception.custom.CpfUniqueViolationException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EmailUniqueViolationException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.custom.PasswordInvalidException;
 import lombok.RequiredArgsConstructor;
@@ -75,15 +76,15 @@ public class ApiExceptionHandler {
      *
      * @param ex the thrown exception
      * @param request the current HTTP request
-     * @return ResponseEntity with HTTP 400 and error details
+     * @return ResponseEntity with HTTP 401 and error details
      */
     @ExceptionHandler(PasswordInvalidException.class)
     public ResponseEntity<ErrorMessage> passwordInvalidException(RuntimeException ex, HttpServletRequest request) {
         log.error("Api Error - ", ex);
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.UNAUTHORIZED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()));
+                .body(new ErrorMessage(request, HttpStatus.UNAUTHORIZED, ex.getMessage()));
     }
 
     /**
@@ -93,7 +94,7 @@ public class ApiExceptionHandler {
      * @param request the current HTTP request
      * @return ResponseEntity with HTTP 409 and error details
      */
-    @ExceptionHandler({CpfUniqueViolationException.class})
+    @ExceptionHandler({CpfUniqueViolationException.class, EmailUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> uniqueViolationException(RuntimeException ex, HttpServletRequest request) {
         log.error("Api Error : ", ex);
         return ResponseEntity.status(HttpStatus.CONFLICT)

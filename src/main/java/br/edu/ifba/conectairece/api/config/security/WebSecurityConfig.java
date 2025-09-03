@@ -56,34 +56,42 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         // CORS and generic public endpoints
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Pré-voo CORS
                         // Authentication
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/sessions/session").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/users/user").permitAll()
 
                         //Employees function /api/v1/function
-                        .requestMatchers(HttpMethod.POST, "/api/v1/function/save").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/function/update").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/function/delete/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/function/findall").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/functions/function").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/functions/function").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/functions/function/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/functions/function").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/functions/function/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/functions").permitAll()
 
                         // Functions for Category /api/v1/categories
                         .requestMatchers(HttpMethod.POST, "/api/v1/categories/category").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/*").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/*").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/category/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/category/**").permitAll()
+
 
                         // Functions for Municipal Services /api/v1/municipal-services
-                        .requestMatchers(HttpMethod.POST, "/api/v1/municipal-services").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/municipal-services/municipal-service").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services/municipal-service").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services/municipal-service/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/municipal-service").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/municipal-service/**").permitAll()
 
                         // Functions for Requests /api/v1/requests
-                        .requestMatchers(HttpMethod.POST, "/api/v1/requests").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/requests/request").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requests").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/*").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/*").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/request").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/request/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/request").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/request/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request/**").permitAll()
 
                         // Database console for testing
                         //TODO: Remove it

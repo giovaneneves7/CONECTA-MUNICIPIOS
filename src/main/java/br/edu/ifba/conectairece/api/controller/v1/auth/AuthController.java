@@ -30,7 +30,7 @@ public class AuthController {
      * @param body DTO containing email and password.
      * @return Response with authenticated user data or appropriate error.
      */
-    @PostMapping("/login")
+    @PostMapping("/sessions/session")
     public ResponseEntity<?> loginUser(@RequestBody @Valid UserLoginRequestDTO body) {
         try {
             UserLoginResponseDTO response = authenticationService.login(body);
@@ -46,7 +46,7 @@ public class AuthController {
      * @param body DTO containing user registration data.
      * @return Response with registered user data.
      */
-    @PostMapping("/register")
+    @PostMapping("/users/user")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserRegisterRequestDTO body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(body));
     }

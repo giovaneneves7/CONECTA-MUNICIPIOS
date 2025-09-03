@@ -39,7 +39,7 @@ public class RequestController {
      * @return Response with created request data.
      */
 
-    @PostMapping
+    @PostMapping("/request")
     public ResponseEntity<RequestResponseDto> create(@RequestBody RequestPostRequestDto dto){
         return ResponseEntity.ok(requestService.save(dto));
     }
@@ -62,7 +62,7 @@ public class RequestController {
      * @return Request data if found, otherwise 404.
      */
 
-     @GetMapping("/{id}")
+     @GetMapping("request/{id}")
     public ResponseEntity<RequestResponseDto> getById(@PathVariable UUID id) {
         return requestService.findById(id)
                 .map(ResponseEntity::ok)
@@ -77,7 +77,7 @@ public class RequestController {
      * @return Updated request data.
      */
 
-    @PutMapping("/{id}")
+    @PutMapping("request/{id}")
     public ResponseEntity<RequestResponseDto> update(@PathVariable UUID id,
                                                      @RequestBody RequestPostRequestDto dto) {
         return ResponseEntity.ok(requestService.update(id, dto));
@@ -91,7 +91,7 @@ public class RequestController {
      */
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("request/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         requestService.delete(id);
         return ResponseEntity.noContent().build();

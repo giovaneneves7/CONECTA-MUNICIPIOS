@@ -23,6 +23,9 @@ public class UserLoginResponseDTO {
     @JsonProperty("email")
     private String email;
 
+    @JsonProperty("name")
+    private String name;
+
     @JsonProperty("token")
     private String token;
 

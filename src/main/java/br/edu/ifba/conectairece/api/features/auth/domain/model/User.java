@@ -81,7 +81,7 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 
     @Override

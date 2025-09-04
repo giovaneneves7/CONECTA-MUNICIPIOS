@@ -60,7 +60,7 @@ public class AuthenticationService {
 
         String token = tokenService.generateToken(user);
 
-        return new UserLoginResponseDTO(user.getEmail(), token, user.getStatus());
+        return new UserLoginResponseDTO(user.getEmail(), user.getUsername(), token, user.getStatus());
     }
 
     /**
@@ -115,6 +115,6 @@ public class AuthenticationService {
 
         String token = tokenService.generateToken(user);
 
-        return new UserLoginResponseDTO(user.getEmail(), token, user.getStatus());
+        return new UserLoginResponseDTO(user.getEmail(), user.getUsername(), token, user.getStatus());
     }
 }

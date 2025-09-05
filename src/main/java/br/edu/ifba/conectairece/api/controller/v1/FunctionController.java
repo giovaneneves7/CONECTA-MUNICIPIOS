@@ -6,6 +6,7 @@ import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.projection.FunctionProjection;
 import br.edu.ifba.conectairece.api.features.function.domain.service.FunctionService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,6 +22,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -48,19 +51,18 @@ public class FunctionController {
                     content = @Content(schema = @Schema(implementation = FunctionResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
-            @ApiResponse(responseCode = "422", description = "One or some fields are invalid",
-                    content = @Content)
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
     })
     @PostMapping(value = "/function", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<FunctionResponseDTO> save(@RequestBody @Valid FunctionRequestDTO body) {
-        try {
-            body.setId(null);
-            Function function = objectMapperUtil.map(body, Function.class);
-            FunctionResponseDTO dto = functionService.save(function);
-            return ResponseEntity.ok(dto);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+    public ResponseEntity<?> save(@RequestBody @Valid FunctionRequestDTO body, BindingResult result) {
+
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
+        body.setId(null);
+        Function function = objectMapperUtil.map(body, Function.class);
+        FunctionResponseDTO dto = functionService.save(function);
+        return ResponseEntity.ok(dto);
     }
 
     /**
@@ -73,11 +75,15 @@ public class FunctionController {
             description = "Updates a function by replacing its data with the provided payload.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Function successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid request content", content = @Content),
             @ApiResponse(responseCode = "404", description = "Function not found"),
-            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
     })
     @PutMapping(value = "/function/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> update(@RequestBody @Valid FunctionRequestDTO body, @PathVariable("id") Long id) {
+    public ResponseEntity<?> update(@RequestBody @Valid FunctionRequestDTO body, @PathVariable("id") Long id, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
+        }
         body.setId(id);
         Function function = objectMapperUtil.map(body, Function.class);
         functionService.update(function);

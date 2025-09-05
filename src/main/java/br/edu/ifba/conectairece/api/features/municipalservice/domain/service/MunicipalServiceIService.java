@@ -34,7 +34,7 @@ public interface MunicipalServiceIService {
      * @param id service ID
      * @return the found municipal service entity
      */
-    MunicipalService findById(Integer id);
+    MunicipalServiceResponseDto findById(Integer id);
 
     /**
      * Deletes a municipal service by its identifier.

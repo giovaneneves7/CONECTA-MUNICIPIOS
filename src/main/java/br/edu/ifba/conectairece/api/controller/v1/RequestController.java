@@ -18,6 +18,12 @@ import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestP
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.service.RequestIService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +50,14 @@ public class RequestController {
      * @param dto DTO containing request data.
      * @return Response with created request data.
      */
-
+    @Operation(summary = "Create a new Request",
+            description = "Creates and persists a new request in the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request successfully created",
+                    content = @Content(schema = @Schema(implementation = RequestResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body"),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+    })
     @PostMapping("/request")
     public ResponseEntity<RequestResponseDto> create(@RequestBody RequestPostRequestDto dto){
         return ResponseEntity.ok(requestService.save(dto));
@@ -55,7 +68,12 @@ public class RequestController {
      *
      * @return List of all registered requests.
      */
-
+    @Operation(summary = "List all Requests",
+            description = "Retrieves a list of all registered requests.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of requests retrieved",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDto.class))))
+    })
     @GetMapping
     public ResponseEntity<List<RequestResponseDto>> getAll(){
         return ResponseEntity.ok(requestService.findAll());
@@ -67,6 +85,13 @@ public class RequestController {
      * @param id Request UUID.
      * @return Request data if found, otherwise 404.
      */
+    @Operation(summary = "Retrieve a Request by ID",
+            description = "Fetches details of a request by its UUID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request found",
+                    content = @Content(schema = @Schema(implementation = RequestResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Request not found")
+    })
     @GetMapping("request/{id}")
     public ResponseEntity<RequestResponseDto> getById(@Valid @PathVariable UUID id) {
         Request request = requestService.findById(id);
@@ -81,6 +106,14 @@ public class RequestController {
      * @param dto DTO containing updated request data.
      * @return Updated request data.
      */
+    @Operation(summary = "Update an existing Request",
+            description = "Updates a request by replacing its data with the provided payload.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request successfully updated",
+                    content = @Content(schema = @Schema(implementation = RequestResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Request not found"),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+    })
     @PutMapping("request/{id}")
     public ResponseEntity<RequestResponseDto> update(@Valid @PathVariable UUID id,
                                                      @RequestBody RequestPostRequestDto dto ) {
@@ -93,8 +126,12 @@ public class RequestController {
      * @param id Request UUID.
      * @return No content if deletion is successful.
      */
-
-
+    @Operation(summary = "Delete a Request",
+            description = "Deletes a request by its UUID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Request successfully deleted"),
+            @ApiResponse(responseCode = "404", description = "Request not found")
+    })
     @DeleteMapping("request/{id}")
     public ResponseEntity<Void> delete(@Valid @PathVariable UUID id) {
         requestService.delete(id);

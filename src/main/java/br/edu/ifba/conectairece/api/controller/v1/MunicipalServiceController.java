@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.MunicipalServiceIService;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.MunicipalServiceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +44,14 @@ public class MunicipalServiceController {
      * @param dto DTO containing municipal service data.
      * @return Response with created municipal service data.
      */
+    @Operation(summary = "Create a new Municipal Service",
+            description = "Creates and persists a new municipal service in the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Municipal service successfully created",
+                    content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body"),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+    })
     @PostMapping(path = "/municipal-service", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MunicipalServiceResponseDto> create(@RequestBody MunicipalServiceRequestDto dto){
     
@@ -52,6 +64,12 @@ public class MunicipalServiceController {
      *
      * @return List of all registered municipal services.
      */
+    @Operation(summary = "List all Municipal Services",
+            description = "Retrieves a list of all registered municipal services.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of municipal services retrieved",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = MunicipalServiceResponseDto.class))))
+    })
     @GetMapping
     public ResponseEntity<List<MunicipalServiceResponseDto>> getAll() {
         return ResponseEntity.ok(municipalServiceService.findAll());
@@ -63,8 +81,15 @@ public class MunicipalServiceController {
      * @param id Municipal service ID.
      * @return No content if deletion is successful.
      */
+    @Operation(summary = "Retrieve a Municipal Service by ID",
+            description = "Fetches details of a municipal service by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Municipal service found",
+                    content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Municipal service not found")
+    })
     @GetMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MunicipalService> getById(@Valid @PathVariable Integer id) {
+    public ResponseEntity<MunicipalServiceResponseDto> getById(@Valid @PathVariable Integer id) {
         return ResponseEntity.ok(municipalServiceService.findById(id));
                 
     }
@@ -75,6 +100,12 @@ public class MunicipalServiceController {
      * @param id Municipal service ID.
      * @return No content if deletion is successful.
      */
+    @Operation(summary = "Delete a Municipal Service by ID",
+            description = "Deletes a municipal service by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Municipal service successfully deleted"),
+            @ApiResponse(responseCode = "404", description = "Municipal service not found")
+    })
     @DeleteMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> delete(@Valid @PathVariable Integer id) {
         municipalServiceService.delete(id);

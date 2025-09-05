@@ -1,7 +1,6 @@
 package br.edu.ifba.conectairece.api.features.municipalservice.domain.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MunicipalServiceService implements MunicipalServiceIService{
 
-    private final ObjectMapperUtil objectMapperUtilmMapperUtil;
+    private final ObjectMapperUtil objectMapperUtil;
 
     private final MunicipalServiceRepository municipalServiceRepository;
     private final CategoryRepository categoryRepository;
@@ -56,7 +55,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
         }
 
         municipalServiceRepository.save(service);
-        return objectMapperUtilmMapperUtil.map(service, MunicipalServiceResponseDto.class);
+        return objectMapperUtil.map(service, MunicipalServiceResponseDto.class);
     }
 
     /**
@@ -68,7 +67,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
     @Override
     public List<MunicipalServiceResponseDto> findAll() {
         List<MunicipalService> services = municipalServiceRepository.findAll();
-        return objectMapperUtilmMapperUtil.mapAll(services, MunicipalServiceResponseDto.class);
+        return objectMapperUtil.mapAll(services, MunicipalServiceResponseDto.class);
     }
 
      /**
@@ -79,12 +78,11 @@ public class MunicipalServiceService implements MunicipalServiceIService{
      */
 
     @Override
-    public MunicipalService findById(Integer id) {
-        Optional<MunicipalService> municipalService = municipalServiceRepository.findById(id);
-        if(municipalService.isEmpty()){
-            throw new EntityNotFoundException("Municipal Service not found");
-        }
-        return municipalService.get();
+    public MunicipalServiceResponseDto findById(Integer id) {
+       MunicipalService entity = municipalServiceRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Municipal Service not found"));
+
+        return objectMapperUtil.map(entity, MunicipalServiceResponseDto.class);
     }
 
      /**
@@ -95,8 +93,10 @@ public class MunicipalServiceService implements MunicipalServiceIService{
 
      @Override
     public void delete(Integer id) {
-        MunicipalService municipalService = findById(id);
-        municipalServiceRepository.delete(municipalService);
+        MunicipalService entity = municipalServiceRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Municipal Service not found"));
+
+        municipalServiceRepository.delete(entity);
     }
 
 }

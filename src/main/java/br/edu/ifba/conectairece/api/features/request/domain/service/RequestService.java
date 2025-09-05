@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
@@ -12,7 +14,6 @@ import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestP
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -45,7 +46,7 @@ public class RequestService implements RequestIService {
     @Override
     public RequestResponseDto save(RequestPostRequestDto dto){
         MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
-        .orElseThrow(() -> new RuntimeException("MunicipalService not found"));
+        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         Request request = new Request();
         request.setProtocolNumber(dto.getProtocolNumber());
@@ -69,7 +70,7 @@ public class RequestService implements RequestIService {
     @Override
      public RequestResponseDto update(UUID id, RequestPostRequestDto dto) {
         Request request = requestRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Request not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         request.setProtocolNumber(dto.getProtocolNumber());
         request.setEstimatedCompletionDate(dto.getEstimatedCompletionDate());
@@ -77,7 +78,7 @@ public class RequestService implements RequestIService {
         request.setNote(dto.getNote());
 
         MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
-                .orElseThrow(() -> new RuntimeException("MunicipalService not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         request.setMunicipalService(service);
 
         requestRepository.save(request);
@@ -109,7 +110,7 @@ public class RequestService implements RequestIService {
         
         Optional<Request> request = requestRepository.findById(id);
         if(request.isEmpty()){
-            throw new EntityNotFoundException("Request not found");
+            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         return request.get();
       }

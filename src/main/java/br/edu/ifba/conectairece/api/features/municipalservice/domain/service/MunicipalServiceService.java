@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.features.municipalservice.domain.service;
 import java.util.List;
 import java.util.Optional;
 
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
@@ -11,7 +13,6 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
-import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -82,7 +83,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
     public MunicipalService findById(Integer id) {
         Optional<MunicipalService> municipalService = municipalServiceRepository.findById(id);
         if(municipalService.isEmpty()){
-            throw new EntityNotFoundException("Municipal Service not found");
+            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         return municipalService.get();
     }

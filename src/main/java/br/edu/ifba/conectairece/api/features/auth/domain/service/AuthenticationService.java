@@ -12,8 +12,8 @@ import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.person.domain.repository.PersonRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
-import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EmailUniqueViolationException;
-import br.edu.ifba.conectairece.api.infraestructure.exception.custom.PasswordInvalidException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,14 +47,14 @@ public class AuthenticationService {
     @Transactional
     public UserLoginResponseDTO login(UserLoginRequestDTO request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadCredentialsException("Credenciais inválidas."));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage()));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new PasswordInvalidException("Credenciais inválidas.");
+            throw new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage());
         }
 
         if (user.getStatus() == UserStatus.INACTIVE) {
-            throw new BadCredentialsException("Credenciais inválidas.");
+            throw new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage());
         }
 
 
@@ -73,7 +73,7 @@ public class AuthenticationService {
     public UserLoginResponseDTO register(UserRegisterRequestDTO request) {
 
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new EmailUniqueViolationException("E-mail já cadastrado");
+            throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
 
         User user = new User();

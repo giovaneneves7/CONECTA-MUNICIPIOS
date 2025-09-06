@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 
+import java.util.Optional;
+
 /**
  * Data access repository for the {@link Category} entity.
  * Provides CRUD operations and database interaction methods for categories.
@@ -14,5 +16,5 @@ import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer>{
-
+    Optional<Category> findByName(String name);
 }

@@ -3,7 +3,8 @@ package br.edu.ifba.conectairece.api.features.category.domain.service;
 import java.util.List;
 import java.util.Optional;
 
-import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -46,6 +47,9 @@ public class CategoryService implements CategoryIService{
      @Transactional
      @CacheEvict(value = "categories", allEntries = true)
      public CategoryResponseDto save(CategoryRequestDto dto) {
+        if (categoryRepository.findByName(dto.getName()).isPresent()) {
+            throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
+        }
         Category category = new Category();
         category.setName(dto.getName());
         category.setDescription(dto.getDescription());
@@ -80,7 +84,7 @@ public class CategoryService implements CategoryIService{
     public Optional<CategoryResponseDto> findById(Integer id) {
         return Optional.ofNullable(categoryRepository.findById(id)
                 .map(category -> objectMapperUtil.map(category, CategoryResponseDto.class))
-                .orElseThrow(() -> new EntityNotFoundException("Category not found")));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())));
     }
 
     /**
@@ -92,7 +96,14 @@ public class CategoryService implements CategoryIService{
     @Transactional
     @CacheEvict(value = {"categories", "category"}, key = "#id", allEntries = true)
     public void delete(Integer id) {
-        this.findById(id); //throw a exception if there is an error
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new  BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+
+        if (!category.getMunicipalServices().isEmpty()) {
+            throw new BusinessException(BusinessExceptionMessage.CLASS_IN_USE.getMessage());
+        }
+
         categoryRepository.deleteById(id);
     }
 

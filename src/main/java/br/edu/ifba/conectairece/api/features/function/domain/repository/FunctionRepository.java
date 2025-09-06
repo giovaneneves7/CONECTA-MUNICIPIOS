@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 /**
  * Data access repository for the {@link Function} entity.
  *
@@ -24,4 +26,8 @@ public interface FunctionRepository extends JpaRepository<Function, Long> {
      * @return a page containing projected functions
      */
     Page<FunctionProjection> findAllProjectedBy(Pageable pageable);
+
+    Optional<Function> findByName(String name);
+
+    Optional<Function> findByNameAndIdNot(String name, Long id);
 }

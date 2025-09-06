@@ -4,7 +4,8 @@ import br.edu.ifba.conectairece.api.features.function.domain.dto.response.Functi
 import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.FunctionRepository;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.projection.FunctionProjection;
-import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,26 +31,37 @@ public class FunctionService implements FunctionIService{
 
     @Override @Transactional
     public FunctionResponseDTO save(Function function) {
-        try {
-            functionRepository.save(function);
-            return objectMapperUtil.map(function, FunctionResponseDTO.class);
-        } catch (RuntimeException e) {
-            throw new RuntimeException("Error when saving Function");
+        if (functionRepository.findByName(function.getName()).isPresent()) {
+            throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
+        functionRepository.save(function);
+        return objectMapperUtil.map(function, FunctionResponseDTO.class);
     }
 
     @Override @Transactional
     public FunctionResponseDTO update(Function function) {
         Function existing = this.findById(function.getId());
+
+        Optional<Function> existingFunctionWithSameName = functionRepository.findByNameAndIdNot(function.getName(), existing.getId());
+        if (existingFunctionWithSameName.isPresent()) {
+            throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
+        }
+
         existing.setName(function.getName());
         existing.setDescription(function.getDescription());
+
         functionRepository.save(existing);
-        return objectMapperUtil.map(function, FunctionResponseDTO.class);
+        return objectMapperUtil.map(existing, FunctionResponseDTO.class);
     }
 
     @Override @Transactional
     public void delete(Long id) {
         Function function = findById(id);
+
+        if (!function.getPublicServantProfiles().isEmpty()) {
+            throw new BusinessException(BusinessExceptionMessage.CLASS_IN_USE.getMessage());
+        }
+
         functionRepository.delete(function);
     }
 
@@ -62,7 +74,7 @@ public class FunctionService implements FunctionIService{
     public Function findById(Long id) {
         Optional<Function> function = functionRepository.findById(id);
         if (function.isEmpty()) {
-            throw new EntityNotFoundException("Function not found");
+            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         return function.get();
     }

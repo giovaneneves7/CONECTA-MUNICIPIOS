@@ -25,7 +25,7 @@ import java.util.Set;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 public class Function extends SimplePersistenceEntity implements Serializable {
 
-    @Column(name = "name",  nullable = false)
+    @Column(name = "name",  nullable = false, unique = true)
     private String name;
 
     @Column(name = "description", nullable = false)

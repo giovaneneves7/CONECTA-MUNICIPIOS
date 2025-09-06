@@ -29,7 +29,7 @@ public class MunicipalServiceResponseDto {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("Description")
+    @JsonProperty("description")
     private String description;
     
     private List<CategoryResponseDto> categories;

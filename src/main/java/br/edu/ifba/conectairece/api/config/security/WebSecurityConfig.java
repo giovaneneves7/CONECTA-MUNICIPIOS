@@ -93,6 +93,22 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request/**").permitAll()
 
+                        // Functions for Requirement Types /api/v1/requirement-types
+                        .requestMatchers(HttpMethod.POST, "/api/v1/requirement-types/requirement-type").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requirement-types/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requirement-types/**").permitAll()
+
+                        // Functions for Construction License Requirements /api/v1/construction-license-requirements
+                        .requestMatchers(HttpMethod.POST, "/api/v1/construction-license-requirements/construction-license-requirement").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/construction-license-requirements").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/construction-license-requirements/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/construction-license-requirements/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/construction-license-requirements/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/construction-license-requirements/**").permitAll()
+
                         // Database console for testing
                         //TODO: Remove it
                         .requestMatchers("/h2-console/**").permitAll()

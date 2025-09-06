@@ -24,9 +24,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MunicipalServiceRequestDto {
-    @JsonProperty("id")
-    private Long id;
-
     @JsonProperty("name")
     @NotNull(message = "Name is mandatory.")
     @NotNull(message = "Name is cannot be blank.")

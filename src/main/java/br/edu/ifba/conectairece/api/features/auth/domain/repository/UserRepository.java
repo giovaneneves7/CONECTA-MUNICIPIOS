@@ -18,4 +18,8 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmail(@Param("email") String email);
+
+    @Query("SELECT u FROM User u WHERE u.id = :id")
+    Optional<User> findById(@Param("id") UUID id);
+
 }

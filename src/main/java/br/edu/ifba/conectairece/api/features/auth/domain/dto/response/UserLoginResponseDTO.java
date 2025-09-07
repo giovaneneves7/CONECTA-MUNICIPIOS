@@ -3,11 +3,14 @@ package br.edu.ifba.conectairece.api.features.auth.domain.dto.response;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.person.domain.dto.response.PersonResponseDTO;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
 
 /**
  * User login response DTO.
@@ -20,6 +23,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserLoginResponseDTO {
+
+    @JsonProperty("id")
+    private UUID id;
+
     @JsonProperty("email")
     private String email;
 

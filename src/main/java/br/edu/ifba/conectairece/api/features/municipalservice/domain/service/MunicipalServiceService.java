@@ -80,7 +80,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
     @Override
     public MunicipalServiceResponseDto findById(Integer id) {
        MunicipalService entity = municipalServiceRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Municipal Service not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         return objectMapperUtil.map(entity, MunicipalServiceResponseDto.class);
         
@@ -95,7 +95,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
      @Override
     public void delete(Integer id) {
         MunicipalService entity = municipalServiceRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Municipal Service not found"));
+            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         municipalServiceRepository.delete(entity);
     }

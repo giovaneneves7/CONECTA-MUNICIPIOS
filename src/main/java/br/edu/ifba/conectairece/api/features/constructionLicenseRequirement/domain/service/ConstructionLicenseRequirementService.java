@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
@@ -15,7 +17,6 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.RequirementTypeRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
-import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -54,11 +55,11 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
 
         MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
-                .orElseThrow(() -> new EntityNotFoundException("Municipal Service not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setMunicipalService(service);
 
         RequirementType type = requirementTypeRepository.findById(dto.getRequirementTypeId())
-            .orElseThrow(() -> new EntityNotFoundException("Requiriment Type not found"));
+            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
         TechnicalResponsible responsible = objectMapperUtil.map(dto.getTechnicalResponsible(), TechnicalResponsible.class);
@@ -87,14 +88,14 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     @Override
     public ConstructionLicenseRequirementResponseDTO findById(Integer id) {
         ConstructionLicenseRequirement entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Requirement not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         return objectMapperUtil.map(entity, ConstructionLicenseRequirementResponseDTO.class);
     }
 
     @Override
     public void delete(Integer id) {
         ConstructionLicenseRequirement entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Requirement not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         repository.delete(entity);
     }
 }

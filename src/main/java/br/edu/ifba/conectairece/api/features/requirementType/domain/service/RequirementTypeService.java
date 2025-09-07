@@ -2,13 +2,14 @@ package br.edu.ifba.conectairece.api.features.requirementType.domain.service;
 
 import java.util.List;
 
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.request.RequirementTypeRequestDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.RequirementTypeRepository;
-import br.edu.ifba.conectairece.api.infraestructure.exception.custom.EntityNotFoundException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -73,7 +74,7 @@ public class RequirementTypeService implements RequirementTypeIService{
     @Override
     public RequirementTypeResponseDTO findById(Integer id) {
         RequirementType entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Requirement Type not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         return objectMapperUtil.map(entity, RequirementTypeResponseDTO.class);
     }
@@ -86,7 +87,7 @@ public class RequirementTypeService implements RequirementTypeIService{
     @Override
     public void delete(Integer id) {
         RequirementType entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Requirement Type not found"));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         repository.delete(entity);
     }

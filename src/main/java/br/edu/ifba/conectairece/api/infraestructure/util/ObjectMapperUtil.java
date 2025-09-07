@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.infraestructure.util;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.record.RecordModule; 
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -18,7 +19,7 @@ import java.util.function.Function;
  * nested object structures (such as records or aggregates) into other types.
  * This is helpful for transforming DTOs into domain models and vice versa.
  *
- * @author Jorge Roberto
+ * @author Giovane Neves
  * */
 @Component
 public class ObjectMapperUtil {
@@ -26,8 +27,18 @@ public class ObjectMapperUtil {
     private static final ModelMapper MODEL_MAPPER;
 
     static {
+    
         MODEL_MAPPER = new ModelMapper();
+        
+        MODEL_MAPPER.getConfiguration()
+                .setAmbiguityIgnored(true)
+                .setMatchingStrategy(MatchingStrategies.STRICT)
+                .setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
+
+        MODEL_MAPPER.registerModule(new RecordModule());
     }
+
 
     /**
      * Maps an input object to an instance of the specified class.

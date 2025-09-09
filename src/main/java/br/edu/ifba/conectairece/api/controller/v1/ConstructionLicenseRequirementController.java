@@ -2,12 +2,15 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
+import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -63,10 +67,37 @@ public class ConstructionLicenseRequirementController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
     @PostMapping(path = "/construction-license-requirement" ,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConstructionLicenseRequirementResponseDTO> create(
-            @RequestBody @Valid ConstructionLicenseRequirementRequestDTO dto) {
-        return ResponseEntity.ok(service.save(dto));
+    public ResponseEntity<?> create(
+            @RequestBody @Valid ConstructionLicenseRequirementRequestDTO dto, BindingResult result) {
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                :ResponseEntity.ok(service.save(dto));
     }
+
+    /**
+         * Endpoint to update a construction license requirement by ID.
+        *
+         * @param id  requirement ID
+        * @param dto DTO containing updated requirement data
+         * @return updated requirement
+     */
+        @Operation(summary = "Update a Construction License Requirement by ID",
+        description = "Updates and persists changes to a construction license requirement.")
+        @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Requirement successfully updated",
+                content = @Content(schema = @Schema(implementation = ConstructionLicenseRequirementResponseDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid request body"),
+        @ApiResponse(responseCode = "404", description = "Requirement not found"),
+        @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+        })
+        @PutMapping(value = "/construction-license-requirement/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+                public ResponseEntity<?> update(
+                @PathVariable @NotNull Integer id,
+                @RequestBody @Valid ConstructionLicenseRequirementRequestDTO dto, BindingResult result) {
+        return result.hasErrors()
+                        ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                        : ResponseEntity.ok(service.update(id, dto));
+        }
 
     /**
      * Endpoint to list all construction license requirements.
@@ -97,7 +128,7 @@ public class ConstructionLicenseRequirementController {
                     content = @Content(schema = @Schema(implementation = ConstructionLicenseRequirementResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Requirement not found")
     })
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/construction-license-requirement/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConstructionLicenseRequirementResponseDTO> getById(
             @PathVariable @NotNull Integer id) {
         return ResponseEntity.ok(service.findById(id));
@@ -115,7 +146,7 @@ public class ConstructionLicenseRequirementController {
             @ApiResponse(responseCode = "204", description = "Requirement successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Requirement not found")
     })
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/construction-license-requirement/{id}")
     public ResponseEntity<Void> delete(@PathVariable @NotNull Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

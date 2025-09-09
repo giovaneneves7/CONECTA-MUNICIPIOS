@@ -81,6 +81,51 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     }
 
     @Override
+    public ConstructionLicenseRequirementResponseDTO update(Integer id, ConstructionLicenseRequirementRequestDTO dto) {
+    ConstructionLicenseRequirement entity = repository.findById(id)
+            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+    entity.setOwner(dto.getOwner());
+    entity.setPhone(dto.getPhone());
+    entity.setCep(dto.getCep());
+    entity.setCpfCnpj(dto.getCpfCnpj());
+    entity.setPropertyNumber(dto.getPropertyNumber());
+    entity.setNeighborhood(dto.getNeighborhood());
+    entity.setConstructionAddress(dto.getConstructionAddress());
+    entity.setReferencePoint(dto.getReferencePoint());
+    entity.setStartDate(dto.getStartDate());
+    entity.setEndDate(dto.getEndDate());
+    entity.setFloorCount(dto.getFloorCount());
+    entity.setConstructionArea(dto.getConstructionArea());
+    entity.setHousingUnitNumber(dto.getHousingUnitNumber());
+    entity.setTerrainArea(dto.getTerrainArea());
+
+    MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
+            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+    entity.setMunicipalService(service);
+
+    RequirementType type = requirementTypeRepository.findById(dto.getRequirementTypeId())
+            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+    entity.setRequirementType(type);
+
+    TechnicalResponsible responsible = objectMapperUtil.map(dto.getTechnicalResponsible(), TechnicalResponsible.class);
+    entity.setTechnicalResponsible(responsible);
+
+if (dto.getDocuments() != null) {
+    entity.getDocuments().clear();
+
+    dto.getDocuments().forEach(d -> {
+        Document document = objectMapperUtil.map(d, Document.class);
+        document.setRequirement(entity);
+        entity.getDocuments().add(document);
+    });
+}
+
+    repository.save(entity);
+        return objectMapperUtil.map(entity, ConstructionLicenseRequirementResponseDTO.class);
+    }
+
+    @Override
     public List<ConstructionLicenseRequirementResponseDTO> findAll() {
         return objectMapperUtil.mapAll(repository.findAll(), ConstructionLicenseRequirementResponseDTO.class);
     }

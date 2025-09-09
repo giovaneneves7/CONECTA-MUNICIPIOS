@@ -3,7 +3,10 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +21,7 @@ import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestP
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.service.RequestIService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,8 +63,10 @@ public class RequestController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
     @PostMapping("/request")
-    public ResponseEntity<RequestResponseDto> create(@RequestBody RequestPostRequestDto dto){
-        return ResponseEntity.ok(requestService.save(dto));
+    public ResponseEntity<?> create(@RequestBody RequestPostRequestDto dto, BindingResult result){
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                : ResponseEntity.ok(requestService.save(dto));
     }
 
      /**
@@ -115,9 +121,11 @@ public class RequestController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
     @PutMapping("request/{id}")
-    public ResponseEntity<RequestResponseDto> update(@Valid @PathVariable UUID id,
-                                                     @RequestBody RequestPostRequestDto dto ) {
-        return ResponseEntity.ok(requestService.update(id, dto));
+    public ResponseEntity<?> update(@Valid @PathVariable UUID id,
+                                                     @RequestBody RequestPostRequestDto dto, BindingResult result) {
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                : ResponseEntity.ok(requestService.update(id, dto));
     }
 
     /**

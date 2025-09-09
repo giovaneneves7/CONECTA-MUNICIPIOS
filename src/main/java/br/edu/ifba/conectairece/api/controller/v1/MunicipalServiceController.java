@@ -2,8 +2,10 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.MunicipalServiceIService;
+import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -53,9 +56,11 @@ public class MunicipalServiceController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
     @PostMapping(path = "/municipal-service", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MunicipalServiceResponseDto> create(@RequestBody MunicipalServiceRequestDto dto){
+    public ResponseEntity<?> create(@RequestBody MunicipalServiceRequestDto dto, BindingResult result){
     
-        return ResponseEntity.ok(municipalServiceService.save(dto));
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                : ResponseEntity.ok(municipalServiceService.save(dto));
 
     }
 

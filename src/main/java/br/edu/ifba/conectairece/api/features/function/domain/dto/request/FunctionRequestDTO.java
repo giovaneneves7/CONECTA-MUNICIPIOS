@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter @Setter
 public class FunctionRequestDTO {
 
-    @JsonProperty("id")
+    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @JsonProperty("name")

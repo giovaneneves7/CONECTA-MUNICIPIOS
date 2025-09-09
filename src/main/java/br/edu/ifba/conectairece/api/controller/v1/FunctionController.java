@@ -55,14 +55,9 @@ public class FunctionController {
     })
     @PostMapping(value = "/function", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@RequestBody @Valid FunctionRequestDTO body, BindingResult result) {
-
-        if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
-        }
-        body.setId(null);
-        Function function = objectMapperUtil.map(body, Function.class);
-        FunctionResponseDTO dto = functionService.save(function);
-        return ResponseEntity.ok(dto);
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
+                : ResponseEntity.ok(this.functionService.save(objectMapperUtil.map(body, Function.class)));
     }
 
     /**

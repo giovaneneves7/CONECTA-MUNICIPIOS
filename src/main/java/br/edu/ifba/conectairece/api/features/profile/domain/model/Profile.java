@@ -35,7 +35,7 @@ public class Profile extends SimplePersistenceEntity implements Serializable {
     private String type;
 
     @Column(name = "image_url")
-    private String imageURL;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "profile")
     private List<User> users = new ArrayList<>();

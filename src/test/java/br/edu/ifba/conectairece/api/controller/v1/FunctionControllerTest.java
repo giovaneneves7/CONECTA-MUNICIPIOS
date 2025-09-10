@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.function.domain.dto.request.FunctionRequestDTO;
+import br.edu.ifba.conectairece.api.features.function.domain.dto.request.FunctionUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.function.domain.dto.response.FunctionResponseDTO;
 import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.projection.FunctionProjection;
@@ -77,7 +78,7 @@ class FunctionControllerTest {
     @Test
     @DisplayName("Should create a new function successfully")
     void saveFunction_Success() throws Exception {
-        FunctionRequestDTO requestDTO = new FunctionRequestDTO(null, "Test Function", "Description");
+        FunctionRequestDTO requestDTO = new FunctionRequestDTO("Test Function", "Description");
         Function function = new Function("Test Function", "Description", new HashSet<>());
         FunctionResponseDTO responseDTO = new FunctionResponseDTO(1L, "Test Function", "Description");
 
@@ -85,7 +86,7 @@ class FunctionControllerTest {
 
         when(functionService.save(any(Function.class))).thenReturn(responseDTO);
 
-        mockMvc.perform(post("/api/v1/function/save")
+        mockMvc.perform(post("/api/v1/functions/function")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                         .andExpect(status().isOk())
@@ -97,19 +98,19 @@ class FunctionControllerTest {
     @Test
     @DisplayName("Should update an existing function successfully")
     void updateFunction_Success() throws Exception {
-        FunctionRequestDTO requestDTO =
-                new FunctionRequestDTO(1L, "Updated Function", "Updated Description");
+        FunctionUpdateRequestDTO requestDTO =
+                new FunctionUpdateRequestDTO(1L, "Updated Function", "Updated Description");
 
         Function function =
                 new Function("Updated Function", "Updated Description", new HashSet<>());
 
-        when(objectMapperUtil.map(any(FunctionRequestDTO.class), any(Class.class)))
+        when(objectMapperUtil.map(any(FunctionUpdateRequestDTO.class), any(Class.class)))
                 .thenReturn(function);
 
         when(functionService.update(any(Function.class)))
                 .thenReturn(new FunctionResponseDTO(1L, "Updated Function", "Updated Description"));
 
-        mockMvc.perform(put("/api/v1/function/update")
+        mockMvc.perform(put("/api/v1/functions/function")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                         .andExpect(status().isNoContent());
@@ -121,7 +122,7 @@ class FunctionControllerTest {
         Long functionId = 1L;
         doNothing().when(functionService).delete(functionId);
 
-        mockMvc.perform(delete("/api/v1/function/delete/{id}", functionId))
+        mockMvc.perform(delete("/api/v1/functions/function/{id}", functionId))
                 .andExpect(status().isNoContent());
     }
 
@@ -135,7 +136,7 @@ class FunctionControllerTest {
         when(functionService.findAllProjectedBy(any(Pageable.class))).thenReturn(projectionPage);
         when(objectMapperUtil.map(any(Page.class), any(Class.class))).thenReturn(pageableDTO);
 
-        mockMvc.perform(get("/api/v1/function/findall")
+        mockMvc.perform(get("/api/v1/functions")
                         .param("page", "0")
                         .param("size", "5")
                         .param("sort", "name,asc"))

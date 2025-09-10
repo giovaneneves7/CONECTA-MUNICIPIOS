@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.function.domain.dto.request.FunctionRequestDTO;
+import br.edu.ifba.conectairece.api.features.function.domain.dto.request.FunctionUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.function.domain.dto.response.FunctionResponseDTO;
 import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.projection.FunctionProjection;
@@ -23,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -38,12 +38,6 @@ public class FunctionController {
     private final FunctionService functionService;
     private final ObjectMapperUtil objectMapperUtil;
 
-    /**
-     * Creates and persists a new Function in the system.
-     *
-     * @param body request payload containing the function details.
-     * @return the created {@link FunctionResponseDTO}.
-     */
     @Operation(summary = "Create a new Function",
             description = "Creates and persists a new function in the system.")
     @ApiResponses(value = {
@@ -60,12 +54,6 @@ public class FunctionController {
                 : ResponseEntity.ok(this.functionService.save(objectMapperUtil.map(body, Function.class)));
     }
 
-    /**
-     * Updates an existing Function by replacing its data with the provided payload.
-     *
-     * @param body request payload containing the updated function details.
-     * @return HTTP 204 if the update was successful.
-     */
     @Operation(summary = "Update an existing Function",
             description = "Updates a function by replacing its data with the provided payload.")
     @ApiResponses(value = {
@@ -74,23 +62,15 @@ public class FunctionController {
             @ApiResponse(responseCode = "404", description = "Function not found"),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
     })
-    @PutMapping(value = "/function/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@RequestBody @Valid FunctionRequestDTO body, @PathVariable("id") Long id, BindingResult result) {
+    @PutMapping(value = "/function", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@RequestBody @Valid FunctionUpdateRequestDTO body, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        body.setId(id);
-        Function function = objectMapperUtil.map(body, Function.class);
-        functionService.update(function);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        this.functionService.update(objectMapperUtil.map(body, Function.class));
+        return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Deletes a Function by its ID.
-     *
-     * @param id the ID of the function to be deleted.
-     * @return HTTP 204 if the deletion was successful.
-     */
     @Operation(summary = "Delete a Function",
             description = "Deletes a function by its ID.")
     @ApiResponses(value = {
@@ -103,12 +83,6 @@ public class FunctionController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Retrieves a paginated list of functions with basic information.
-     *
-     * @param pageable pagination and sorting configuration.
-     * @return a paginated list of {@link FunctionProjection} wrapped in {@link PageableDTO}.
-     */
     @Operation(summary = "List all Functions with pagination",
             description = "Retrieves a paginated list of functions with basic information (name and description).")
     @ApiResponses(value = {

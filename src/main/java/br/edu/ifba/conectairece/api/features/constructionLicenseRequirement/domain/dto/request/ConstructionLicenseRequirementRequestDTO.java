@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRequestDTO;
@@ -10,10 +12,6 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.req
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for receiving construction license requirement data in API requests.
@@ -35,88 +33,82 @@ import lombok.Setter;
  *
  * Author: Caio Alves
  */
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class ConstructionLicenseRequirementRequestDTO {
-
+public record ConstructionLicenseRequirementRequestDTO (
     @JsonProperty("municipalServiceId")
     @NotNull(message = "Municipal Service ID is mandatory.")
-    private Integer municipalServiceId;
+    Integer municipalServiceId,
 
     @JsonProperty("requirementTypeId")
     @NotNull(message = "Requirement Type ID is mandatory.")
-    private Integer requirementTypeId;
+    Integer requirementTypeId,
 
     @JsonProperty("owner")
     @NotNull(message = "Owner is mandatory.")
     @NotBlank(message = "Owner cannot be blank.")
-    private String owner;
+    String owner,
 
     @JsonProperty("phone")
     @NotNull(message = "Phone is mandatory.")
     @NotBlank(message = "Phone cannot be blank.")
-    private String phone;
+    String phone,
 
     @JsonProperty("cep")
     @NotNull(message = "CEP is mandatory.")
     @NotBlank(message = "CEP cannot be blank.")
-    private String cep;
+    String cep,
 
     @JsonProperty("cpfCnpj")
     @NotNull(message = "CPF/CNPJ is mandatory.")
     @NotBlank(message = "CPF/CNPJ cannot be blank.")
-    private String cpfCnpj;
+    String cpfCnpj,
 
     @JsonProperty("propertyNumber")
     @NotNull(message = "Property number is mandatory.")
-    private Integer propertyNumber;
+    Integer propertyNumber,
 
     @JsonProperty("neighborhood")
     @NotNull(message = "Neighborhood is mandatory.")
     @NotBlank(message = "Neighborhood cannot be blank.")
-    private String neighborhood;
+    String neighborhood,
 
     @JsonProperty("constructionAddress")
     @NotNull(message = "Construction address is mandatory.")
     @NotBlank(message = "Construction address cannot be blank.")
-    private String constructionAddress;
+    String constructionAddress,
 
     @JsonProperty("referencePoint")
-    private String referencePoint;
+    String referencePoint,
 
     @JsonProperty("startDate")
     @NotNull(message = "Start date is mandatory.")
-    private LocalDateTime startDate;
+    LocalDateTime startDate,
 
     @JsonProperty("endDate")
     @NotNull(message = "End date is mandatory.")
-    private LocalDateTime endDate;
+    LocalDateTime endDate,
 
     @JsonProperty("floorCount")
     @NotNull(message = "Floor count is mandatory.")
-    private Integer floorCount;
+    Integer floorCount,
 
     @JsonProperty("constructionArea")
     @NotNull(message = "Construction area is mandatory.")
-    private Float constructionArea;
+    Float constructionArea,
 
     @JsonProperty("housingUnitNumber")
     @NotNull(message = "Housing unit number is mandatory.")
-    private Integer housingUnitNumber;
+    Integer housingUnitNumber,
 
     @JsonProperty("terrainArea")
     @NotNull(message = "Terrain area is mandatory.")
-    private Float terrainArea;
+    Float terrainArea,
 
     @JsonProperty("technicalResponsible")
     @Valid
     @NotNull(message = "Technical responsible is mandatory.")
-    private TechnicalResponsibleRequestDTO technicalResponsible;
+    TechnicalResponsibleRequestDTO technicalResponsible,
 
     @JsonProperty("documents")
     @Valid
-    private List<DocumentRequestDTO> documents;
-}
+    List<DocumentRequestDTO> documents
+) {}

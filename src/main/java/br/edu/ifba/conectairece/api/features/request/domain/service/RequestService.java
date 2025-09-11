@@ -45,14 +45,14 @@ public class RequestService implements RequestIService {
      */
     @Override
     public RequestResponseDto save(RequestPostRequestDto dto){
-        MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
+        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
         .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         Request request = new Request();
-        request.setProtocolNumber(dto.getProtocolNumber());
-        request.setEstimatedCompletionDate(dto.getEstimatedCompletionDate());
-        request.setType(dto.getType());
-        request.setNote(dto.getNote());
+        request.setProtocolNumber(dto.protocolNumber());
+        request.setEstimatedCompletionDate(dto.estimatedCompletionDate());
+        request.setType(dto.type());
+        request.setNote(dto.note());
         request.setMunicipalService(service);
 
         requestRepository.save(request);
@@ -72,12 +72,12 @@ public class RequestService implements RequestIService {
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        request.setProtocolNumber(dto.getProtocolNumber());
-        request.setEstimatedCompletionDate(dto.getEstimatedCompletionDate());
-        request.setType(dto.getType());
-        request.setNote(dto.getNote());
+        request.setProtocolNumber(dto.protocolNumber());
+        request.setEstimatedCompletionDate(dto.estimatedCompletionDate());
+        request.setType(dto.type());
+        request.setNote(dto.note());
 
-        MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
+        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         request.setMunicipalService(service);
 

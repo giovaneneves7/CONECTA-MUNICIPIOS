@@ -1,14 +1,8 @@
 package br.edu.ifba.conectairece.api.features.category.domain.dto.request;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for receiving Category data in API requests.
@@ -17,20 +11,15 @@ import lombok.Setter;
  *
  * @author Caio Alves, Jorge Roberto
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class CategoryRequestDto implements Serializable {
-
+public record CategoryRequestDto (
     @JsonProperty("name")
     @NotNull(message = "Name is mandatory.")
     @NotBlank(message = "Name cannot be blank.")
-    private String name;
+    String name,
 
     @JsonProperty("description")
-    private String description;
+    String description,
 
     @JsonProperty("imageUrl")
-    private String imageUrl;
-}
+    String imageUrl
+) {}

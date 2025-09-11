@@ -47,13 +47,13 @@ public class CategoryService implements CategoryIService{
      @Transactional
      @CacheEvict(value = "categories", allEntries = true)
      public CategoryResponseDto save(CategoryRequestDto dto) {
-        if (categoryRepository.findByName(dto.getName()).isPresent()) {
+        if (categoryRepository.findByName(dto.name()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
         Category category = new Category();
-        category.setName(dto.getName());
-        category.setDescription(dto.getDescription());
-        category.setImageUrl(dto.getImageUrl());
+        category.setName(dto.name());
+        category.setDescription(dto.description());
+        category.setImageUrl(dto.imageUrl());
 
         Category saved = categoryRepository.save(category);
         return toDto(saved);

@@ -108,6 +108,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/api/v1/construction-license-requirements/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/construction-license-requirements/{id}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/construction-license-requirements/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/construction-license-requirements/{id}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/construction-license-requirements/**").permitAll()
+        
 
                         // Database console for testing
                         //TODO: Remove it

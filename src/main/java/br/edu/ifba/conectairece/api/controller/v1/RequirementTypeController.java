@@ -2,8 +2,10 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.request.RequirementTypeRequestDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.service.RequirementTypeIService;
+import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,7 +40,7 @@ import lombok.RequiredArgsConstructor;
  * This controller exposes operations for managing classification
  * of requirements, ensuring consistency in construction license processes.
  *
- * Authors: Caio Alves, Jorge Roberto
+ * Authors: Caio Alves
  */
 
 @RestController
@@ -62,9 +65,11 @@ public class RequirementTypeController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
     @PostMapping(path = "/requirement-type", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RequirementTypeResponseDTO> create(
-            @RequestBody @Valid RequirementTypeRequestDTO dto) {
-        return ResponseEntity.ok(requirementTypeService.save(dto));
+    public ResponseEntity<?> create(
+            @RequestBody @Valid RequirementTypeRequestDTO dto, BindingResult result) {
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                : ResponseEntity.ok(requirementTypeService.save(dto));
     }
 
     /**
@@ -96,7 +101,7 @@ public class RequirementTypeController {
                     content = @Content(schema = @Schema(implementation = RequirementTypeResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Requirement type not found")
     })
-    @GetMapping(value =  "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value =  "/requirement-type/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RequirementTypeResponseDTO> getById(@PathVariable @Valid Integer id) {
         return ResponseEntity.ok(requirementTypeService.findById(id));
     }
@@ -113,7 +118,7 @@ public class RequirementTypeController {
             @ApiResponse(responseCode = "204", description = "Requirement type successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Requirement type not found")
     })
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/requirement-type/{id}")
     public ResponseEntity<Void> delete(@PathVariable @Valid Integer id) {
         requirementTypeService.delete(id);
         return ResponseEntity.noContent().build();

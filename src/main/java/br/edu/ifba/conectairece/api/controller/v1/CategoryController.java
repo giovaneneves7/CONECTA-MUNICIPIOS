@@ -3,7 +3,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import java.util.List;
 
 import br.edu.ifba.conectairece.api.features.category.domain.service.CategoryIService;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.validation.Valid;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +31,7 @@ import lombok.RequiredArgsConstructor;
  * Controller responsible for handling Category endpoints.
  * Provides operations to create, list, retrieve, and delete categories.
  *
- * @author Caio Alves, Jorge Roberto
+ * @author Caio Alves
  */
 
 @RestController
@@ -53,8 +56,10 @@ public class CategoryController {
      * @return Response with created category data.
      */
     @PostMapping(path ="/category")
-    public ResponseEntity<CategoryResponseDto> create(@RequestBody @Valid CategoryRequestDto dto) {
-        return ResponseEntity.ok(categoryService.save(dto));
+    public ResponseEntity<?> create(@RequestBody @Valid CategoryRequestDto dto, BindingResult result) {
+        return result.hasErrors()
+            ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+            : ResponseEntity.ok(categoryService.save(dto));
     }
      /**
      * Endpoint to list all categories.

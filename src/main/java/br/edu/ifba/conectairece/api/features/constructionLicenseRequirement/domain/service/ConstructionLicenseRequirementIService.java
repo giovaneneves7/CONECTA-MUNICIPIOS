@@ -51,4 +51,6 @@ public interface ConstructionLicenseRequirementIService {
      * @param id requirement ID
      */
     void delete(Integer id);
+
+    ConstructionLicenseRequirementResponseDTO update(Integer id, ConstructionLicenseRequirementRequestDTO dto);
 }

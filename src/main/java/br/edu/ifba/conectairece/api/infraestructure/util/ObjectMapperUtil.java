@@ -99,6 +99,36 @@ public class ObjectMapperUtil {
     }
 
     /**
+     * Map a object to record
+     * @author Giovane Neves
+     *
+     * @param source The source object
+     * @param recordClass The record class to be converted
+     * @return The converted source to record
+     */
+    public <T> T mapToRecord(Object source, Class<T> recordClass) {
+        try {
+            var components = recordClass.getRecordComponents();
+            Object[] args = Arrays.stream(components)
+                    .map(c -> {
+                        try {
+                            Field f = source.getClass().getDeclaredField(c.getName());
+                            f.setAccessible(true);
+                            return f.get(source);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    })
+                    .toArray();
+            return recordClass.getDeclaredConstructor(
+                            Arrays.stream(components).map(c -> c.getType()).toArray(Class[]::new))
+                    .newInstance(args);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
      * Checks if a class is a record.
      *
      * @param clazz The class to be checked.

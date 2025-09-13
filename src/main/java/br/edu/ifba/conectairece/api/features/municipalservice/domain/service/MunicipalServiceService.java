@@ -47,11 +47,11 @@ public class MunicipalServiceService implements MunicipalServiceIService{
     @Override
     public MunicipalServiceResponseDto save(MunicipalServiceRequestDto dto) {
         MunicipalService service = new MunicipalService();
-        service.setName(dto.getName());
-        service.setDescription(dto.getDescription());
+        service.setName(dto.name());
+        service.setDescription(dto.description());
 
-        if (dto.getCategoryIds() != null && !dto.getCategoryIds().isEmpty()) {
-            List<Category> categories = categoryRepository.findAllById(dto.getCategoryIds());
+        if (dto.categoryIds() != null && !dto.categoryIds().isEmpty()) {
+            List<Category> categories = categoryRepository.findAllById(dto.categoryIds());
             service.setCategories(categories);
         }
 

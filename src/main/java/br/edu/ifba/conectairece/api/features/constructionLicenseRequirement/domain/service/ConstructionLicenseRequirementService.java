@@ -54,19 +54,19 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     public ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
 
-        MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
+        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setMunicipalService(service);
 
-        RequirementType type = requirementTypeRepository.findById(dto.getRequirementTypeId())
+        RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = objectMapperUtil.map(dto.getTechnicalResponsible(), TechnicalResponsible.class);
+        TechnicalResponsible responsible = objectMapperUtil.map(dto.technicalResponsible(), TechnicalResponsible.class);
         entity.setTechnicalResponsible(responsible);
 
-                if (dto.getDocuments() != null) {
-            List<Document> docs = dto.getDocuments().stream()
+                if (dto.documents() != null) {
+            List<Document> docs = dto.documents().stream()
                     .map(d -> {
                         Document document = objectMapperUtil.map(d, Document.class);
                         document.setRequirement(entity);
@@ -85,36 +85,36 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     ConstructionLicenseRequirement entity = repository.findById(id)
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-    entity.setOwner(dto.getOwner());
-    entity.setPhone(dto.getPhone());
-    entity.setCep(dto.getCep());
-    entity.setCpfCnpj(dto.getCpfCnpj());
-    entity.setPropertyNumber(dto.getPropertyNumber());
-    entity.setNeighborhood(dto.getNeighborhood());
-    entity.setConstructionAddress(dto.getConstructionAddress());
-    entity.setReferencePoint(dto.getReferencePoint());
-    entity.setStartDate(dto.getStartDate());
-    entity.setEndDate(dto.getEndDate());
-    entity.setFloorCount(dto.getFloorCount());
-    entity.setConstructionArea(dto.getConstructionArea());
-    entity.setHousingUnitNumber(dto.getHousingUnitNumber());
-    entity.setTerrainArea(dto.getTerrainArea());
+    entity.setOwner(dto.owner());
+    entity.setPhone(dto.phone());
+    entity.setCep(dto.cep());
+    entity.setCpfCnpj(dto.cpfCnpj());
+    entity.setPropertyNumber(dto.propertyNumber());
+    entity.setNeighborhood(dto.neighborhood());
+    entity.setConstructionAddress(dto.constructionAddress());
+    entity.setReferencePoint(dto.referencePoint());
+    entity.setStartDate(dto.startDate());
+    entity.setEndDate(dto.endDate());
+    entity.setFloorCount(dto.floorCount());
+    entity.setConstructionArea(dto.constructionArea());
+    entity.setHousingUnitNumber(dto.housingUnitNumber());
+    entity.setTerrainArea(dto.terrainArea());
 
-    MunicipalService service = municipalServiceRepository.findById(dto.getMunicipalServiceId())
+    MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     entity.setMunicipalService(service);
 
-    RequirementType type = requirementTypeRepository.findById(dto.getRequirementTypeId())
+    RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     entity.setRequirementType(type);
 
-    TechnicalResponsible responsible = objectMapperUtil.map(dto.getTechnicalResponsible(), TechnicalResponsible.class);
+    TechnicalResponsible responsible = objectMapperUtil.map(dto.technicalResponsible(), TechnicalResponsible.class);
     entity.setTechnicalResponsible(responsible);
 
-if (dto.getDocuments() != null) {
+if (dto.documents() != null) {
     entity.getDocuments().clear();
 
-    dto.getDocuments().forEach(d -> {
+    dto.documents().forEach(d -> {
         Document document = objectMapperUtil.map(d, Document.class);
         document.setRequirement(entity);
         entity.getDocuments().add(document);

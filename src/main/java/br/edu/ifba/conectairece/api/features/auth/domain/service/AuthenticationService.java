@@ -93,10 +93,10 @@ public class AuthenticationService {
         user.setUsername(request.getUsername());
 
         Person person = new Person();
-        person.setCpf(request.getPerson().getCpf());
-        person.setFullName(request.getPerson().getFullName());
-        person.setBirthDate(request.getPerson().getBirthDate());
-        person.setGender(request.getPerson().getGender());
+        person.setCpf(request.getPerson().cpf());
+        person.setFullName(request.getPerson().fullName());
+        person.setBirthDate(request.getPerson().birthDate());
+        person.setGender(request.getPerson().gender());
         //Salvando no banco de dados para receber o UUID
         person = personRepository.save(person);
         user.setPerson(person);

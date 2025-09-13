@@ -3,14 +3,8 @@ package br.edu.ifba.conectairece.api.features.request.domain.dto.request;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for receiving Request data in API requests.
@@ -20,23 +14,19 @@ import lombok.Setter;
  * @author Caio Alves
  */
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RequestPostRequestDto {
+public record RequestPostRequestDto (
     @JsonProperty("protocolNumber")
-    private String protocolNumber;
+    String protocolNumber,
 
     @NotNull
-    private LocalDateTime estimatedCompletionDate;
+    LocalDateTime estimatedCompletionDate,
 
     @JsonProperty("type")
-    private String type;
+    String type,
 
     @JsonProperty("note")
-    private String note;
-    
+    String note,
+
     @NotNull
-    private Integer municipalServiceId;
-}
+    Integer municipalServiceId
+) {}

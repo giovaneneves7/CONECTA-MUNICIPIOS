@@ -47,8 +47,8 @@ public class RequirementTypeService implements RequirementTypeIService{
      @Override
     public RequirementTypeResponseDTO save(RequirementTypeRequestDTO dto) {
         RequirementType entity = new RequirementType();
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
+        entity.setName(dto.name());
+        entity.setDescription(dto.description());
 
         repository.save(entity);
         return objectMapperUtil.mapToRecord(entity, RequirementTypeResponseDTO.class);

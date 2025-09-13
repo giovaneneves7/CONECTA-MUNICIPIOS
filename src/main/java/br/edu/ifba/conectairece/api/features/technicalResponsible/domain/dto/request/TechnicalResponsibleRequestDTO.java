@@ -5,10 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for receiving technical responsible data in API requests.
@@ -25,25 +21,20 @@ import lombok.Setter;
  * Author: Caio Alves
  */
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class TechnicalResponsibleRequestDTO {
+public record TechnicalResponsibleRequestDTO (
+        @JsonProperty("name")
+        @NotNull(message = "Name is mandatory.")
+        @NotBlank(message = "Name cannot be blank.")
+        String name,
 
-    @JsonProperty("name")
-    @NotNull(message = "Name is mandatory.")
-    @NotBlank(message = "Name cannot be blank.")
-    private String name;
+        @JsonProperty("email")
+        @NotNull(message = "Email is mandatory.")
+        @NotBlank(message = "Email cannot be blank.")
+        @Email(message = "Invalid email format.")
+        String email,
 
-    @JsonProperty("email")
-    @NotNull(message = "Email is mandatory.")
-    @NotBlank(message = "Email cannot be blank.")
-    @Email(message = "Invalid email format.")
-    private String email;
-
-    @JsonProperty("phone")
-    @NotNull(message = "Phone is mandatory.")
-    @NotBlank(message = "Phone cannot be blank.")
-    private String phone;
-}
+        @JsonProperty("phone")
+        @NotNull(message = "Phone is mandatory.")
+        @NotBlank(message = "Phone cannot be blank.")
+        String phone
+) {}

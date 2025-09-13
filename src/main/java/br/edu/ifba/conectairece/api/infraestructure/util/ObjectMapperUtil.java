@@ -114,19 +114,42 @@ public class ObjectMapperUtil {
                         try {
                             Field f = source.getClass().getDeclaredField(c.getName());
                             f.setAccessible(true);
-                            return f.get(source);
+                            Object value = f.get(source);
+
+                            if (value == null) return null;
+
+                            if (value instanceof Collection<?> collection) {
+                                Class<?> targetElementType = c.getGenericType() instanceof java.lang.reflect.ParameterizedType pt
+                                        ? (Class<?>) pt.getActualTypeArguments()[0]
+                                        : Object.class;
+
+                                return collection.stream()
+                                        .map(item -> MODEL_MAPPER.map(item, targetElementType))
+                                        .toList();
+                            }
+
+                            if (!c.getType().isPrimitive() &&
+                                    !c.getType().getName().startsWith("java.lang") &&
+                                    !(value instanceof Collection)) {
+                                return MODEL_MAPPER.map(value, c.getType());
+                            }
+
+                            return value;
                         } catch (Exception e) {
                             return null;
                         }
                     })
                     .toArray();
+
             return recordClass.getDeclaredConstructor(
                             Arrays.stream(components).map(c -> c.getType()).toArray(Class[]::new))
                     .newInstance(args);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     /**
      * Checks if a class is a record.

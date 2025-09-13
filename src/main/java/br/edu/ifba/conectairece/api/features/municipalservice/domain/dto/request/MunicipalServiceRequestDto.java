@@ -6,10 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for receiving MunicipalService data in API requests.
@@ -18,20 +14,15 @@ import lombok.Setter;
  *
  * @author Caio Alves
  */
-
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class MunicipalServiceRequestDto {
+public record MunicipalServiceRequestDto (
     @JsonProperty("name")
     @NotNull(message = "Name is mandatory.")
     @NotNull(message = "Name is cannot be blank.")
-    private String name;
+    String name,
 
     @JsonProperty("description")
-    private String description;
+    String description,
 
     @NotEmpty(message = "At least one category must be informed.")
-    private List<Integer> categoryIds;
-}
+    List<Integer> categoryIds
+) {}

@@ -6,7 +6,6 @@ import java.util.Optional;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
-import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -48,8 +47,7 @@ public class CategoryService implements CategoryIService{
      @Transactional
      @CacheEvict(value = "categories", allEntries = true)
      public CategoryResponseDto save(CategoryRequestDto dto) {
-
-        if (categoryRepository.findByName(dto.getName()).isPresent()) {
+        if (categoryRepository.findByName(dto.name()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
 

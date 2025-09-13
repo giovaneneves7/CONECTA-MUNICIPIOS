@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
 public record MunicipalServiceRequestDto (
     @JsonProperty("name")
     @NotNull(message = "Name is mandatory.")
-    @NotNull(message = "Name is cannot be blank.")
+    @NotBlank(message = "Name is cannot be blank.")
     String name,
 
     @JsonProperty("description")

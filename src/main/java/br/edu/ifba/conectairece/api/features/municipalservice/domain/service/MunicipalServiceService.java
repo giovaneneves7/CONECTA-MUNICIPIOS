@@ -55,8 +55,10 @@ public class MunicipalServiceService implements MunicipalServiceIService{
             service.setCategories(categories);
         }
 
-        municipalServiceRepository.save(service);
-        return objectMapperUtil.mapToRecord(service, MunicipalServiceResponseDto.class);
+        MunicipalService saved = municipalServiceRepository.save(service);
+        municipalServiceRepository.flush();
+
+        return objectMapperUtil.mapToRecord(saved, MunicipalServiceResponseDto.class);
     }
 
     /**

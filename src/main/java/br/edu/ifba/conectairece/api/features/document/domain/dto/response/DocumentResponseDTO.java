@@ -4,11 +4,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * Data Transfer Object for representing document data in API responses.
  * Provides metadata about a document attached to a requirement.
@@ -19,25 +14,21 @@ import lombok.Setter;
  * - File extension.
  * - File storage URL.
  *
- * Author: Caio Alves
+ * Author: Caio Alves, Giovane Neves
  */
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class DocumentResponseDTO {
+public record DocumentResponseDTO(
 
     @JsonProperty("id")
-    private UUID id;
+    UUID id,
 
     @JsonProperty("name")
-    private String name;
+    String name,
 
     @JsonProperty("fileExtension")
-    private String fileExtension;
+    String fileExtension,
 
     @JsonProperty("fileUrl")
-    private String fileUrl;
+    String fileUrl
     
-}
+){}

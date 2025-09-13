@@ -4,11 +4,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * Data Transfer Object for representing technical responsible data in API responses.
  * Provides details about the professional assigned to a requirement.
@@ -19,24 +14,20 @@ import lombok.Setter;
  * - Email.
  * - Phone number.
  *
- * Author: Caio Alves
+ * @author Caio Alves, Giovane Neves
  */
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class TechnicalResponsibleResponseDTO {
+public record TechnicalResponsibleResponseDTO (
 
     @JsonProperty("id")
-    private UUID id;
+    UUID id,
 
     @JsonProperty("name")
-    private String name;
+    String name,
 
     @JsonProperty("email")
-    private String email;
+    String email,
 
     @JsonProperty("phone")
-    private String phone;
-}
+    String phone
+){}

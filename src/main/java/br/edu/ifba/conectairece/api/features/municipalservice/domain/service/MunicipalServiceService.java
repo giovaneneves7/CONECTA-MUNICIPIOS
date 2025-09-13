@@ -56,7 +56,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
         }
 
         municipalServiceRepository.save(service);
-        return objectMapperUtil.map(service, MunicipalServiceResponseDto.class);
+        return objectMapperUtil.mapToRecord(service, MunicipalServiceResponseDto.class);
     }
 
     /**
@@ -82,7 +82,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
        MunicipalService entity = municipalServiceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        return objectMapperUtil.map(entity, MunicipalServiceResponseDto.class);
+        return objectMapperUtil.mapToRecord(entity, MunicipalServiceResponseDto.class);
         
     }
 

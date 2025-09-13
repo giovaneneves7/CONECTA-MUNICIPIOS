@@ -77,7 +77,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
         }
 
         repository.save(entity);
-        return objectMapperUtil.map(entity, ConstructionLicenseRequirementResponseDTO.class);
+        return objectMapperUtil.mapToRecord(entity, ConstructionLicenseRequirementResponseDTO.class);
     }
 
     @Override

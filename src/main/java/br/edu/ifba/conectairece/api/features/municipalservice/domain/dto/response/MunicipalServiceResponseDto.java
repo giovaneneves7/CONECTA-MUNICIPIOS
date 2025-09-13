@@ -5,32 +5,24 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for representing MunicipalService data in API responses.
  * Contains the municipal service identifier, name, description,
  * and its associated categories.
  *
- * @author Caio Alves
+ * @author Caio Alves, Giovane Neves
  */
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class MunicipalServiceResponseDto {
+public record MunicipalServiceResponseDto(
     @JsonProperty("id")
-    private Integer id;
+    Integer id,
 
     @JsonProperty("name")
-    private String name;
+    String name,
 
     @JsonProperty("description")
-    private String description;
-    
-    private List<CategoryResponseDto> categories;
-}
+    String description,
+
+    List<CategoryResponseDto> categories
+){}

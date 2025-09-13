@@ -51,7 +51,7 @@ public class RequirementTypeService implements RequirementTypeIService{
         entity.setDescription(dto.getDescription());
 
         repository.save(entity);
-        return objectMapperUtil.map(entity, RequirementTypeResponseDTO.class);
+        return objectMapperUtil.mapToRecord(entity, RequirementTypeResponseDTO.class);
     }
 
     /**
@@ -76,7 +76,7 @@ public class RequirementTypeService implements RequirementTypeIService{
         RequirementType entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        return objectMapperUtil.map(entity, RequirementTypeResponseDTO.class);
+        return objectMapperUtil.mapToRecord(entity, RequirementTypeResponseDTO.class);
     }
 
     /**

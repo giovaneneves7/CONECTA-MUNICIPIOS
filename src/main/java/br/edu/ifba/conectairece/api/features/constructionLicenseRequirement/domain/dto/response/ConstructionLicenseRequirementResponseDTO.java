@@ -8,10 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for representing construction license requirement data in API responses.
@@ -28,46 +24,42 @@ import lombok.Setter;
  * This DTO is used to return complete construction license information
  * when queried by clients or listed in responses.
  *
- * Author: Caio Alves
+ * Author: Caio Alves, Giovane Neves
  */
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class ConstructionLicenseRequirementResponseDTO {
+public record ConstructionLicenseRequirementResponseDTO(
 
      @JsonProperty("id")
-    private Integer id;
+    Integer id,
 
     @JsonProperty("createdAt")
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt,
 
     @JsonProperty("owner")
-    private String owner;
+    String owner,
 
     @JsonProperty("phone")
-    private String phone;
+    String phone,
 
     @JsonProperty("cep")
-    private String cep;
+    String cep,
 
     @JsonProperty("cpfCnpj")
-    private String cpfCnpj;
+    String cpfCnpj,
 
     @JsonProperty("constructionAddress")
-    private String constructionAddress;
+    String constructionAddress,
 
     @JsonProperty("constructionArea")
-    private Float constructionArea;
+    Float constructionArea,
 
     @JsonProperty("technicalResponsible")
-    private TechnicalResponsibleResponseDTO technicalResponsible;
+    TechnicalResponsibleResponseDTO technicalResponsible,
 
     @JsonProperty("requirementType")
-    private RequirementTypeResponseDTO requirementType;
+    RequirementTypeResponseDTO requirementType,
 
     @JsonProperty("documents")
-    private List<DocumentResponseDTO> documents;
+    List<DocumentResponseDTO> documents
     
-}
+){}

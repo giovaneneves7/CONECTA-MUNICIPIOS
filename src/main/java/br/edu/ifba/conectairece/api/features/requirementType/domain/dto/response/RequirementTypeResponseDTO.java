@@ -2,11 +2,6 @@ package br.edu.ifba.conectairece.api.features.requirementType.domain.dto.respons
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * Data Transfer Object for representing requirement type data in API responses.
  * Provides details about a requirement type.
@@ -16,21 +11,17 @@ import lombok.Setter;
  * - Name.
  * - Description.
  *
- * Author: Caio Alves
+ * @author Caio Alves, Giovane Neves
  */
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RequirementTypeResponseDTO {
+public record RequirementTypeResponseDTO (
 
     @JsonProperty("id")
-    private Integer id;
+    Integer id,
 
     @JsonProperty("name")
-    private String name;
+    String name,
 
     @JsonProperty("description")
-    private String description;
-}
+    String description
+){}

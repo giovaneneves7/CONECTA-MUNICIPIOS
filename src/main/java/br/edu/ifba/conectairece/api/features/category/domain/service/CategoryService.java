@@ -6,6 +6,7 @@ import java.util.Optional;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -47,16 +48,13 @@ public class CategoryService implements CategoryIService{
      @Transactional
      @CacheEvict(value = "categories", allEntries = true)
      public CategoryResponseDto save(CategoryRequestDto dto) {
+
         if (categoryRepository.findByName(dto.getName()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
-        Category category = new Category();
-        category.setName(dto.getName());
-        category.setDescription(dto.getDescription());
-        category.setImageUrl(dto.getImageUrl());
 
-        Category saved = categoryRepository.save(category);
-        return toDto(saved);
+        return objectMapperUtil.mapToRecord(this.categoryRepository.save(this.objectMapperUtil.map(dto, Category.class)), CategoryResponseDto.class);
+
     }
 
     /**
@@ -68,7 +66,6 @@ public class CategoryService implements CategoryIService{
     @Transactional(readOnly = true)
     @Cacheable(value = "categories")
     public List<CategoryResponseDto> findAll() {
-        System.out.println(">>> Buscando categorias no banco (sem cache)");
         return categoryRepository.findAll().stream().map(this::toDto).toList();
     }
 
@@ -83,7 +80,7 @@ public class CategoryService implements CategoryIService{
     @Cacheable(value = "category", key = "#id")
     public Optional<CategoryResponseDto> findById(Integer id) {
         return Optional.ofNullable(categoryRepository.findById(id)
-                .map(category -> objectMapperUtil.map(category, CategoryResponseDto.class))
+                .map(category -> objectMapperUtil.mapToRecord(category, CategoryResponseDto.class))
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())));
     }
 

@@ -16,7 +16,7 @@ import br.edu.ifba.conectairece.api.features.category.domain.dto.response.Catego
 
 public record MunicipalServiceResponseDto(
     @JsonProperty("id")
-    Integer id,
+    Long id,
 
     @JsonProperty("name")
     String name,

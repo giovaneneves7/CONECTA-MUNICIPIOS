@@ -42,12 +42,12 @@ public interface RequirementTypeIService {
      * @param id requirement type ID
      * @return the found requirement type entity
      */
-    RequirementTypeResponseDTO findById(Integer id);
+    RequirementTypeResponseDTO findById(Long id);
 
     /**
      * Deletes a requirement type by its identifier.
      *
      * @param id requirement type ID
      */
-    void delete(Integer id);
+    void delete(Long id);
 }

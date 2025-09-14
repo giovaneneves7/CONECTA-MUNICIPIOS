@@ -34,13 +34,13 @@ public interface MunicipalServiceIService {
      * @param id service ID
      * @return the found municipal service entity
      */
-    MunicipalServiceResponseDto findById(Integer id);
+    MunicipalServiceResponseDto findById(Long id);
 
     /**
      * Deletes a municipal service by its identifier.
      *
      * @param id service ID
      */
-    void delete(Integer id);
+    void delete(Long id);
 
 }

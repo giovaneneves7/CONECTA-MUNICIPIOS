@@ -81,7 +81,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     }
 
     @Override
-    public ConstructionLicenseRequirementResponseDTO update(Integer id, ConstructionLicenseRequirementRequestDTO dto) {
+    public ConstructionLicenseRequirementResponseDTO update(Long id, ConstructionLicenseRequirementRequestDTO dto) {
     ConstructionLicenseRequirement entity = repository.findById(id)
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -131,14 +131,14 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public ConstructionLicenseRequirementResponseDTO findById(Integer id) {
+    public ConstructionLicenseRequirementResponseDTO findById(Long id) {
         ConstructionLicenseRequirement entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         return objectMapperUtil.map(entity, ConstructionLicenseRequirementResponseDTO.class);
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         ConstructionLicenseRequirement entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         repository.delete(entity);

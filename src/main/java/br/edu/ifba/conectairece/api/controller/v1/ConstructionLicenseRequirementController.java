@@ -92,7 +92,7 @@ public class ConstructionLicenseRequirementController {
         })
         @PutMapping(value = "/construction-license-requirement/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
                 public ResponseEntity<?> update(
-                @PathVariable @NotNull Integer id,
+                @PathVariable @NotNull Long id,
                 @RequestBody @Valid ConstructionLicenseRequirementRequestDTO dto, BindingResult result) {
         return result.hasErrors()
                         ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
@@ -130,7 +130,7 @@ public class ConstructionLicenseRequirementController {
     })
     @GetMapping(value = "/construction-license-requirement/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConstructionLicenseRequirementResponseDTO> getById(
-            @PathVariable @NotNull Integer id) {
+            @PathVariable @NotNull Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -147,7 +147,7 @@ public class ConstructionLicenseRequirementController {
             @ApiResponse(responseCode = "404", description = "Requirement not found")
     })
     @DeleteMapping(value = "/construction-license-requirement/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @NotNull Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable @NotNull Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }

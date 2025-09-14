@@ -32,5 +32,5 @@ public record RequestPostRequestDto (
     UUID profileId,
 
     @NotNull
-    Integer municipalServiceId
+    Long municipalServiceId
 ) {}

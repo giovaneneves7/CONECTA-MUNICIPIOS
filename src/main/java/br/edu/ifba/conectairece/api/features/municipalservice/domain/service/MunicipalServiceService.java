@@ -56,7 +56,8 @@ public class MunicipalServiceService implements MunicipalServiceIService{
         }
 
         MunicipalService saved = municipalServiceRepository.save(service);
-        municipalServiceRepository.flush();
+        service = municipalServiceRepository.findById(saved.getId())
+                .orElseThrow(() -> new BusinessException("Service not found"));
 
         return objectMapperUtil.mapToRecord(saved, MunicipalServiceResponseDto.class);
     }
@@ -80,7 +81,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
      * @return optional containing municipal service DTO if found
      */
     @Override
-    public MunicipalServiceResponseDto findById(Integer id) {
+    public MunicipalServiceResponseDto findById(Long id) {
        MunicipalService entity = municipalServiceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -95,7 +96,7 @@ public class MunicipalServiceService implements MunicipalServiceIService{
      */
 
      @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         MunicipalService entity = municipalServiceRepository.findById(id)
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 

@@ -18,6 +18,6 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
  */
 
 @Repository
-public interface ConstructionLicenseRequirementRepository extends JpaRepository<ConstructionLicenseRequirement, Integer>{
+public interface ConstructionLicenseRequirementRepository extends JpaRepository<ConstructionLicenseRequirement, Long>{
 
 }

@@ -94,7 +94,7 @@ public class MunicipalServiceController {
             @ApiResponse(responseCode = "404", description = "Municipal service not found")
     })
     @GetMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MunicipalServiceResponseDto> getById(@Valid @PathVariable Integer id) {
+    public ResponseEntity<MunicipalServiceResponseDto> getById(@Valid @PathVariable Long id) {
         return ResponseEntity.ok(municipalServiceService.findById(id));
                 
     }
@@ -112,7 +112,7 @@ public class MunicipalServiceController {
             @ApiResponse(responseCode = "404", description = "Municipal service not found")
     })
     @DeleteMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@Valid @PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@Valid @PathVariable Long id) {
         municipalServiceService.delete(id);
         return ResponseEntity.noContent().build();
     }

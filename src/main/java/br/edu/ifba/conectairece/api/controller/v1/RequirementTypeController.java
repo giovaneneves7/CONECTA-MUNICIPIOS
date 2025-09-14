@@ -102,7 +102,7 @@ public class RequirementTypeController {
             @ApiResponse(responseCode = "404", description = "Requirement type not found")
     })
     @GetMapping(value =  "/requirement-type/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RequirementTypeResponseDTO> getById(@PathVariable @Valid Integer id) {
+    public ResponseEntity<RequirementTypeResponseDTO> getById(@PathVariable @Valid Long id) {
         return ResponseEntity.ok(requirementTypeService.findById(id));
     }
 
@@ -119,7 +119,7 @@ public class RequirementTypeController {
             @ApiResponse(responseCode = "404", description = "Requirement type not found")
     })
     @DeleteMapping(value = "/requirement-type/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @Valid Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable @Valid Long id) {
         requirementTypeService.delete(id);
         return ResponseEntity.noContent().build();
     }

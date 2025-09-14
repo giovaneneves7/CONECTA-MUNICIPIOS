@@ -25,6 +25,6 @@ public class SimplePersistenceEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include @ToString.Include
     @Getter
-    private long id;
+    private Long id;
 
 }

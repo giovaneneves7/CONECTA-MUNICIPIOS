@@ -72,7 +72,7 @@ public class RequirementTypeService implements RequirementTypeIService{
      * @return DTO containing requirement type data
      */
     @Override
-    public RequirementTypeResponseDTO findById(Integer id) {
+    public RequirementTypeResponseDTO findById(Long id) {
         RequirementType entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -85,7 +85,7 @@ public class RequirementTypeService implements RequirementTypeIService{
      * @param id requirement type ID
      */
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         RequirementType entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 

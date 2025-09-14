@@ -43,14 +43,14 @@ public interface ConstructionLicenseRequirementIService {
      * @param id requirement ID
      * @return response DTO
      */
-    ConstructionLicenseRequirementResponseDTO findById(Integer id);
+    ConstructionLicenseRequirementResponseDTO findById(Long id);
 
     /**
      * Deletes a construction license requirement by its identifier.
      *
      * @param id requirement ID
      */
-    void delete(Integer id);
+    void delete(Long id);
 
-    ConstructionLicenseRequirementResponseDTO update(Integer id, ConstructionLicenseRequirementRequestDTO dto);
+    ConstructionLicenseRequirementResponseDTO update(Long id, ConstructionLicenseRequirementRequestDTO dto);
 }

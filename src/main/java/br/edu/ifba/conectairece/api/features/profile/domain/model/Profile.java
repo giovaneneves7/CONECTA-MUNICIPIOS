@@ -7,8 +7,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class representing a user profile in the system.
@@ -18,7 +16,7 @@ import java.util.List;
  * relationship with associated users.
  * </p>
  *
- * @author Jorge Roberto
+ * @author Jorge Roberto, Giovane Neves
  */
 @Entity
 @Table(name = "profiles")
@@ -37,8 +35,9 @@ public class Profile extends SimplePersistenceEntity implements Serializable {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @OneToMany(mappedBy = "profile")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)

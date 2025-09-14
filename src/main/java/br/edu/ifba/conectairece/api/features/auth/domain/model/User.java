@@ -4,7 +4,16 @@ import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -20,7 +29,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Entity representing a user in the system.
@@ -30,7 +41,7 @@ import java.util.Collection;
  *
  * Uses Lombok and JPA annotations for persistence and auditing.
  *
- * @author Jorge Roberto
+ * @author Jorge Roberto, Giovane Neves
  */
 @Table(name = "users")
 @Entity
@@ -69,9 +80,8 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
     @Column(name = "update_at")
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+    @OneToMany(mappedBy = "user")
+    private List<Profile> profiles = new ArrayList<>();
 
     //TODO: Implementar lógica de autoridades
     @Override

@@ -25,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -116,11 +118,16 @@ public class AuthenticationService {
         role.setDescription("citizen test");
 
         role = roleRepository.save(role);
-
         profile.setRole(role);
-        user.setProfile(profileRepository.save(profile));
 
         //Salvando usuario
+        user = userRepository.save(user);
+        profile.setUser(user);
+
+        List<Profile> profiles = new ArrayList<>();
+        profiles.add(profileRepository.save(profile));
+        user.setProfiles(profiles);
+
         user = userRepository.save(user);
 
         String token = tokenService.generateToken(user);

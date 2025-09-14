@@ -112,7 +112,8 @@ public class ObjectMapperUtil {
             Object[] args = Arrays.stream(components)
                     .map(c -> {
                         try {
-                            Field f = source.getClass().getDeclaredField(c.getName());
+                            Field f = getFieldFromHierarchy(source.getClass(), c.getName());
+                            if (f == null) return null;
                             f.setAccessible(true);
                             Object value = f.get(source);
 
@@ -149,6 +150,18 @@ public class ObjectMapperUtil {
             throw new RuntimeException(e);
         }
     }
+
+    private Field getFieldFromHierarchy(Class<?> clazz, String fieldName) {
+        while (clazz != null) {
+            try {
+                return clazz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e) {
+                clazz = clazz.getSuperclass();
+            }
+        }
+        return null;
+    }
+
 
 
     /**

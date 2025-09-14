@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public record RequirementTypeResponseDTO (
 
     @JsonProperty("id")
-    Integer id,
+    Long id,
 
     @JsonProperty("name")
     String name,

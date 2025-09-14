@@ -50,8 +50,8 @@ public class RequirementTypeService implements RequirementTypeIService{
         entity.setName(dto.name());
         entity.setDescription(dto.description());
 
-        repository.save(entity);
-        return objectMapperUtil.mapToRecord(entity, RequirementTypeResponseDTO.class);
+        RequirementType saved = repository.save(entity);
+        return objectMapperUtil.mapToRecord(saved, RequirementTypeResponseDTO.class);
     }
 
     /**

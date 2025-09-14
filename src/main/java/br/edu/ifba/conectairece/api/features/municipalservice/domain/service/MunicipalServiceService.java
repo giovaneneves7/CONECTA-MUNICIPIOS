@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.features.municipalservice.domain.service;
 
 import java.util.List;
 
+import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.stereotype.Service;
@@ -56,10 +57,21 @@ public class MunicipalServiceService implements MunicipalServiceIService{
         }
 
         MunicipalService saved = municipalServiceRepository.save(service);
-        service = municipalServiceRepository.findById(saved.getId())
+        // força carregamento das categorias
+        saved = municipalServiceRepository.findById(saved.getId())
                 .orElseThrow(() -> new BusinessException("Service not found"));
 
-        return objectMapperUtil.mapToRecord(saved, MunicipalServiceResponseDto.class);
+        // map manual para record
+        List<CategoryResponseDto> categoriesDto = saved.getCategories().stream()
+                .map(cat -> new CategoryResponseDto(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
+                .toList();
+
+        return new MunicipalServiceResponseDto(
+                saved.getId(),
+                saved.getName(),
+                saved.getDescription(),
+                categoriesDto
+        );
     }
 
     /**
@@ -71,7 +83,17 @@ public class MunicipalServiceService implements MunicipalServiceIService{
     @Override
     public List<MunicipalServiceResponseDto> findAll() {
         List<MunicipalService> services = municipalServiceRepository.findAll();
-        return objectMapperUtil.mapAll(services, MunicipalServiceResponseDto.class);
+        return services.stream().map(service -> {
+            List<CategoryResponseDto> categoriesDto = service.getCategories().stream()
+                    .map(cat -> new CategoryResponseDto(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
+                    .toList();
+            return new MunicipalServiceResponseDto(
+                    service.getId(),
+                    service.getName(),
+                    service.getDescription(),
+                    categoriesDto
+            );
+        }).toList();
     }
 
      /**

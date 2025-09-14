@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 /**
  * REST Controller responsible for managing {@link Profile} resources.
  *
@@ -49,10 +52,10 @@ public class ProfileController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
     })
     @PostMapping(value = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save (@RequestBody @Valid Profile body, BindingResult result) {
+    public ResponseEntity<?> save (@RequestBody @Valid ProfileRequestDTO dto, BindingResult result) {
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
-                : ResponseEntity.status(HttpStatus.CREATED).body(this.profileService.save(objectMapperUtil.map(body, Profile.class)));
+                : ResponseEntity.status(HttpStatus.CREATED).body(this.profileService.save(dto));
     }
 
     @Operation(summary = "Update an existing Profile",
@@ -101,5 +104,22 @@ public class ProfileController {
         Page<ProfileProjection> projection = profileService.findAllProjectedBy(pageable);
         PageableDTO dto = objectMapperUtil.map(projection, PageableDTO.class);
         return ResponseEntity.ok(dto);
+    }
+
+    /**
+     * Endpoint to get all requests by the profile ID.
+     *
+     * @author Giovane Neves
+     * @return
+     */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request list found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Request list not found")
+    })
+    @GetMapping(path = "/profile/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getRequestListByUserId(@Valid @PathVariable("id") final UUID profileId,  @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllRequestsByProfileId(profileId, pageable));
+
     }
 }

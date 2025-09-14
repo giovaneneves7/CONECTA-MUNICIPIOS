@@ -1,21 +1,11 @@
 package br.edu.ifba.conectairece.api.features.request.domain.model;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
-import br.edu.ifba.conectairece.api.infraestructure.model.SimplePersistenceEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,7 +23,7 @@ import lombok.Setter;
  * - {@link #prePersist()} initializes creation and update timestamps when the entity is first saved.
  * - {@link #preUpdate()} updates the modification timestamp whenever the entity is updated.
  *
- * @author Caio Alves
+ * @author Caio Alves, Giovane Neves
  */
 
 @Entity
@@ -47,6 +37,10 @@ public class Request extends PersistenceEntity{
 
     @Column(nullable = false, unique = true)
     private String protocolNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "profile_id", nullable = false)
+    private Profile profile;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

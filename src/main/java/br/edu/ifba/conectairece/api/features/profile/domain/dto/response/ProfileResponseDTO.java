@@ -16,6 +16,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProfileResponseDTO {
+
+    @JsonProperty("id")
+    private Long id;
+
     @JsonProperty("type")
     private String type;
 

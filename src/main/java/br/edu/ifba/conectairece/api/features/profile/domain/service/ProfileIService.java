@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
@@ -18,7 +19,7 @@ public interface ProfileIService {
     /**
      * Saves a new profile in the database.
      */
-    ProfileResponseDTO save(Profile profile);
+    ProfileResponseDTO save(ProfileRequestDTO dto);
 
     /**
      * Updates an existing profile in the database.

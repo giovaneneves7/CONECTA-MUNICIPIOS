@@ -1,7 +1,10 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
+import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
+import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
@@ -32,19 +35,29 @@ public class ProfileService implements ProfileIService {
     private final ObjectMapperUtil objectMapperUtil;
     private final RoleRepository roleRepository;
     private final RequestRepository requestRepository;
+    private  final UserRepository userRepository;
 
     @Override @Transactional
-    public ProfileResponseDTO save(Profile profile) {
+    public ProfileResponseDTO save(ProfileRequestDTO dto) {
         try {
-            //TODO: ADD ROLE BUSINESS RULE
+            Profile profile = new Profile();
+            profile.setType(dto.type());
+            profile.setImageUrl(dto.imageUrl());
+
+            User user = userRepository.findById(dto.userId())
+                    .orElseThrow(() -> new BusinessException("User not found"));
+            profile.setUser(user);
+
             Role role = new Role();
             role.setName("ROLE_USER");
             role.setDescription("Tests");
             role = roleRepository.save(role);
             profile.setRole(role);
 
-            return objectMapperUtil.map(repository.save(profile),  ProfileResponseDTO.class);
-        }  catch (Exception ex) {
+            Profile saved = repository.save(profile);
+            return objectMapperUtil.map(saved, ProfileResponseDTO.class);
+
+        } catch (Exception ex) {
             throw new BusinessException(ex);
         }
     }

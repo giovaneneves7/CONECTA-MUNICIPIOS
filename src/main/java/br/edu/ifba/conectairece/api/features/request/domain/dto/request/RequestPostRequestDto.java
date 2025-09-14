@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.features.request.domain.dto.request;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -26,6 +27,9 @@ public record RequestPostRequestDto (
 
     @JsonProperty("note")
     String note,
+
+    @JsonProperty("profile_id")
+    UUID profileId,
 
     @NotNull
     Integer municipalServiceId

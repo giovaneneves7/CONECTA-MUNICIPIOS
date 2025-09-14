@@ -85,7 +85,7 @@ public class ProfileController {
                     "by another class"),
     })
     @DeleteMapping(value = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<?> delete(@PathVariable("id") UUID id) {
         profileService.delete(id);
         return ResponseEntity.noContent().build();
     }

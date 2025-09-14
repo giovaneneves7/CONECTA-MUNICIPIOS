@@ -73,7 +73,7 @@ public class ProfileService implements ProfileIService {
     }
 
     @Override @Transactional
-    public void delete(Long id) {
+    public void delete(UUID id) {
         Profile profile = this.findById(id);
         if (profile.getUser() != null) {
             throw new BusinessException(BusinessExceptionMessage.CLASS_IN_USE.getMessage());
@@ -82,7 +82,7 @@ public class ProfileService implements ProfileIService {
     }
 
     @Override @Transactional(readOnly = true)
-    public Profile findById(Long id) {
+    public Profile findById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }

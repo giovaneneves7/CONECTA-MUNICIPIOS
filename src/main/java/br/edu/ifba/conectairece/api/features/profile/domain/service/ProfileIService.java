@@ -29,12 +29,12 @@ public interface ProfileIService {
     /**
      * Deletes a profile by its identifier.
      */
-    void delete(Long id);
+    void delete(UUID id);
 
     /**
      * Finds a profile by its identifier.
      */
-    Profile findById(Long id);
+    Profile findById(UUID id);
 
     /**
      * Retrieves a paginated list of projected {@link ProfileProjection} entities.

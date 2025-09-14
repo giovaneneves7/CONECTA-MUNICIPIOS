@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 /**
  * Data Transfer Object (DTO) for sending function data in API responses.
  *
@@ -18,7 +20,7 @@ import lombok.Setter;
 public class ProfileResponseDTO {
 
     @JsonProperty("id")
-    private Long id;
+    private UUID id;
 
     @JsonProperty("type")
     private String type;

@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
@@ -36,6 +39,9 @@ public class RequestService implements RequestIService {
     private final RequestRepository requestRepository;
     private final MunicipalServiceRepository municipalServiceRepository;
     private final ObjectMapperUtil objectMapperUtil;
+    @Autowired
+    private final ProfileRepository profileRepository;
+
 
     /**
      * Saves a new request for a given municipal service.
@@ -48,16 +54,19 @@ public class RequestService implements RequestIService {
         MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
         .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
+        Profile profile = profileRepository.findById(dto.profileId())
+                .orElseThrow(() -> new BusinessException("Profile not found"));
         Request request = new Request();
         request.setProtocolNumber(dto.protocolNumber());
         request.setEstimatedCompletionDate(dto.estimatedCompletionDate());
         request.setType(dto.type());
         request.setNote(dto.note());
         request.setMunicipalService(service);
+        request.setProfile(profile);
 
         requestRepository.save(request);
 
-        return objectMapperUtil.map(request, RequestResponseDto.class);
+        return objectMapperUtil.mapToRecord(request, RequestResponseDto.class);
     }
 
     /**

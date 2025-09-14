@@ -109,16 +109,23 @@ public class ObjectMapperUtil {
     public <T> T mapToRecord(Object source, Class<T> recordClass) {
         try {
             var components = recordClass.getRecordComponents();
+
             Object[] args = Arrays.stream(components)
                     .map(c -> {
                         try {
                             Field f = getFieldFromHierarchy(source.getClass(), c.getName());
-                            if (f == null) return null;
+                            if (f == null) {
+                                throw new RuntimeException("Campo '" + c.getName() + "' não encontrado em " + source.getClass().getSimpleName());
+                            }
+
                             f.setAccessible(true);
                             Object value = f.get(source);
 
-                            if (value == null) return null;
+                            if (value == null) {
+                                return null; // ou um valor padrão, se fizer sentido
+                            }
 
+                            // Lida com coleções
                             if (value instanceof Collection<?> collection) {
                                 Class<?> targetElementType = c.getGenericType() instanceof java.lang.reflect.ParameterizedType pt
                                         ? (Class<?>) pt.getActualTypeArguments()[0]
@@ -129,6 +136,7 @@ public class ObjectMapperUtil {
                                         .toList();
                             }
 
+                            // Lida com objetos complexos
                             if (!c.getType().isPrimitive() &&
                                     !c.getType().getName().startsWith("java.lang") &&
                                     !(value instanceof Collection)) {
@@ -137,7 +145,7 @@ public class ObjectMapperUtil {
 
                             return value;
                         } catch (Exception e) {
-                            return null;
+                            throw new RuntimeException("Erro ao mapear campo '" + c.getName() + "'", e);
                         }
                     })
                     .toArray();
@@ -147,7 +155,7 @@ public class ObjectMapperUtil {
                     .newInstance(args);
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erro ao mapear objeto para record " + recordClass.getSimpleName(), e);
         }
     }
 

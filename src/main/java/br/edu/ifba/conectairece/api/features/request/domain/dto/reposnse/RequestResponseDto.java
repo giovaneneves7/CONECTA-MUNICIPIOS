@@ -6,10 +6,6 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Data Transfer Object for representing Request data in API responses.
@@ -20,31 +16,27 @@ import lombok.Setter;
  * @author Caio Alves
  */
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RequestResponseDto {
+public record RequestResponseDto (
     @JsonProperty("id")
-    private UUID id;
+    UUID id,
 
     @JsonProperty("protocolNumber")
-    private String protocolNumber;
+    String protocolNumber,
 
     @JsonProperty("createdAt")
-    private LocalDateTime createdAt;
+    LocalDateTime createdAt,
 
     @JsonProperty("estimatedCompletionDate")
-    private LocalDateTime estimatedCompletionDate;
+    LocalDateTime estimatedCompletionDate,
 
     @JsonProperty("updateAt")
-    private LocalDateTime updatedAt;
+    LocalDateTime updatedAt,
 
     @JsonProperty("type")
-    private String type;
+    String type,
 
     @JsonProperty("note")
-    private String note;
+    String note,
 
-    private MunicipalServiceResponseDto municipalService;
-}
+    MunicipalServiceResponseDto municipalService
+){}

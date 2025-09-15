@@ -62,7 +62,10 @@ public class RequirementTypeService implements RequirementTypeIService{
     @Override
     public List<RequirementTypeResponseDTO> findAll() {
         List<RequirementType> types = repository.findAll();
-        return objectMapperUtil.mapAll(types, RequirementTypeResponseDTO.class);
+        return types.stream()
+                .map(type -> objectMapperUtil.mapToRecord(type, RequirementTypeResponseDTO.class))
+                .toList();
+
     }
 
     /**

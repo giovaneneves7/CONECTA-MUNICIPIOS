@@ -62,7 +62,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = objectMapperUtil.map(dto.technicalResponsible(), TechnicalResponsible.class);
+        TechnicalResponsible responsible = objectMapperUtil.mapToRecord(dto.technicalResponsible(), TechnicalResponsible.class);
         entity.setTechnicalResponsible(responsible);
 
                 if (dto.documents() != null) {
@@ -122,7 +122,7 @@ if (dto.documents() != null) {
 }
 
     repository.save(entity);
-        return objectMapperUtil.map(entity, ConstructionLicenseRequirementResponseDTO.class);
+        return objectMapperUtil.mapToRecord(entity, ConstructionLicenseRequirementResponseDTO.class);
     }
 
     @Override

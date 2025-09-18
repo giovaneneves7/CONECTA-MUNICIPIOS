@@ -5,6 +5,7 @@ import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
@@ -64,7 +65,8 @@ public class ProfileService implements ProfileIService {
 
     @Override @Transactional
     public ProfileResponseDTO update(Profile profile) {
-        Profile existing = this.findById(profile.getId());
+        Profile existing = this.repository.findById(profile.getId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         existing.setType(profile.getType());
         existing.setImageUrl(profile.getImageUrl());
@@ -74,7 +76,9 @@ public class ProfileService implements ProfileIService {
 
     @Override @Transactional
     public void delete(UUID id) {
-        Profile profile = this.findById(id);
+        Profile profile = this.repository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
         if (profile.getUser() != null) {
             throw new BusinessException(BusinessExceptionMessage.CLASS_IN_USE.getMessage());
         }
@@ -82,9 +86,23 @@ public class ProfileService implements ProfileIService {
     }
 
     @Override @Transactional(readOnly = true)
-    public Profile findById(UUID id) {
-        return repository.findById(id)
+    public ProfilePublicDataResponseDTO findById(UUID id) {
+
+        Profile found = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        return new ProfilePublicDataResponseDTO(
+                found.getId(),
+                found.getType(),
+                found.getImageUrl(),
+                found.getUser().getUsername(),
+                found.getUser().getPerson().getCpf(),
+                found.getUser().getPhone(),
+                found.getUser().getEmail(),
+                found.getUser().getPerson().getGender(),
+                found.getUser().getPerson().getBirthDate()
+                );
+
     }
 
     @Override @Transactional(readOnly = true)

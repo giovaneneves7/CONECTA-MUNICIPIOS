@@ -106,6 +106,24 @@ public class ProfileController {
         return ResponseEntity.ok(dto);
     }
 
+
+    /**
+     * Endpoint to get the profile by the attribute passed as a parameter.
+     *
+     * @author Giovane Neves
+     * @return
+     */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @GetMapping(path = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserId(@Valid @PathVariable("id") final UUID profileId){
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findById(profileId));
+
+    }
+
     /**
      * Endpoint to get all requests by the profile ID.
      *

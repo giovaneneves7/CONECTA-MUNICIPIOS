@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
@@ -34,7 +35,7 @@ public interface ProfileIService {
     /**
      * Finds a profile by its identifier.
      */
-    Profile findById(UUID id);
+    ProfilePublicDataResponseDTO findById(UUID id);
 
     /**
      * Retrieves a paginated list of projected {@link ProfileProjection} entities.

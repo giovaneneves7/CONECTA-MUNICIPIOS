@@ -29,14 +29,14 @@ public record RequestResponseDto (
     @JsonProperty("estimatedCompletionDate")
     LocalDateTime estimatedCompletionDate,
 
-    @JsonProperty("updateAt")
+    @JsonProperty("updatedAt")
     LocalDateTime updatedAt,
 
     @JsonProperty("type")
     String type,
 
     @JsonProperty("note")
-    String note,
+    String note
 
-    MunicipalServiceResponseDto municipalService
+    //MunicipalServiceResponseDto municipalService
 ){}

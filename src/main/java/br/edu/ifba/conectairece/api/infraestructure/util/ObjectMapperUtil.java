@@ -7,6 +7,7 @@ import org.modelmapper.record.RecordModule;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -125,15 +126,20 @@ public class ObjectMapperUtil {
                                 return null; // ou um valor padrão, se fizer sentido
                             }
 
-                            // Lida com coleções
                             if (value instanceof Collection<?> collection) {
-                                Class<?> targetElementType = c.getGenericType() instanceof java.lang.reflect.ParameterizedType pt
-                                        ? (Class<?>) pt.getActualTypeArguments()[0]
-                                        : Object.class;
-
-                                return collection.stream()
-                                        .map(item -> MODEL_MAPPER.map(item, targetElementType))
-                                        .toList();
+                                if (c.getGenericType() instanceof ParameterizedType pt) {
+                                    Class<?> targetElementType = (Class<?>) pt.getActualTypeArguments()[0];
+                                    return collection.stream()
+                                            .map(item -> {
+                                                if (targetElementType.isRecord()) {
+                                                    return mapToRecord(item, targetElementType);
+                                                } else {
+                                                    return MODEL_MAPPER.map(item, targetElementType);
+                                                }
+                                            })
+                                            .toList();
+                                }
+                                return collection;
                             }
 
                             // Lida com objetos complexos

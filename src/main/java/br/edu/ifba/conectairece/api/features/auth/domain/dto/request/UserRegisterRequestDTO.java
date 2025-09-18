@@ -29,6 +29,11 @@ public class UserRegisterRequestDTO {
     @Size(max = 150)
     private String email;
 
+    @NotNull(message = "phone is mandatory")
+    @NotBlank(message = "phone cannot be blank")
+    @Size(max = 20)
+    private String phone;
+
     @NotNull(message = "Password is mandatory.")
     @NotBlank(message = "Password cannot be blank.")
     @Size(min = 6, max= 40, message = "Password must have at least 6 characters.")

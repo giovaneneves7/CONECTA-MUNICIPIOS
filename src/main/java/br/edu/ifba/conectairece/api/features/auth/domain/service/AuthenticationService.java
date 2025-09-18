@@ -93,6 +93,7 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
         user.setUsername(request.getUsername());
+        user.setPhone(request.getPhone());
 
         Person person = new Person();
         person.setCpf(request.getPerson().cpf());

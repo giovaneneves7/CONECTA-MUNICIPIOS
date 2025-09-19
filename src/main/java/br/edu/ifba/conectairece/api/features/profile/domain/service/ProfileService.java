@@ -6,6 +6,7 @@ import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleReposito
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -122,5 +124,21 @@ public class ProfileService implements ProfileIService {
 
         return this.requestRepository.findAllByProfileId(userId, pageable);
 
+    }
+
+    @Override @Transactional
+    public ProfileResponseCurrentType changeActiveProfile(UUID userId, String newActiveType) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        Profile newActiveProfile = user.getProfiles().stream()
+                .filter(p -> p.getType().equals(newActiveType))
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_PROFILE.getMessage()));
+
+        user.setActiveProfile(newActiveProfile);
+        userRepository.save(user);
+
+        return new ProfileResponseCurrentType(newActiveType);
     }
 }

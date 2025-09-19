@@ -86,6 +86,10 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
     @OneToMany(mappedBy = "user")
     private List<Profile> profiles = new ArrayList<>();
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_profile_id")
+    private Profile activeProfile;
+
     //TODO: Implementar lógica de autoridades
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
@@ -50,4 +51,12 @@ public interface ProfileIService {
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
     Page<Request> findAllRequestsByProfileId(final UUID userId, Pageable pageable);
+
+    /**
+     * Changes the active profile type for a specific user.
+     * This method updates the user's active profile based on the provided user ID and the new profile type.
+     *
+     * @return A {@link ProfileResponseCurrentType} object containing the updated active profile information.
+     */
+    ProfileResponseCurrentType changeActiveProfile(UUID userId, String newActiveType);
 }

@@ -98,7 +98,7 @@ public class ProfileController {
     })
     @GetMapping
     public ResponseEntity<PageableDTO> findAll(
-            @PageableDefault(size = 5, sort="type", direction = Sort.Direction.ASC)
+            @PageableDefault(size = 5, direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
         Page<ProfileProjection> projection = profileService.findAllProjectedBy(pageable);

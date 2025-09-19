@@ -69,6 +69,11 @@ public class AuthenticationService {
             throw new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage());
         }
 
+        if (user.getProfiles() != null && !user.getProfiles().isEmpty()) {
+            user.setActiveProfile(user.getProfiles().get(0));
+        } else {
+            throw new BusinessException(BusinessExceptionMessage.USER_WITHOUT_PROFILES.getMessage());
+        }
 
         String token = tokenService.generateToken(user);
 
@@ -81,54 +86,37 @@ public class AuthenticationService {
      * @param request DTO with user registration data
      * @return DTO with JWT token and the new authenticated user's data
      */
-    @Transactional
     public UserLoginResponseDTO register(UserRegisterRequestDTO request) {
-
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
 
-        User user = new User();
-        user.setEmail(request.getEmail());
+        Person person = personRepository.save(objectMapperUtil.map(request.getPerson(), Person.class));
+
+        User user = objectMapperUtil.map(request, User.class);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
-        user.setUsername(request.getUsername());
-
-        Person person = new Person();
-        person.setCpf(request.getPerson().cpf());
-        person.setFullName(request.getPerson().fullName());
-        person.setBirthDate(request.getPerson().birthDate());
-        person.setGender(request.getPerson().gender());
-        //Salvando no banco de dados para receber o UUID
-        person = personRepository.save(person);
         user.setPerson(person);
+        user.setProfiles(new ArrayList<>());
+        user = userRepository.save(user);
 
-        /*
-         * TODO: Implementar lógica de perfil
-         *  Por enquanto está sem lógica para testes
-         */
+        Role role = roleRepository.findByName("ROLE_CITIZEN")
+                .orElseGet(() -> {
+                    Role newRole = new Role();
+                    newRole.setName("ROLE_CITIZEN");
+                    newRole.setDescription("Role for citizen");
+                    return roleRepository.save(newRole);
+                });
+
         Profile profile = new Profile();
-        profile.setType("Teste");
-        /*
-         * TODO: Implementar lógica de Role
-         *  Por enquanto está sem lógica para testes
-         */
-        Role role = new Role();
-        role.setName("ROLE_CITIZEN");
-        role.setDescription("citizen test");
-
-        role = roleRepository.save(role);
+        profile.setType("Common");
         profile.setRole(role);
-
-        //Salvando usuario
-        user = userRepository.save(user);
         profile.setUser(user);
+        profile = profileRepository.save(profile);
 
-        List<Profile> profiles = new ArrayList<>();
-        profiles.add(profileRepository.save(profile));
-        user.setProfiles(profiles);
-
-        user = userRepository.save(user);
+        user.getProfiles().add(profile);
+        user.setActiveProfile(profile);
+        userRepository.save(user);
 
         String token = tokenService.generateToken(user);
 

@@ -58,6 +58,9 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
     @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
+    @Column(name = "phone", nullable = false, length = 20, unique = true)
+    private String phone;
+
     @Column(name = "username",  nullable = false, length = 100)
     private String username;
 
@@ -82,6 +85,10 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
 
     @OneToMany(mappedBy = "user")
     private List<Profile> profiles = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_profile_id")
+    private Profile activeProfile;
 
     //TODO: Implementar lógica de autoridades
     @Override

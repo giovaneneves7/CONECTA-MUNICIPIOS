@@ -1,8 +1,11 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
+import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestChangeProfileType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
 import br.edu.ifba.conectairece.api.features.profile.domain.service.ProfileIService;
@@ -23,6 +26,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,6 +110,24 @@ public class ProfileController {
         return ResponseEntity.ok(dto);
     }
 
+
+    /**
+     * Endpoint to get the profile by the attribute passed as a parameter.
+     *
+     * @author Giovane Neves
+     * @return
+     */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @GetMapping(path = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserId(@Valid @PathVariable("id") final UUID profileId){
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findById(profileId));
+
+    }
+
     /**
      * Endpoint to get all requests by the profile ID.
      *
@@ -121,5 +143,27 @@ public class ProfileController {
 
         return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllRequestsByProfileId(profileId, pageable));
 
+    }
+
+    @Operation(summary = "Update the active profile type for the current user",
+            description = "Changes the active profile of the authenticated user to a new valid type.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profile type successfully updated",
+                    content = @Content(schema = @Schema(implementation = ProfileResponseCurrentType.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid profile type provided",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "User not found or Profile not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "422", description = "Validation error in the request body",
+                    content = @Content)
+    })
+    @PatchMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateActiveTypeProfile(
+            @RequestBody @Valid ProfileRequestChangeProfileType dto,
+            BindingResult result
+    ) {
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
+                : ResponseEntity.status(HttpStatus.CREATED).body(this.profileService.changeActiveProfile(dto.userId(), dto.activeType()));
     }
 }

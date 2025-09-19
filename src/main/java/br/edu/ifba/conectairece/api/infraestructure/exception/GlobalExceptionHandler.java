@@ -104,6 +104,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.UNAUTHORIZED;
         } else if (BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage().equals(errorMessage)) {
             status = HttpStatus.CONFLICT;
+        } else if (BusinessExceptionMessage.INVALID_PROFILE.getMessage().equals(errorMessage)) {
+            status = HttpStatus.BAD_REQUEST;
+        } else if (BusinessExceptionMessage.USER_WITHOUT_PROFILES.getMessage().equals(errorMessage)) {
+            status = HttpStatus.FORBIDDEN;
         }
 
         log.error(errorMessage, ex);

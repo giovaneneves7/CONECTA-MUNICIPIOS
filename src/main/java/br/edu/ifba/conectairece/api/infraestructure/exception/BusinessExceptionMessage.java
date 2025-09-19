@@ -15,7 +15,9 @@ public enum BusinessExceptionMessage {
     INVALID_DATE("The provided date is not valid."),
     ATTRIBUTE_VALUE_ALREADY_EXISTS("The value of attribute is already in use."),
     CLASS_IN_USE("Cannot be deleted. It is being used by one or more related classes."),
-    INVALID_CREDENTIALS("Your credentials are invalid");
+    INVALID_CREDENTIALS("Your credentials are invalid"),
+    INVALID_PROFILE("The provided profile type is not valid for this user."),
+    USER_WITHOUT_PROFILES("User has no associated profiles.");
 
     private final String message;
 

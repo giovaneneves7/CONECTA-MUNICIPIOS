@@ -22,7 +22,7 @@ public interface RequestIService {
 
     List<RequestResponseDto> findAll();
 
-    Request findById(UUID id);
+    RequestResponseDto findById(UUID id);
 
     void delete(UUID id);
 }

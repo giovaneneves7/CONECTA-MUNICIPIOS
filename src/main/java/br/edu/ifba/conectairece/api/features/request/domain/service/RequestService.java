@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  * - Retrieve all requests or find by ID
  * - Delete requests by ID
  *
- * @author Caio Alves
+ * @author Caio Alves, Giovane Neves
  */
 
 @Service
@@ -102,9 +102,13 @@ public class RequestService implements RequestIService {
 
      @Override
     public List<RequestResponseDto> findAll(){
+
         List<Request> requests = requestRepository.findAll();
 
-        return objectMapperUtil.mapAll(requests, RequestResponseDto.class);
+        return requests.stream()
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
+                .toList();
+
     }
 
     /**

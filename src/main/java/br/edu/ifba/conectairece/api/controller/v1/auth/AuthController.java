@@ -71,4 +71,19 @@ public class AuthController {
 
     }
 
+    /**
+     * Endpoint to get the user's profile by the id passed as a parameter
+     *
+     * @author Giovane Neves
+     * @param id The id of the user
+     * @return Response with the user's profiles data
+     */
+    @GetMapping(path = "/users/user/{id}/profiles", produces = "application/json")
+    public ResponseEntity<?> getUserProfiles(@PathVariable("id") @NotNull UUID id){
+
+        return ResponseEntity.status((HttpStatus.OK))
+                .body(authenticationService.getUserProfiles(id));
+
+    }
+
 }

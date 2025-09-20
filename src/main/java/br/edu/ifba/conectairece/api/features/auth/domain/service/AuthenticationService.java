@@ -11,6 +11,7 @@ import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleReposito
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.person.domain.repository.PersonRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -137,6 +138,16 @@ public class AuthenticationService {
                         .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage()));
 
         return objectMapperUtil.map(user, UserDataResponseDTO.class);
+
+    }
+
+    public List<ProfileResponseDTO> getUserProfiles(final UUID id){
+
+        List<Profile> profiles = this.profileRepository.findAllByUserId(id);
+
+        return profiles.stream()
+                .map(profile -> objectMapperUtil.mapToRecord(profile, ProfileResponseDTO.class))
+                .toList();
 
     }
 }

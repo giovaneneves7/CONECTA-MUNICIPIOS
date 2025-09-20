@@ -10,6 +10,7 @@ import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -41,7 +42,7 @@ public interface ProfileIService {
     /**
      * Retrieves a paginated list of projected {@link ProfileProjection} entities.
      */
-    Page<ProfileProjection> findAllProjectedBy(Pageable pageable);
+    List<ProfileResponseDTO> getAllProfiles(Pageable pageable);
 
     /**
      * Find all requests linked to the user id passed as a parameter

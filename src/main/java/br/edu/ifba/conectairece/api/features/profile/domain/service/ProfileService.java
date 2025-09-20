@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,7 +59,7 @@ public class ProfileService implements ProfileIService {
             profile.setRole(role);
 
             Profile saved = repository.save(profile);
-            return objectMapperUtil.map(saved, ProfileResponseDTO.class);
+            return objectMapperUtil.mapToRecord(saved, ProfileResponseDTO.class);
 
         } catch (Exception ex) {
             throw new BusinessException(ex);
@@ -73,7 +74,7 @@ public class ProfileService implements ProfileIService {
         existing.setType(profile.getType());
         existing.setImageUrl(profile.getImageUrl());
 
-        return objectMapperUtil.map(repository.save(existing),  ProfileResponseDTO.class);
+        return objectMapperUtil.mapToRecord(repository.save(existing),  ProfileResponseDTO.class);
     }
 
     @Override @Transactional
@@ -108,8 +109,12 @@ public class ProfileService implements ProfileIService {
     }
 
     @Override @Transactional(readOnly = true)
-    public Page<ProfileProjection> findAllProjectedBy(Pageable pageable) {
-        return repository.findAllProjectedBy(pageable);
+    public List<ProfileResponseDTO> getAllProfiles(Pageable pageable) {
+
+        Page<Profile> profiles = repository.findAll(pageable);
+        return profiles.stream().map(profile -> this.objectMapperUtil.mapToRecord(profile, ProfileResponseDTO.class))
+                .toList();
+
     }
 
     /**

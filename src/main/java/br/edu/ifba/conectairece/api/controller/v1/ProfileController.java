@@ -1,13 +1,11 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestChangeProfileType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
 import br.edu.ifba.conectairece.api.features.profile.domain.service.ProfileIService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
@@ -19,14 +17,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -100,14 +96,12 @@ public class ProfileController {
             @ApiResponse(responseCode = "200", description = "Paginated list of profiles",
                     content = @Content(schema = @Schema(implementation = PageableDTO.class)))
     })
-    @GetMapping
-    public ResponseEntity<PageableDTO> findAll(
-            @PageableDefault(size = 5, direction = Sort.Direction.ASC)
-            Pageable pageable
-    ) {
-        Page<ProfileProjection> projection = profileService.findAllProjectedBy(pageable);
-        PageableDTO dto = objectMapperUtil.map(projection, PageableDTO.class);
-        return ResponseEntity.ok(dto);
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.profileService.getAllProfiles(pageable));
+
     }
 
 

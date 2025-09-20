@@ -11,6 +11,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.Profile
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -125,9 +126,12 @@ public class ProfileService implements ProfileIService {
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
     @Override
-    public Page<Request> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
+    public List<RequestResponseDto> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
 
-        return this.requestRepository.findAllByProfileId(userId, pageable);
+        return this.requestRepository.findAllByProfileId(userId, pageable)
+                .stream()
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
+                .toList();
 
     }
 

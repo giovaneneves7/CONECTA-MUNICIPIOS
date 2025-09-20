@@ -52,6 +52,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
 
     @Override
     public ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
+
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
 
         MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
@@ -62,7 +63,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = objectMapperUtil.mapToRecord(dto.technicalResponsible(), TechnicalResponsible.class);
+        TechnicalResponsible responsible = objectMapperUtil.map(dto.technicalResponsible(), TechnicalResponsible.class);
         entity.setTechnicalResponsible(responsible);
 
                 if (dto.documents() != null) {
@@ -76,8 +77,8 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             entity.setDocuments(docs);
         }
 
-        repository.save(entity);
-        return objectMapperUtil.mapToRecord(entity, ConstructionLicenseRequirementResponseDTO.class);
+        ConstructionLicenseRequirement saved = repository.save(entity);
+        return objectMapperUtil.mapToRecord(saved, ConstructionLicenseRequirementResponseDTO.class);
     }
 
     @Override

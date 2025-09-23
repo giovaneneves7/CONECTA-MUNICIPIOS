@@ -1,6 +1,6 @@
-package br.edu.ifba.conectairece.api.features.auth.domain.repository;
+package br.edu.ifba.conectairece.api.features.user.domain.repository;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

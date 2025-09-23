@@ -3,15 +3,13 @@ package br.edu.ifba.conectairece.api.features.auth.domain.service;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.request.UserLoginRequestDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.request.UserRegisterRequestDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserLoginResponseDTO;
-import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.person.domain.repository.PersonRepository;
-import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -27,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Service responsible for user authentication.
@@ -42,7 +38,6 @@ public class AuthenticationService {
 
     @Autowired
     private final ObjectMapperUtil objectMapperUtil;
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
@@ -122,32 +117,5 @@ public class AuthenticationService {
         String token = tokenService.generateToken(user);
 
         return new UserLoginResponseDTO(user.getId(), user.getEmail(), user.getUsername(), token, user.getStatus());
-    }
-
-    /**
-     * Searches for a user by the ID passed as a parameter
-     * 
-     * @author Giovane Neves
-     * 
-     * @param id The id of the user to be found
-     * @return DTO with the found user data
-     */
-    public UserDataResponseDTO getUserById(final UUID id){
-
-        User user = userRepository.findById(id)
-                        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage()));
-
-        return objectMapperUtil.map(user, UserDataResponseDTO.class);
-
-    }
-
-    public List<ProfileResponseDTO> getUserProfiles(final UUID id){
-
-        List<Profile> profiles = this.profileRepository.findAllByUserId(id);
-
-        return profiles.stream()
-                .map(profile -> objectMapperUtil.mapToRecord(profile, ProfileResponseDTO.class))
-                .toList();
-
     }
 }

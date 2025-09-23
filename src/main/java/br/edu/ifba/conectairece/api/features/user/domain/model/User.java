@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.auth.domain.model;
+package br.edu.ifba.conectairece.api.features.user.domain.model;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;

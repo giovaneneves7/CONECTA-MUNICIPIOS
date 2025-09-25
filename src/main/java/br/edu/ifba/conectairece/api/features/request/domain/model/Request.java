@@ -1,6 +1,8 @@
 package br.edu.ifba.conectairece.api.features.request.domain.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
@@ -18,7 +20,7 @@ import lombok.Setter;
  * estimated completion date, type, and notes.
  *
  * It is linked to a {@link MunicipalService}, representing the specific service being requested.
- * 
+ *
  * Lifecycle hooks:
  * - {@link #prePersist()} initializes creation and update timestamps when the entity is first saved.
  * - {@link #preUpdate()} updates the modification timestamp whenever the entity is updated.
@@ -56,6 +58,10 @@ public class Request extends PersistenceEntity{
     @ManyToOne
     @JoinColumn(name = "municipal_service_id")
     private MunicipalService municipalService;
+
+    @OneToMany(mappedBy = "request", orphanRemoval = true)
+    private List<Monitoring> monitorings = new ArrayList<>();
+
 
     @PrePersist
     public void prePersist() {

@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  * - Retrieve all requests or find by ID
  * - Delete requests by ID
  *
- * @author Caio Alves
+ * @author Caio Alves, Giovane Neves
  */
 
 @Service
@@ -102,9 +102,13 @@ public class RequestService implements RequestIService {
 
      @Override
     public List<RequestResponseDto> findAll(){
+
         List<Request> requests = requestRepository.findAll();
 
-        return objectMapperUtil.mapAll(requests, RequestResponseDto.class);
+        return requests.stream()
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
+                .toList();
+
     }
 
     /**
@@ -115,14 +119,13 @@ public class RequestService implements RequestIService {
      */
 
      @Override
-      public Request findById(UUID id) {
-        
-        Optional<Request> request = requestRepository.findById(id);
-        if(request.isEmpty()){
-            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
-        }
-        return request.get();
-      }
+     public RequestResponseDto findById(final UUID id) {
+
+         return requestRepository.findById(id)
+                 .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
+                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+     }
 
      /**
      * Deletes a request by its identifier.
@@ -132,7 +135,7 @@ public class RequestService implements RequestIService {
 
      @Override
     public void delete(UUID id) {
-       Request request = findById(id);
+       Request request = this.requestRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
        requestRepository.delete(request);
     }
 

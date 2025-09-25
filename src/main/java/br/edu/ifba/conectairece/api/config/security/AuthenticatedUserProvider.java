@@ -1,6 +1,6 @@
 package br.edu.ifba.conectairece.api.config.security;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

@@ -6,10 +6,12 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.Profile
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -41,7 +43,7 @@ public interface ProfileIService {
     /**
      * Retrieves a paginated list of projected {@link ProfileProjection} entities.
      */
-    Page<ProfileProjection> findAllProjectedBy(Pageable pageable);
+    List<ProfileResponseDTO> getAllProfiles(Pageable pageable);
 
     /**
      * Find all requests linked to the user id passed as a parameter
@@ -50,7 +52,7 @@ public interface ProfileIService {
      * @param userId The userId linked to the requests
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
-    Page<Request> findAllRequestsByProfileId(final UUID userId, Pageable pageable);
+    List<RequestResponseDto> findAllRequestsByProfileId(final UUID userId, Pageable pageable);
 
     /**
      * Changes the active profile type for a specific user.

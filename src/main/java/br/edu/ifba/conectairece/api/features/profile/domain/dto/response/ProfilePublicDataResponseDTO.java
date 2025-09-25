@@ -29,7 +29,7 @@ public record ProfilePublicDataResponseDTO(
     @JsonProperty("cpf")
     String cpf,
 
-    @JsonProperty("phonw")
+    @JsonProperty("phone")
     String phone,
 
     @JsonProperty("email")

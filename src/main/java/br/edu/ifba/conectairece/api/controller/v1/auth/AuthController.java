@@ -6,7 +6,6 @@ import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserLoginR
 import br.edu.ifba.conectairece.api.features.auth.domain.service.AuthenticationService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 /**
  * Controller responsible for authentication endpoints.
@@ -56,19 +53,4 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserRegisterRequestDTO body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(body));
     }
-
-    /**
-     * Endpoint to get a user by the id passed as a parameter
-     * 
-     * @param id The id of the user to be found
-     * @return Response with user data
-     */
-    @GetMapping(path = "/users/user/{id}", produces = "application/json")
-    public ResponseEntity<?> getUserById(@PathVariable("id") @NotNull UUID id){
-
-        return ResponseEntity.status(HttpStatus.OK)
-            .body(authenticationService.getUserById(id));
-
-    }
-
 }

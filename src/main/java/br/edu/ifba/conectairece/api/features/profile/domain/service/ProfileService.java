@@ -1,17 +1,16 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
-import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
@@ -22,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -58,7 +57,7 @@ public class ProfileService implements ProfileIService {
             profile.setRole(role);
 
             Profile saved = repository.save(profile);
-            return objectMapperUtil.map(saved, ProfileResponseDTO.class);
+            return objectMapperUtil.mapToRecord(saved, ProfileResponseDTO.class);
 
         } catch (Exception ex) {
             throw new BusinessException(ex);
@@ -73,7 +72,7 @@ public class ProfileService implements ProfileIService {
         existing.setType(profile.getType());
         existing.setImageUrl(profile.getImageUrl());
 
-        return objectMapperUtil.map(repository.save(existing),  ProfileResponseDTO.class);
+        return objectMapperUtil.mapToRecord(repository.save(existing),  ProfileResponseDTO.class);
     }
 
     @Override @Transactional
@@ -108,8 +107,12 @@ public class ProfileService implements ProfileIService {
     }
 
     @Override @Transactional(readOnly = true)
-    public Page<ProfileProjection> findAllProjectedBy(Pageable pageable) {
-        return repository.findAllProjectedBy(pageable);
+    public List<ProfileResponseDTO> getAllProfiles(Pageable pageable) {
+
+        Page<Profile> profiles = repository.findAll(pageable);
+        return profiles.stream().map(profile -> this.objectMapperUtil.mapToRecord(profile, ProfileResponseDTO.class))
+                .toList();
+
     }
 
     /**
@@ -120,9 +123,12 @@ public class ProfileService implements ProfileIService {
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
     @Override
-    public Page<Request> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
+    public List<RequestResponseDto> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
 
-        return this.requestRepository.findAllByProfileId(userId, pageable);
+        return this.requestRepository.findAllByProfileId(userId, pageable)
+                .stream()
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
+                .toList();
 
     }
 

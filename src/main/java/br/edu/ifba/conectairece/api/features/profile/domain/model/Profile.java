@@ -1,7 +1,7 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.model;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;

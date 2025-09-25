@@ -1,7 +1,7 @@
 package br.edu.ifba.conectairece.api.features.auth.domain.service;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

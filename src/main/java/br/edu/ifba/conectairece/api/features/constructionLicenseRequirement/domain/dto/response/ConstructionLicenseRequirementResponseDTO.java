@@ -29,8 +29,8 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.res
 
 public record ConstructionLicenseRequirementResponseDTO(
 
-     @JsonProperty("id")
-    Integer id,
+    @JsonProperty("id")
+    Long id,
 
     @JsonProperty("createdAt")
     LocalDateTime createdAt,
@@ -51,15 +51,15 @@ public record ConstructionLicenseRequirementResponseDTO(
     String constructionAddress,
 
     @JsonProperty("constructionArea")
-    Float constructionArea,
+    Float constructionArea
 
-    @JsonProperty("technicalResponsible")
-    TechnicalResponsibleResponseDTO technicalResponsible,
+    //@JsonProperty("technicalResponsible")
+   // TechnicalResponsibleResponseDTO technicalResponsible,
 
-    @JsonProperty("requirementType")
-    RequirementTypeResponseDTO requirementType,
+    //@JsonProperty("requirementType")
+    //RequirementTypeResponseDTO requirementType,
 
-    @JsonProperty("documents")
-    List<DocumentResponseDTO> documents
+   // @JsonProperty("documents")
+    //List<DocumentResponseDTO> documents
     
 ){}

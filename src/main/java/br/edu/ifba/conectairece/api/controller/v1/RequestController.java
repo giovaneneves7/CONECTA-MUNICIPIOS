@@ -98,10 +98,11 @@ public class RequestController {
                     content = @Content(schema = @Schema(implementation = RequestResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Request not found")
     })
-    @GetMapping("request/{id}")
+    @GetMapping("/request/{id}")
     public ResponseEntity<RequestResponseDto> getById(@Valid @PathVariable UUID id) {
-        Request request = requestService.findById(id);
-        return ResponseEntity.ok(objectMapperUtil.map(request, RequestResponseDto.class));
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(requestService.findById(id));
 
     }
 
@@ -140,7 +141,7 @@ public class RequestController {
             @ApiResponse(responseCode = "204", description = "Request successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Request not found")
     })
-    @DeleteMapping("request/{id}")
+    @DeleteMapping("/request/{id}")
     public ResponseEntity<Void> delete(@Valid @PathVariable UUID id) {
         requestService.delete(id);
         return ResponseEntity.noContent().build();

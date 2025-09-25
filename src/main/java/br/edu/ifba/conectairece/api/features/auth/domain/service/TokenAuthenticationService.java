@@ -4,8 +4,8 @@ package br.edu.ifba.conectairece.api.features.auth.domain.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.model.User;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

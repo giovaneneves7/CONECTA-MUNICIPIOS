@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
+import br.edu.ifba.conectairece.api.features.profile.domain.service.ProfileIService;
 import br.edu.ifba.conectairece.api.features.user.domain.service.IUserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,11 @@ public class UserController {
         return ResponseEntity.status((HttpStatus.OK))
                 .body(userService.getUserProfiles(id));
 
+    }
+
+    @GetMapping(path = "/user/{id}/profiles/profile/active", produces = "application/json")
+    public ResponseEntity<?> getMyActiveProfile(@PathVariable("id") UUID userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.userService.findActiveProfileByUserId(userId));
     }
 }

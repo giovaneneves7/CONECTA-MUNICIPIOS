@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface IUserService {
     UserDataResponseDTO getUserById(final UUID id);
     List<ProfileResponseDTO> getUserProfiles(final UUID id);
+    ProfileResponseDTO findActiveProfileByUserId(UUID id);
 }

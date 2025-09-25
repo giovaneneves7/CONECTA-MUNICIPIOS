@@ -15,6 +15,7 @@ import java.util.UUID;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +49,24 @@ public class UserService implements IUserService {
         return profiles.stream()
                 .map(profile -> objectMapperUtil.mapToRecord(profile, ProfileResponseDTO.class))
                 .toList();
+    }
+
+
+    @Override @Transactional(readOnly = true)
+    public ProfileResponseDTO findActiveProfileByUserId(UUID id) {
+        User user = this.userRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        if (user.getActiveProfile() == null) {
+            throw new BusinessException(BusinessExceptionMessage.USER_WITHOUT_PROFILES.getMessage());
+        }
+
+        Profile profile = user.getActiveProfile();
+
+        return new ProfileResponseDTO(
+                profile.getId(),
+                profile.getType(),
+                profile.getImageUrl()
+        );
     }
 }

@@ -1,8 +1,10 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringRequestDTO;
+import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
+import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +14,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +45,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MonitoringController {
 
-    @Autowired
     private final IMonitoringService monitoringService;
 
     /**
@@ -62,6 +67,20 @@ public class MonitoringController {
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
                 : ResponseEntity.ok(this.monitoringService.save(dto));
+
+    }
+
+    @Operation(summary = "List all monitorings with pagination",
+            description = "Retrieves a paginated list of monitorings")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated list of monitorings",
+                    content = @Content(schema = @Schema(implementation = MonitoringResponseDTO.class)))
+    })
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAll(@PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.monitoringService.getAllMonitorings(pageable));
 
     }
 

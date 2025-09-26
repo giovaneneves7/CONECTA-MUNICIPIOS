@@ -12,24 +12,30 @@ import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 /**
+ *  Service responsible for managing {@link Monitoring} entities.
+ *  Handles creation, updating, retrieval, and deletion of request monitorings,
+ *  and maps them to their respective DTOs.
+ * <p>
+ *  Main features:
+ *  - Save and update monitorings linked to a request
+ *  - Retrieve all monitorings or find by ID
+ *  - Delete monitoring by ID
+ *
  * @author Giovane Neves
  */
 @Service
 @RequiredArgsConstructor
 public class MonitoringService implements IMonitoringService{
 
-    @Autowired
     private final ObjectMapperUtil objectMapperUtil;
-    @Autowired
     private final RequestRepository requestRepository;
-    @Autowired
     private final IMonitoringRepository monitoringRepository;
 
     @Override
@@ -55,8 +61,12 @@ public class MonitoringService implements IMonitoringService{
     }
 
     @Override
-    public List<MonitoringResponseDTO> findAll() {
-        return List.of();
+    public List<MonitoringResponseDTO> getAllMonitorings(Pageable pageable) {
+
+        return this.monitoringRepository.findAll()
+                .stream().map(monitoring -> this.objectMapperUtil.mapToRecord(monitoring, MonitoringResponseDTO.class))
+                .toList();
+
     }
 
     @Override

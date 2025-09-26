@@ -4,10 +4,9 @@ import java.time.LocalDateTime;
 
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -54,7 +53,7 @@ public class ConstructionLicenseRequirement extends Requirement {
     private Integer housingUnitNumber;
     private Float terrainArea;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "technical_responsible_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "technical_responsible_id", nullable = false)
     private TechnicalResponsible technicalResponsible;
 }

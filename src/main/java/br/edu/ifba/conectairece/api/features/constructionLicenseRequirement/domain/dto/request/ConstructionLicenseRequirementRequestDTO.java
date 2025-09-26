@@ -2,13 +2,13 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -106,7 +106,7 @@ public record ConstructionLicenseRequirementRequestDTO (
     @JsonProperty("technicalResponsible")
     @Valid
     @NotNull(message = "Technical responsible is mandatory.")
-    TechnicalResponsibleRequestDTO technicalResponsible,
+    UUID technicalResponsibleId,
 
     @JsonProperty("documents")
     @Valid

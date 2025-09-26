@@ -17,6 +17,7 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.RequirementTypeRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -49,6 +50,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     private final MunicipalServiceRepository municipalServiceRepository;
     private final RequirementTypeRepository requirementTypeRepository;
     private final ObjectMapperUtil objectMapperUtil;
+    private final TechnicalResponsibleRepository technicalResponsibleRepository;
 
     @Override
     public ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
@@ -63,7 +65,9 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = objectMapperUtil.map(dto.technicalResponsible(), TechnicalResponsible.class);
+        // Atualizei o trecho que vincula o TechnicalResponsible
+        TechnicalResponsible responsible = technicalResponsibleRepository.findById(dto.technicalResponsibleId())
+            .orElseThrow(() -> new BusinessException("Technical Responsible not found"));
         entity.setTechnicalResponsible(responsible);
 
                 if (dto.documents() != null) {
@@ -109,8 +113,9 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     entity.setRequirementType(type);
 
-    TechnicalResponsible responsible = objectMapperUtil.map(dto.technicalResponsible(), TechnicalResponsible.class);
-    entity.setTechnicalResponsible(responsible);
+        TechnicalResponsible responsible = technicalResponsibleRepository.findById(dto.technicalResponsibleId())
+            .orElseThrow(() -> new BusinessException("Technical Responsible not found"));
+        entity.setTechnicalResponsible(responsible);
 
 if (dto.documents() != null) {
     entity.getDocuments().clear();

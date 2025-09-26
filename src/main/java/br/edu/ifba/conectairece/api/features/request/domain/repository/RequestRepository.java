@@ -23,4 +23,5 @@ public interface RequestRepository extends JpaRepository<Request, UUID>{
 
     @Query("SELECT r FROM Request r WHERE r.profile.id = :profileId")
     Page<Request> findAllByProfileId(@Param("profileId") UUID profileId, Pageable pageable);
+
 }

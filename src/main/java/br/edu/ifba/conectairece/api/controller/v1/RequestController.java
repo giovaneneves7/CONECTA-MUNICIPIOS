@@ -3,6 +3,9 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +47,6 @@ import lombok.RequiredArgsConstructor;
 public class RequestController {
 
     private final ObjectMapperUtil objectMapperUtil;
-
     private final RequestIService requestService;
 
 
@@ -145,5 +147,30 @@ public class RequestController {
     public ResponseEntity<Void> delete(@Valid @PathVariable UUID id) {
         requestService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint to get the list of monitorings linked to the request id passed as a parameter
+     *
+     * @param id  the Request UUID.
+     * @return A list with monitorings data.
+     */
+    @Operation(summary = "Get the list of monitorings linked to the request id",
+            description = "Get the list of monitorings linked to the request id passed as a parameter")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Monitoring list found",
+                    content = @Content(schema = @Schema(implementation = RequestResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Request not found"),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+    })
+    @GetMapping("/request/{id}/monitorings")
+    public ResponseEntity<?> getMonitorings(
+            @Valid @PathVariable UUID id,
+            @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.requestService.getMonitoringListByRequestId(id, pageable));
+
     }
 }

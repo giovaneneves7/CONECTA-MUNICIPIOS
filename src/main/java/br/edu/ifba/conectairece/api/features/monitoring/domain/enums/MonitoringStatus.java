@@ -1,7 +1,7 @@
-package br.edu.ifba.conectairece.api.features.request.domain.enums;
+package br.edu.ifba.conectairece.api.features.monitoring.domain.enums;
 
 
-import br.edu.ifba.conectairece.api.features.request.domain.model.Monitoring;
+import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 
 /**
  *  Constant values to request's monitoring status

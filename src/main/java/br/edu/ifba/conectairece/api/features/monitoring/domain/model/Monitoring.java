@@ -1,7 +1,8 @@
-package br.edu.ifba.conectairece.api.features.request.domain.model;
+package br.edu.ifba.conectairece.api.features.monitoring.domain.model;
 
 
-import br.edu.ifba.conectairece.api.features.request.domain.enums.MonitoringStatus;
+import br.edu.ifba.conectairece.api.features.monitoring.domain.enums.MonitoringStatus;
+import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

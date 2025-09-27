@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
+import br.edu.ifba.conectairece.api.features.update.domain.model.Update;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
@@ -62,6 +63,9 @@ public class Request extends PersistenceEntity{
 
     @OneToMany(mappedBy = "request", orphanRemoval = true)
     private List<Monitoring> monitorings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "request", orphanRemoval = true)
+    private List<Update>  updates = new ArrayList<>();
 
 
     @PrePersist

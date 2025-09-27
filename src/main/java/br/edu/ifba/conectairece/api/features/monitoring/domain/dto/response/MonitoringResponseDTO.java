@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response;
 
+import br.edu.ifba.conectairece.api.features.monitoring.domain.enums.MonitoringStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
@@ -14,8 +15,13 @@ import java.util.UUID;
 public record MonitoringResponseDTO(
     @JsonProperty("id")
     UUID id,
+
     @JsonProperty("name")
     String name,
+
     @JsonProperty("imageUrl")
-    String imageUrl
+    String imageUrl,
+
+    @JsonProperty("monitoringStatus")
+    MonitoringStatus monitoringStatus
 ) { }

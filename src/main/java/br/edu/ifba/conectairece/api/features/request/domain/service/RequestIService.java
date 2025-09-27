@@ -7,6 +7,7 @@ import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.Moni
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
+import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -30,4 +31,7 @@ public interface RequestIService {
     void delete(UUID id);
 
     Page<MonitoringResponseDTO> getMonitoringListByRequestId(UUID id, Pageable pageable);
+
+    Page<UpdateResponseDTO> getUpdateListByRequestId(UUID id, Pageable pageable);
+
 }

@@ -3,11 +3,11 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import java.util.List;
 import java.util.UUID;
 
+import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
-import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.service.RequestIService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
@@ -171,6 +170,31 @@ public class RequestController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.requestService.getMonitoringListByRequestId(id, pageable));
+
+    }
+
+    /**
+     * Endpoint to get the list of updates linked to the request id passed as a parameter
+     *
+     * @param id  the Request UUID.
+     * @return A list with updates data.
+     */
+    @Operation(summary = "Get the list of updates linked to the request id",
+            description = "Get the list of updates linked to the request id passed as a parameter")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Update list found",
+                    content = @Content(schema = @Schema(implementation = UpdateResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Request not found"),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+    })
+    @GetMapping("/request/{id}/updates")
+    public ResponseEntity<?> getUpdates(
+            @Valid @PathVariable UUID id,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.requestService.getUpdateListByRequestId(id, pageable));
 
     }
 }

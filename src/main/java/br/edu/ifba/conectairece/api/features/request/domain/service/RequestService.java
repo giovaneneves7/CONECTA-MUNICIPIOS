@@ -1,17 +1,16 @@
 package br.edu.ifba.conectairece.api.features.request.domain.service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
-import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
+import br.edu.ifba.conectairece.api.features.update.domain.repository.IUpdateRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,10 +43,9 @@ public class RequestService implements RequestIService {
     private final RequestRepository requestRepository;
     private final MunicipalServiceRepository municipalServiceRepository;
     private final ObjectMapperUtil objectMapperUtil;
-    @Autowired
     private final ProfileRepository profileRepository;
-    @Autowired
     private final IMonitoringRepository monitoringRepository;
+    private final IUpdateRepository updateRepository;
 
 
     /**
@@ -151,6 +149,15 @@ public class RequestService implements RequestIService {
 
          return this.monitoringRepository.findAllByRequestId(id, pageable)
                  .map(monitoring -> this.objectMapperUtil.mapToRecord(monitoring, MonitoringResponseDTO.class));
+
+    }
+
+    @Override
+    public Page<UpdateResponseDTO> getUpdateListByRequestId(UUID id, Pageable pageable) {
+
+
+         return this.updateRepository.findAllByRequestId(id, pageable)
+                 .map(update -> this.objectMapperUtil.mapToRecord(update, UpdateResponseDTO.class));
 
     }
 

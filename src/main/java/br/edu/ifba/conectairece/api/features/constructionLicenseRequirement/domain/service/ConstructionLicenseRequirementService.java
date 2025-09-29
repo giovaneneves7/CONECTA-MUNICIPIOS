@@ -5,10 +5,12 @@ import java.util.stream.Collectors;
 
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.event.ConstructionLicenseRequirementCreatedEvent;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.ConstructionLicenseRequirementRepository;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
@@ -51,6 +53,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     private final RequirementTypeRepository requirementTypeRepository;
     private final ObjectMapperUtil objectMapperUtil;
     private final TechnicalResponsibleRepository technicalResponsibleRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
@@ -82,6 +85,9 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
         }
 
         ConstructionLicenseRequirement saved = repository.save(entity);
+
+        eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
+
         return objectMapperUtil.mapToRecord(saved, ConstructionLicenseRequirementResponseDTO.class);
     }
 

@@ -1,13 +1,9 @@
 package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
-import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 
 /**
  * Data Transfer Object for representing construction license requirement data in API responses.

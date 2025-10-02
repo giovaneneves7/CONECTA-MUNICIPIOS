@@ -16,7 +16,7 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.T
  */
 public interface ITechnicalResponsibleService {
 
-    TechnicalResponsibleResponseDto save(TechnicalResponsibleRequestDto dto);
+    TechnicalResponsibleResponseDto save(UUID userId, TechnicalResponsibleRequestDto dto);
 
     List<TechnicalResponsibleResponseDto> findAll();
 

@@ -38,20 +38,21 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
 
     @Override
     @Transactional
-    public TechnicalResponsibleResponseDto save(TechnicalResponsibleRequestDto dto) {
-        if (repository.findByRegistrationId(dto.registrationId()).isPresent()) {
+    public TechnicalResponsibleResponseDto save(UUID userId, TechnicalResponsibleRequestDto dto) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado com o ID: " + userId));
+
+         if (repository.findByRegistrationId(dto.registrationId()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
 
         TechnicalResponsible entity = objectMapperUtil.map(dto, TechnicalResponsible.class);
+        
+        entity.setUser(user);
 
         entity.setType("TECHNICAL_RESPONSIBLE");
 
-    User user = userRepository.findById(dto.userId())
-            .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
-    entity.setUser(user);
-        
-    if (entity.getRole() == null) {
         Role role = roleRepository.findByName("ROLE_TECHNICAL_RESPONSIBLE")
                 .orElseGet(() -> {
                     Role newRole = new Role();
@@ -60,16 +61,18 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
                     return roleRepository.save(newRole);
                 });
         entity.setRole(role);
-    }
-        return objectMapperUtil.mapToRecord(repository.save(entity), TechnicalResponsibleResponseDto.class);
+
+        TechnicalResponsible savedEntity = repository.save(entity);
+
+        return objectMapperUtil.mapToRecord(savedEntity, TechnicalResponsibleResponseDto.class);
     }
 
     
-    @Override
+ @Override
     @Transactional
     public List<TechnicalResponsibleResponseDto> findAll() {
         return repository.findAll().stream()
-                .map(this::toDto)
+                .map(entity -> objectMapperUtil.mapToRecord(entity, TechnicalResponsibleResponseDto.class))
                 .toList();
     }
 
@@ -90,11 +93,4 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
         repository.delete(entity);
     }
 
-    private TechnicalResponsibleResponseDto toDto(TechnicalResponsible entity) {
-    return new TechnicalResponsibleResponseDto(
-            entity.getId(),
-            entity.getRegistrationId(),
-            entity.getType()
-        );
-    }
 }

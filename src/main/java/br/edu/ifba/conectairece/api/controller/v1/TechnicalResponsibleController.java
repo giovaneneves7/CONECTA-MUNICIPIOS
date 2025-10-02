@@ -49,11 +49,16 @@ public class TechnicalResponsibleController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
 
-    @PostMapping(path ="/technical-responsible")
-    public ResponseEntity<?> create(@RequestBody @Valid TechnicalResponsibleRequestDto dto, BindingResult result) {
-        return result.hasErrors()
-                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
-                : ResponseEntity.ok(service.save(dto));
+    @PostMapping(path ="users/{userId}/profiles/technical-responsible")
+    public ResponseEntity<?> create(@PathVariable UUID userId, @RequestBody @Valid TechnicalResponsibleRequestDto dto, BindingResult result) {
+
+            if (result.hasErrors()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result));
+            }
+
+            TechnicalResponsibleResponseDto responseDto = service.save(userId, dto);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @Operation(summary = "List all Technical Responsibles",

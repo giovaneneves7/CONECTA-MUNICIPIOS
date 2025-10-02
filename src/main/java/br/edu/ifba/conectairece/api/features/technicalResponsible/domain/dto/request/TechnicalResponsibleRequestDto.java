@@ -27,11 +27,8 @@ public record TechnicalResponsibleRequestDto(
     String ResponsibleType,
 
     @JsonProperty("imageUrl")
-    String imageUrl,
+    String imageUrl
 
-    @JsonProperty("userId")
-    @NotNull(message = "UserId is mandatory.")
-    UUID userId
 ) {
 
 }

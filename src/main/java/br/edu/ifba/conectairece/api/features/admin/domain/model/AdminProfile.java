@@ -12,8 +12,8 @@ import lombok.*;
  */
 @Entity
 @Getter @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @DiscriminatorValue("ADMIN")
 public class AdminProfile extends Profile {

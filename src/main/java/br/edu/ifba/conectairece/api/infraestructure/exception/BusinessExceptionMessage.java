@@ -17,7 +17,9 @@ public enum BusinessExceptionMessage {
     CLASS_IN_USE("Cannot be deleted. It is being used by one or more related classes."),
     INVALID_CREDENTIALS("Your credentials are invalid"),
     INVALID_PROFILE("The provided profile type is not valid for this user."),
-    USER_WITHOUT_PROFILES("User has no associated profiles.");
+    USER_WITHOUT_PROFILES("User has no associated profiles."),
+    INVALID_DATA("The data is not valid."),
+    USER_ALREADY_HAS_THIS_PROFILE("The user already has a Public Server profile");
 
     private final String message;
 

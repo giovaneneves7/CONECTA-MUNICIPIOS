@@ -1,15 +1,21 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
-import br.edu.ifba.conectairece.api.features.profile.domain.service.ProfileIService;
+import br.edu.ifba.conectairece.api.features.user.domain.dto.request.UserStatusRequestDTO;
+import br.edu.ifba.conectairece.api.features.user.domain.dto.response.UserResponseDTO;
 import br.edu.ifba.conectairece.api.features.user.domain.service.IUserService;
+import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -24,6 +30,7 @@ import java.util.UUID;
 public class UserController {
 
     private final IUserService userService;
+    private final ObjectMapperUtil objectMapperUtil;
 
     /**
      * Endpoint to get a user by the id passed as a parameter
@@ -58,5 +65,31 @@ public class UserController {
     public ResponseEntity<?> getMyActiveProfile(@PathVariable("id") UUID userId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.userService.findActiveProfileByUserId(userId));
+    }
+
+    @Operation(summary = "List all Users",
+            description = "Retrieves a list of all registered users.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of users retrieved",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserResponseDTO.class))))
+    })
+    @GetMapping
+    public ResponseEntity<?> findAllUsers () {
+        return ResponseEntity.ok(this.userService.findAllUsers());
+    }
+
+    @Operation(summary = "Update an user status",
+            description = "Updates a user status by replacing its data with the provided payload.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User Status successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid request content", content = @Content),
+    })
+    @PatchMapping("/user/status/{id}")
+    public ResponseEntity<?> updateUserStatus(
+            @PathVariable("id") @NotNull UUID id,
+            @RequestBody @Valid UserStatusRequestDTO userStatus
+    ) {
+        this.userService.updateUserStatus(id, userStatus.status());
+        return ResponseEntity.noContent().build();
     }
 }

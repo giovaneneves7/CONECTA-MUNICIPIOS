@@ -23,7 +23,7 @@ import java.util.Set;
 @DiscriminatorValue("PUBLIC_SERVANT")
 public class PublicServantProfile extends Profile implements Serializable {
 
-    @Column(name = "employee_id")
+    @Column(name = "employee_id", unique = true)
     private String employeeId;
 
     @ManyToMany(fetch = FetchType.LAZY)

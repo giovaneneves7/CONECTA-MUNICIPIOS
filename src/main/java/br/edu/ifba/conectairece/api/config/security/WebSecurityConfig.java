@@ -143,6 +143,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles/public-servant-profile").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles/public-servant-profile/**").permitAll()
 
+                        //Roles
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/roles/role").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/roles/role/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/role").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/role/**").permitAll()
+
                         // Database console for testing
                         //TODO: Remove it
                         .requestMatchers("/h2-console/**").permitAll()

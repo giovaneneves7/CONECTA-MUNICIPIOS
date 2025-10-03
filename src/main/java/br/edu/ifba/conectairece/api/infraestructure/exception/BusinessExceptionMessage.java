@@ -19,7 +19,8 @@ public enum BusinessExceptionMessage {
     INVALID_PROFILE("The provided profile type is not valid for this user."),
     USER_WITHOUT_PROFILES("User has no associated profiles."),
     INVALID_DATA("The data is not valid."),
-    USER_ALREADY_HAS_THIS_PROFILE("The user already has a Public Server profile");
+    USER_ALREADY_HAS_THIS_PROFILE("The user already has a Public Server profile"),
+    PROFILE_ALREADY_HAS_THIS_PERMISSION("The profile already has this permission");
 
     private final String message;
 

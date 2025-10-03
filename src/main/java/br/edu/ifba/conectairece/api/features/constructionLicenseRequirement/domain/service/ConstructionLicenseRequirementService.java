@@ -1,15 +1,19 @@
 package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.event.ConstructionLicenseRequirementCreatedEvent;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.ConstructionLicenseRequirementRepository;
@@ -68,11 +72,12 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
-        // Atualizei o trecho que vincula o TechnicalResponsible
         TechnicalResponsible responsible = technicalResponsibleRepository.findById(dto.technicalResponsibleId())
             .orElseThrow(() -> new BusinessException("Technical Responsible not found"));
         entity.setTechnicalResponsible(responsible);
 
+        entity.setTechnicalResponsibleStatus(AssociationStatus.PENDING);
+        
                 if (dto.documents() != null) {
             List<Document> docs = dto.documents().stream()
                     .map(d -> {
@@ -139,14 +144,16 @@ if (dto.documents() != null) {
 
     @Override
     public List<ConstructionLicenseRequirementResponseDTO> findAll() {
-        return objectMapperUtil.mapAll(repository.findAll(), ConstructionLicenseRequirementResponseDTO.class);
+        return repository.findAll().stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 
     @Override
     public ConstructionLicenseRequirementResponseDTO findById(Long id) {
         ConstructionLicenseRequirement entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-        return objectMapperUtil.map(entity, ConstructionLicenseRequirementResponseDTO.class);
+        return toResponseDTO(entity);
     }
 
     @Override
@@ -154,5 +161,56 @@ if (dto.documents() != null) {
         ConstructionLicenseRequirement entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         repository.delete(entity);
+    }
+
+    @Override
+    public void approveAssociation(Long requirementId, UUID responsibleId){
+        ConstructionLicenseRequirement entity = repository.findById(requirementId)
+            .orElseThrow(() -> new BusinessException("Requirement not found"));
+
+            if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
+                throw new BusinessException("This request has alrady been processed.");
+            }
+            if (!entity.getTechnicalResponsible().getId().equals(responsibleId)) {
+                throw new AccessDeniedException("You are not authorized to approve this requirement.");
+            }
+            entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
+            repository.save(entity);
+    }
+
+    @Override
+    public void rejectAssociation(Long requirementId, UUID responsibleId, RejectionRequestDTO dto){
+        ConstructionLicenseRequirement entity = repository.findById(requirementId)
+            .orElseThrow(() -> new BusinessException("Requirement not found"));
+
+            if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
+                throw new BusinessException("This request has alrady been processed.");
+            }
+
+            if (!entity.getTechnicalResponsible().getId().equals(responsibleId)) {
+                throw new AccessDeniedException("You are not authorized to reject this requirement.");
+            }
+
+            entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
+            entity.setRejectionJustification(dto.justification());
+            repository.save(entity);
+    }
+
+    private ConstructionLicenseRequirementResponseDTO toResponseDTO(ConstructionLicenseRequirement entity) {
+        if (entity == null) {
+            return null;
+        }
+        
+        return new ConstructionLicenseRequirementResponseDTO(
+            entity.getId(),
+            entity.getCreatedAt(), 
+            entity.getOwner(),
+            entity.getPhone(),
+            entity.getCep(),
+            entity.getCpfCnpj(),
+            entity.getConstructionAddress(),
+            entity.getConstructionArea(),
+            entity.getTechnicalResponsibleStatus()
+        );
     }
 }

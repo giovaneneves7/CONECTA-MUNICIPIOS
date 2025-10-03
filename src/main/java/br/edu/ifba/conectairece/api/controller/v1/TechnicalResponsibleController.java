@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
@@ -39,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class TechnicalResponsibleController {
 
     private final ITechnicalResponsibleService service;
+    private final ConstructionLicenseRequirementIService requirementService;
 
     @Operation(summary = "Create new Technical Responsible",
             description = "Creates and persists a new technical responsible in the system.")
@@ -83,6 +87,39 @@ public class TechnicalResponsibleController {
     @DeleteMapping("/technical-responsible/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+        @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Association accepted successfully"),
+        @ApiResponse(responseCode = "403", description = "Forbidden - User is not the designated responsible"),
+        @ApiResponse(responseCode = "404", description = "Requirement or Responsible not found")
+    })
+    @PostMapping("/{responsibleId}/requirements/{requirementId}/accept")
+    @PreAuthorize("#responsibleId.toString() == principal.username") 
+    public ResponseEntity<Void> acceptRequirement(
+            @PathVariable UUID responsibleId, 
+            @PathVariable Long requirementId) {
+                
+        requirementService.approveAssociation(requirementId, responsibleId);
+        return ResponseEntity.noContent().build();
+    }
+
+        @Operation(summary = "Refuse a requirement association",
+               description = "Allows a technical responsible to refuse being linked to a construction license requirement.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Association refused successfully"),
+        @ApiResponse(responseCode = "403", description = "Forbidden - User is not the designated responsible"),
+        @ApiResponse(responseCode = "404", description = "Requirement or Responsible not found")
+    })
+    @PostMapping("/{responsibleId}/requirements/{requirementId}/refuse")
+    @PreAuthorize("#responsibleId.toString() == principal.username")
+    public ResponseEntity<Void> refuseRequirement(
+            @PathVariable UUID responsibleId, 
+            @PathVariable Long requirementId, 
+            @RequestBody @Valid RejectionRequestDTO dto) {
+
+        requirementService.rejectAssociation(requirementId, responsibleId, dto);
         return ResponseEntity.noContent().build();
     }
     

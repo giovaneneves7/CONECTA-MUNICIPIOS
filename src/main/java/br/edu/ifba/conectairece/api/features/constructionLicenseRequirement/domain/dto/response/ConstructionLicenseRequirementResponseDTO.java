@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
+
 
 /**
  * Data Transfer Object for representing construction license requirement data in API responses.
@@ -47,7 +49,7 @@ public record ConstructionLicenseRequirementResponseDTO(
     String constructionAddress,
 
     @JsonProperty("constructionArea")
-    Float constructionArea
+    Float constructionArea,
 
     //@JsonProperty("technicalResponsible")
    // TechnicalResponsibleResponseDTO technicalResponsible,
@@ -57,5 +59,7 @@ public record ConstructionLicenseRequirementResponseDTO(
 
    // @JsonProperty("documents")
     //List<DocumentResponseDTO> documents
+
+    AssociationStatus technicalResponsibleStatus
     
 ){}

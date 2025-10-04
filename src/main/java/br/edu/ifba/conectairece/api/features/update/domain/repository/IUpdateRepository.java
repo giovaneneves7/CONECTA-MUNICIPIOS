@@ -1,6 +1,5 @@
 package br.edu.ifba.conectairece.api.features.update.domain.repository;
 
-import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import br.edu.ifba.conectairece.api.features.update.domain.model.Update;
 
 import org.springframework.data.domain.Page;
@@ -30,6 +29,6 @@ public interface IUpdateRepository extends JpaRepository<Update, UUID> {
             value = "SELECT u FROM Update u WHERE u.request.id = :requestId",
             countQuery = "SELECT COUNT(u) FROM Update u WHERE u.request.id = :requestId"
     )
-    Page<Monitoring> findAllByRequestId(@Param("requestId") UUID requestId, Pageable pageable);
+    Page<Update> findAllByRequestId(@Param("requestId") UUID requestId, Pageable pageable);
 
 }

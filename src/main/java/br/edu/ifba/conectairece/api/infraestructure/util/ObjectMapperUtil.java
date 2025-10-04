@@ -7,6 +7,7 @@ import org.modelmapper.record.RecordModule;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Collection;
@@ -114,44 +115,29 @@ public class ObjectMapperUtil {
             Object[] args = Arrays.stream(components)
                     .map(c -> {
                         try {
-                            Field f = getFieldFromHierarchy(source.getClass(), c.getName());
-                            if (f == null) {
-                                throw new RuntimeException("Campo '" + c.getName() + "' não encontrado em " + source.getClass().getSimpleName());
-                            }
-
-                            f.setAccessible(true);
-                            Object value = f.get(source);
-
-                            if (value == null) {
-                                return null; // ou um valor padrão, se fizer sentido
-                            }
-
-                            if (value instanceof Collection<?> collection) {
-                                if (c.getGenericType() instanceof ParameterizedType pt) {
-                                    Class<?> targetElementType = (Class<?>) pt.getActualTypeArguments()[0];
-                                    return collection.stream()
-                                            .map(item -> {
-                                                if (targetElementType.isRecord()) {
-                                                    return mapToRecord(item, targetElementType);
-                                                } else {
-                                                    return MODEL_MAPPER.map(item, targetElementType);
-                                                }
-                                            })
-                                            .toList();
+                            // Campo DTO termina com "Id" → pega objeto agregado
+                            if (c.getName().endsWith("Id")) {
+                                String aggregateName = c.getName().replace("Id", "");
+                                Field f = getFieldFromHierarchy(source.getClass(), aggregateName);
+                                if (f != null) {
+                                    f.setAccessible(true);
+                                    Object aggregate = f.get(source);
+                                    if (aggregate != null) {
+                                        Method getId = aggregate.getClass().getMethod("getId");
+                                        return getId.invoke(aggregate);
+                                    }
                                 }
-                                return collection;
+                                return null;
                             }
 
-                            // Lida com objetos complexos
-                            if (!c.getType().isPrimitive() &&
-                                    !c.getType().getName().startsWith("java.lang") &&
-                                    !(value instanceof Collection)) {
-                                return MODEL_MAPPER.map(value, c.getType());
-                            }
+                            // Campo normal
+                            Field f = getFieldFromHierarchy(source.getClass(), c.getName());
+                            if (f == null) return null;
+                            f.setAccessible(true);
+                            return f.get(source);
 
-                            return value;
                         } catch (Exception e) {
-                            throw new RuntimeException("Erro ao mapear campo '" + c.getName() + "'", e);
+                            throw new RuntimeException(e);
                         }
                     })
                     .toArray();
@@ -161,9 +147,10 @@ public class ObjectMapperUtil {
                     .newInstance(args);
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao mapear objeto para record " + recordClass.getSimpleName(), e);
+            throw new RuntimeException(e);
         }
     }
+
 
     private Field getFieldFromHierarchy(Class<?> clazz, String fieldName) {
         while (clazz != null) {

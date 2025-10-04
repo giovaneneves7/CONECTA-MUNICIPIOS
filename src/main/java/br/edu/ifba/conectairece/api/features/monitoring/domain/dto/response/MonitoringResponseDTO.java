@@ -16,6 +16,9 @@ public record MonitoringResponseDTO(
     @JsonProperty("id")
     UUID id,
 
+    @JsonProperty("code")
+    String code,
+
     @JsonProperty("name")
     String name,
 

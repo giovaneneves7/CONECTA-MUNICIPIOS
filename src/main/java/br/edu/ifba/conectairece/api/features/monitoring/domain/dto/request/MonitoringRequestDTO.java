@@ -19,6 +19,11 @@ public record MonitoringRequestDTO(
         @JsonProperty("requestId")
         UUID requestId,
 
+        @NotNull(message = "Code is required")
+        @NotBlank(message = "Code cannot be blank")
+        @JsonProperty("code")
+        String code,
+
         @NotNull(message = "Name is required")
         @NotBlank(message = "Name cannot be blank")
         @JsonProperty("name")

@@ -35,6 +35,9 @@ public class Monitoring extends PersistenceEntity {
     @JoinColumn(name = "request_id")
     private Request request;
 
+    @Column(name = "code", nullable = false)
+    private String code;
+
     @Column(name = "name",  nullable = false, length = 50)
     private String name;
 

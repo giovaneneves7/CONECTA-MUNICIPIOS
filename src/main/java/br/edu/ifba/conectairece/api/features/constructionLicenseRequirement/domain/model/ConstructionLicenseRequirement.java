@@ -2,9 +2,15 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 
 import java.time.LocalDateTime;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
+import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -56,4 +62,11 @@ public class ConstructionLicenseRequirement extends Requirement {
     @ManyToOne(optional = false)
     @JoinColumn(name = "technical_responsible_id", nullable = false)
     private TechnicalResponsible technicalResponsible;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "technical_responsible_status", nullable = false)
+    private AssociationStatus technicalResponsibleStatus;
+
+    @Column(name = "rejection_justification")
+    private String rejectionJustification;
 }

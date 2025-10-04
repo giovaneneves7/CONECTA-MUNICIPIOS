@@ -1,9 +1,12 @@
 package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 
 /**
  * Interface defining the contract for managing {@link ConstructionLicenseRequirement} entities.
@@ -53,4 +56,8 @@ public interface ConstructionLicenseRequirementIService {
     void delete(Long id);
 
     ConstructionLicenseRequirementResponseDTO update(Long id, ConstructionLicenseRequirementRequestDTO dto);
+
+        void approveAssociation(Long requirementId, UUID responsibleId);
+
+        void rejectAssociation(Long requirementId, UUID responsibleId, RejectionRequestDTO dto);
 }

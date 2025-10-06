@@ -123,6 +123,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         //Users - /api/v1/users
                         .requestMatchers(HttpMethod.GET, "/api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/users/user/status").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/users/user/status/**").permitAll()
 
                         //Monitorings - /api/v1/monitorings
                         .requestMatchers(HttpMethod.POST, "/api/v1/monitorings").permitAll()
@@ -143,6 +145,17 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/technical-responsibles/technical-responsible/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/technical-responsibles/*/requirements/*/accept").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/technical-responsibles/*/requirements/*/refuse").permitAll()
+
+                        //Public servant controller
+                        .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles/public-servant-profile").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles/public-servant-profile/**").permitAll()
+
+                        //Roles
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/roles/role").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/roles/role/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/role").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/role/**").permitAll()
 
                         // Database console for testing
                         //TODO: Remove it

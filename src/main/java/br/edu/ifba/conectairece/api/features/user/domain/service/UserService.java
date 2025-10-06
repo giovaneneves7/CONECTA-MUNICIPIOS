@@ -1,9 +1,11 @@
 package br.edu.ifba.conectairece.api.features.user.domain.service;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.dto.response.UserResponseDTO;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -68,5 +70,29 @@ public class UserService implements IUserService {
                 profile.getType(),
                 profile.getImageUrl()
         );
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponseDTO> findAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> this.objectMapperUtil.mapToRecord(user, UserResponseDTO.class))
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public void updateUserStatus(UUID userId, UserStatus newStatus) {
+            User user = this.findById(userId);
+            user.setStatus(newStatus);
+            this.userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }
 }

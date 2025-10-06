@@ -93,6 +93,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request/**").permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/api/v1/requests/request/*/review/accept").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/requests/request/*/review/reject").permitAll()
+
                         // Functions for Requirement Types /api/v1/requirement-types
                         .requestMatchers(HttpMethod.POST, "/api/v1/requirement-types/requirement-type").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types").permitAll()

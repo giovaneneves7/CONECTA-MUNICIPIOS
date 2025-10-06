@@ -9,6 +9,9 @@ import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionM
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import lombok.RequiredArgsConstructor;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
@@ -25,7 +28,6 @@ import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.R
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Service responsible for managing {@link ConstructionLicenseRequirement} entities.
@@ -45,7 +47,7 @@ import lombok.RequiredArgsConstructor;
  * This service ensures that all associations are properly mapped
  * and stored in the database, while exposing DTO-based responses for clients.
  *
- * Author: Caio Alves
+ * Author: Caio Alves, Andesson Reis
  */
 
 @Service
@@ -213,4 +215,56 @@ if (dto.documents() != null) {
             entity.getTechnicalResponsibleStatus()
         );
     }
+
+    /**
+     * Finds a requirement and validates if it is pending review.
+     * Helper method to avoid code duplication.
+     */
+    private ConstructionLicenseRequirement findRequirementForReview(Long requirementId) {
+        ConstructionLicenseRequirement entity = repository.findById(requirementId)
+                .orElseThrow(() -> new BusinessException("Solicitação não encontrada com o ID: " + requirementId));
+
+        if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
+            throw new BusinessException("Esta solicitação já foi processada.");
+        }
+        return entity;
+    }
+
+    /**
+     * Approves a construction license request.
+     *
+     * @param requirementId The ID of the request to be approved.
+     * @return DTO with the data of the updated request.
+     * @author Andesson Reis
+     */
+    public ConstructionLicenseRequirementResponseDTO acceptRequest(Long requirementId) {
+        ConstructionLicenseRequirement entity = findRequirementForReview(requirementId);
+
+        entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
+        entity.setRejectionJustification(null);
+
+        ConstructionLicenseRequirement updatedEntity = repository.save(entity);
+
+        return toResponseDTO(updatedEntity);
+    }
+
+    /**
+     * Rejects a construction license request.
+     *
+     * @param requirementId The ID of the request to be rejected.
+     * @param dto DTO containing the rejection justification.
+     * @return DTO with the data of the updated request.
+     * @author Andesson Reis
+     */
+    public ConstructionLicenseRequirementResponseDTO rejectRequest(Long requirementId, RejectionRequestDTO dto) {
+        ConstructionLicenseRequirement entity = findRequirementForReview(requirementId);
+
+        entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
+        entity.setRejectionJustification(dto.justification());
+
+        ConstructionLicenseRequirement updatedEntity = repository.save(entity);
+
+        return toResponseDTO(updatedEntity);
+    }
+
 }

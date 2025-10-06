@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementService;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
 import br.edu.ifba.conectairece.api.features.request.domain.service.RequestIService;
@@ -37,7 +39,7 @@ import lombok.RequiredArgsConstructor;
  * Controller responsible for handling Request endpoints.
  * Provides operations to create, list, retrieve, update, and delete requests.
  *
- * @author Caio Alves
+ * @author Caio Alves, Andesson Reis
  */
 
 @RestController
@@ -47,7 +49,7 @@ public class RequestController {
 
     private final ObjectMapperUtil objectMapperUtil;
     private final RequestIService requestService;
-
+    private final ConstructionLicenseRequirementService constructionLicenseRequirementService;
 
      /**
      * Endpoint to create a new request.
@@ -197,4 +199,41 @@ public class RequestController {
                 .body(this.requestService.getUpdateListByRequestId(id, pageable));
 
     }
+
+    /**
+     * Endpoint to approve a request.
+     * @param id The ID of the request.
+     * @return The request with its new status.
+     */
+    @Operation(summary = "Approve a Request", description = "Sets the status of a request to Approved.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Request approved successfully"),
+        @ApiResponse(responseCode = "404", description = "Request not found"),
+        @ApiResponse(responseCode = "400", description = "Request was already processed")
+    })
+    @PostMapping("request/{id}/review/accept")
+    public ResponseEntity<?> acceptRequest(@PathVariable Long id) {
+        var response = constructionLicenseRequirementService.acceptRequest(id);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Endpoint to reject a request.
+     * @param id The ID of the request.
+     * @param dto DTO containing the rejection justification.
+     * @return The request with its new status.
+     */
+    @Operation(summary = "Reject a Request", description = "Sets the status of a request to Rejected.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Request rejected successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request body or missing justification"),
+        @ApiResponse(responseCode = "404", description = "Request not found")
+    })
+    @PostMapping("request/{id}/review/reject")
+    public ResponseEntity<?> rejectRequest(
+            @PathVariable Long id,
+            @RequestBody @Valid RejectionRequestDTO dto) {
+        var response = constructionLicenseRequirementService.rejectRequest(id, dto);
+        return ResponseEntity.ok(response);
+    }    
 }

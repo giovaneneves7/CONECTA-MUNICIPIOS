@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
@@ -28,6 +29,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 /**
  * Controller responsible for handling TechnicalResponsible endpoints.
@@ -53,14 +56,14 @@ public class TechnicalResponsibleController {
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
 
-    @PostMapping(path ="users/{userId}/profiles/technical-responsible")
-    public ResponseEntity<?> create(@PathVariable UUID userId, @RequestBody @Valid TechnicalResponsibleRequestDto dto, BindingResult result) {
+    @PostMapping(path ="/technical-responsible")
+    public ResponseEntity<?> create(@RequestBody @Valid TechnicalResponsibleRequestDto dto, BindingResult result) {
 
             if (result.hasErrors()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result));
             }
 
-            TechnicalResponsibleResponseDto responseDto = service.save(userId, dto);
+            TechnicalResponsibleResponseDto responseDto = service.save(dto);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
@@ -95,13 +98,11 @@ public class TechnicalResponsibleController {
         @ApiResponse(responseCode = "403", description = "Forbidden - User is not the designated responsible"),
         @ApiResponse(responseCode = "404", description = "Requirement or Responsible not found")
     })
-    @PostMapping("/{responsibleId}/requirements/{requirementId}/accept")
+    @PostMapping("/accept-requirement")
     @PreAuthorize("#responsibleId.toString() == principal.username") 
-    public ResponseEntity<Void> acceptRequirement(
-            @PathVariable UUID responsibleId, 
-            @PathVariable Long requirementId) {
-                
-        requirementService.approveAssociation(requirementId, responsibleId);
+    public ResponseEntity<Void> acceptRequirement(@RequestBody @Valid AssociationActionRequestDTO dto) {
+
+        requirementService.approveAssociation(dto);
         return ResponseEntity.noContent().build();
     }
 
@@ -112,15 +113,27 @@ public class TechnicalResponsibleController {
         @ApiResponse(responseCode = "403", description = "Forbidden - User is not the designated responsible"),
         @ApiResponse(responseCode = "404", description = "Requirement or Responsible not found")
     })
-    @PostMapping("/{responsibleId}/requirements/{requirementId}/refuse")
+    @PostMapping("/refuse-requirement")
     @PreAuthorize("#responsibleId.toString() == principal.username")
-    public ResponseEntity<Void> refuseRequirement(
-            @PathVariable UUID responsibleId, 
-            @PathVariable Long requirementId, 
+    public ResponseEntity<Void> refuseRequirement( 
             @RequestBody @Valid RejectionRequestDTO dto) {
 
-        requirementService.rejectAssociation(requirementId, responsibleId, dto);
+        requirementService.rejectAssociation(dto);
         return ResponseEntity.noContent().build();
+    }
+    
+    @Operation(summary = "Retrieve a Technical Responsible by Registration ID",
+               description = "Fetches details of a technical responsible by its unique registration ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Technical Responsible found",
+                     content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDto.class))),
+        @ApiResponse(responseCode = "404", description = "Technical Responsible not found with the given registration ID")
+    })
+    @GetMapping("technical-responsible/search-by-registration-id")
+    public ResponseEntity<?> getByRegistrationId(@RequestParam String registrationId) {
+        return service.findByRegistrationId(registrationId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
     
 }

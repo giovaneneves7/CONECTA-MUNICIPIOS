@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
-
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
@@ -166,7 +166,10 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public void approveAssociation(Long requirementId, UUID responsibleId){
+    public void approveAssociation(AssociationActionRequestDTO dto){
+        Long requirementId = dto.constructionLicenseRequirementId();
+        UUID responsibleId = dto.technicalResponsibleId();
+
         ConstructionLicenseRequirement entity = repository.findById(requirementId)
             .orElseThrow(() -> new BusinessException("Requirement not found"));
 
@@ -181,7 +184,11 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public void rejectAssociation(Long requirementId, UUID responsibleId, RejectionRequestDTO dto){
+    public void rejectAssociation(RejectionRequestDTO dto){
+
+        Long requirementId = dto.constructionLicenseRequirementId();
+        UUID responsibleId = dto.technicalResponsibleId();
+
         ConstructionLicenseRequirement entity = repository.findById(requirementId)
             .orElseThrow(() -> new BusinessException("Requirement not found"));
 

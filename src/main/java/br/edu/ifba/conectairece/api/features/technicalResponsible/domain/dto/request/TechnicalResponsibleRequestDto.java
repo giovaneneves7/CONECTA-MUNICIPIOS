@@ -16,18 +16,22 @@ import jakarta.validation.constraints.NotNull;
 
 public record TechnicalResponsibleRequestDto(
 
-    @JsonProperty("registrationId")
+    @JsonProperty(value = "registrationId")
     @NotNull(message = "Registration ID is mandatory.")
     @NotBlank(message = "Registration ID cannot be blank.")
     String registrationId,
 
-    @JsonProperty("responsibleType")
+    @JsonProperty(value = "responsibleType")
     @NotNull(message = "Type is mandatory.")
     @NotBlank(message = "Type cannot be blank.")
-    String ResponsibleType,
+    String responsibleType,
 
-    @JsonProperty("imageUrl")
-    String imageUrl
+    @JsonProperty(value = "imageUrl")
+    String imageUrl,
+
+    @JsonProperty(value = "userId")
+    @NotNull(message = "User ID is mandatory.")
+    UUID userId
 
 ) {
 

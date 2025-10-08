@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 import java.util.List;
 import java.util.UUID;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
@@ -57,7 +58,7 @@ public interface ConstructionLicenseRequirementIService {
 
     ConstructionLicenseRequirementResponseDTO update(Long id, ConstructionLicenseRequirementRequestDTO dto);
 
-        void approveAssociation(Long requirementId, UUID responsibleId);
+        void approveAssociation(AssociationActionRequestDTO dto);
 
-        void rejectAssociation(Long requirementId, UUID responsibleId, RejectionRequestDTO dto);
+        void rejectAssociation(RejectionRequestDTO dto);
 }

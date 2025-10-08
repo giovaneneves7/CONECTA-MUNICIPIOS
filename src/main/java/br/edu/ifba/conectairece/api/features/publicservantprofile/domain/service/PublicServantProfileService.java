@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.features.publicservantprofile.domain.servic
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
@@ -24,7 +25,7 @@ public class PublicServantProfileService implements IPublicServantProfileService
     private final RoleRepository roleRepository;
 
     @Override @Transactional
-    public void createPublicServantProfile(UUID userId, PublicServantProfile employee) {
+    public PublicServantRegisterResponseDTO createPublicServantProfile(UUID userId, PublicServantProfile employee) {
         if (employee == null || userId == null) {
             throw new BusinessException(BusinessExceptionMessage.INVALID_DATA.getMessage());
         }
@@ -56,5 +57,7 @@ public class PublicServantProfileService implements IPublicServantProfileService
         }
 
         userRepository.save(user);
+
+        return new PublicServantRegisterResponseDTO(employee.getEmployeeId());
     }
 }

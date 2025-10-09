@@ -18,8 +18,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 /**
  * Class representing a user profile in the system.
  * <p>
@@ -39,7 +37,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class Profile extends PersistenceEntity implements Serializable {
+public abstract class Profile extends PersistenceEntity {
 
     @Column(name = "type", nullable = false)
     private String type;

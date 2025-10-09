@@ -5,6 +5,7 @@ import br.edu.ifba.conectairece.api.features.auth.domain.dto.request.UserRegiste
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserLoginResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
+import br.edu.ifba.conectairece.api.features.citizen.domain.model.Citizen;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
@@ -104,8 +105,8 @@ public class AuthenticationService {
                     return roleRepository.save(newRole);
                 });
 
-        Profile profile = new Profile();
-        profile.setType("Common");
+        Profile profile = new Citizen();
+        profile.setType("Cidadão");
         profile.setRole(role);
         profile.setUser(user);
         profile = profileRepository.save(profile);

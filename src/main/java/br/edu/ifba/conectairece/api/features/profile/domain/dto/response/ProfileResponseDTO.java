@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
  *
  * @author Jorge Roberto, Giovane Neves
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ProfileResponseDTO (
 
     @JsonProperty("id")

@@ -35,6 +35,7 @@ public class UserService implements IUserService {
      * @param id The id of the user to be found
      * @return DTO with the found user data
      */
+    @Transactional(readOnly = true)
     public UserDataResponseDTO getUserById(final UUID id){
 
         User user = userRepository.findById(id)
@@ -44,12 +45,17 @@ public class UserService implements IUserService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<ProfileResponseDTO> getUserProfiles(final UUID id){
 
         List<Profile> profiles = this.profileRepository.findAllByUserId(id);
 
         return profiles.stream()
-                .map(profile -> objectMapperUtil.mapToRecord(profile, ProfileResponseDTO.class))
+                .map(profile -> new ProfileResponseDTO(
+                        profile.getId(),
+                        profile.getType(),
+                        profile.getImageUrl()
+                ))
                 .toList();
     }
 

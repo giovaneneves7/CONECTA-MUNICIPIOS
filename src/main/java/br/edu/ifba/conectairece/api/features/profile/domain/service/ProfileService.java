@@ -1,10 +1,8 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
-import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
-import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
@@ -38,31 +36,6 @@ public class ProfileService implements ProfileIService {
     private final RoleRepository roleRepository;
     private final RequestRepository requestRepository;
     private  final UserRepository userRepository;
-
-    @Override @Transactional
-    public ProfileResponseDTO save(ProfileRequestDTO dto) {
-        try {
-            Profile profile = new Profile();
-            profile.setType(dto.type());
-            profile.setImageUrl(dto.imageUrl());
-
-            User user = userRepository.findById(dto.userId())
-                    .orElseThrow(() -> new BusinessException("User not found"));
-            profile.setUser(user);
-
-            Role role = new Role();
-            role.setName("ROLE_USER");
-            role.setDescription("Tests");
-            role = roleRepository.save(role);
-            profile.setRole(role);
-
-            Profile saved = repository.save(profile);
-            return objectMapperUtil.mapToRecord(saved, ProfileResponseDTO.class);
-
-        } catch (Exception ex) {
-            throw new BusinessException(ex);
-        }
-    }
 
     @Override @Transactional
     public ProfileResponseDTO update(Profile profile) {
@@ -110,7 +83,12 @@ public class ProfileService implements ProfileIService {
     public List<ProfileResponseDTO> getAllProfiles(Pageable pageable) {
 
         Page<Profile> profiles = repository.findAll(pageable);
-        return profiles.stream().map(profile -> this.objectMapperUtil.mapToRecord(profile, ProfileResponseDTO.class))
+        return profiles.stream()
+                .map(profile -> new ProfileResponseDTO(
+                        profile.getId(),
+                        profile.getType(),
+                        profile.getImageUrl()
+                ))
                 .toList();
 
     }

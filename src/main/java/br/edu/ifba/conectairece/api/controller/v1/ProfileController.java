@@ -2,7 +2,6 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestChangeProfileType;
-import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
@@ -41,22 +40,6 @@ import java.util.UUID;
 public class ProfileController {
     private final ProfileIService profileService;
     private final ObjectMapperUtil objectMapperUtil;
-
-    @Operation(summary = "Create a new Profile",
-            description = "Creates and persists a new profile in the system.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Profile successfully created",
-                    content = @Content(schema = @Schema(implementation = ProfileRequestDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content),
-            @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
-    })
-    @PostMapping(value = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> save (@RequestBody @Valid ProfileRequestDTO dto, BindingResult result) {
-        return result.hasErrors()
-                ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
-                : ResponseEntity.status(HttpStatus.CREATED).body(this.profileService.save(dto));
-    }
 
     @Operation(summary = "Update an existing Profile",
             description = "Updates a profile by replacing its data with the provided payload.")

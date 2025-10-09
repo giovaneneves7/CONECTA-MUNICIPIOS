@@ -22,7 +22,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @DiscriminatorValue("CITIZEN")
-public class Citizen extends Profile implements Serializable {
+public class Citizen extends Profile {
 
     @Column(name = "gov_profile_snapshot", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)

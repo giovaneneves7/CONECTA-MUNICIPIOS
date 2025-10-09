@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service;
 
+import java.beans.Transient;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -8,26 +9,35 @@ import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
-
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.event.ConstructionLicenseRequirementCreatedEvent;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.ConstructionLicenseRequirementRepository;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.RequirementTypeRepository;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import jakarta.transaction.Transactional;
 
 /**
  * Service responsible for managing {@link ConstructionLicenseRequirement} entities.
@@ -60,11 +70,17 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     private final ObjectMapperUtil objectMapperUtil;
     private final TechnicalResponsibleRepository technicalResponsibleRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserRepository userRepository;
 
     @Override
     public ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
 
+        User solicitante = userRepository.findById(dto.solicitanteId())
+            .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
+
+        entity.setSolicitante(solicitante);
 
         MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
@@ -152,10 +168,10 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public ConstructionLicenseRequirementResponseDTO findById(Long id) {
+    public ConstructionLicenseRequirementDetailDTO findById(Long id) {
         ConstructionLicenseRequirement entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-        return toResponseDTO(entity);
+        return toDetailDTO(entity);
     }
 
     @Override
@@ -166,7 +182,10 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public void approveAssociation(Long requirementId, UUID responsibleId){
+    public void approveAssociation(AssociationActionRequestDTO dto){
+        Long requirementId = dto.constructionLicenseRequirementId();
+        UUID responsibleId = dto.technicalResponsibleId();
+
         ConstructionLicenseRequirement entity = repository.findById(requirementId)
             .orElseThrow(() -> new BusinessException("Requirement not found"));
 
@@ -181,7 +200,11 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public void rejectAssociation(Long requirementId, UUID responsibleId, RejectionRequestDTO dto){
+    public void rejectAssociation(RejectionRequestDTO dto){
+
+        Long requirementId = dto.constructionLicenseRequirementId();
+        UUID responsibleId = dto.technicalResponsibleId();
+
         ConstructionLicenseRequirement entity = repository.findById(requirementId)
             .orElseThrow(() -> new BusinessException("Requirement not found"));
 
@@ -267,4 +290,76 @@ if (dto.documents() != null) {
         return toResponseDTO(updatedEntity);
     }
 
+    @Override
+    public List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsible(UUID responsibleId) {
+        List<ConstructionLicenseRequirement> requirements = repository.findByTechnicalResponsibleId(responsibleId);
+        return requirements.stream()
+                .map(this::toResponseDTO)
+                .toList();
+    }
+
+    private ConstructionLicenseRequirementDetailDTO toDetailDTO(ConstructionLicenseRequirement entity){
+        if(entity == null){
+            return null;
+        }
+
+        TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
+        User responsibleUser = responsibleEntity.getUser();
+
+            TechnicalResponsibleResponseDto responsibleDTO = new TechnicalResponsibleResponseDto(
+            responsibleEntity.getId(),
+            responsibleEntity.getRegistrationId(),
+            responsibleEntity.getResponsibleType(),
+            responsibleEntity.getImageUrl(),
+            responsibleUser.getPerson().getFullName(), // Supondo que o nome vem da entidade Person
+            responsibleUser.getEmail(),
+            responsibleUser.getPhone()
+    );
+
+    User applicantUser = entity.getSolicitante();
+    Person applicantPerson = applicantUser.getPerson();
+
+    ProfilePublicDataResponseDTO applicantDTO = new ProfilePublicDataResponseDTO(
+        applicantUser.getActiveProfile().getId(),
+        applicantUser.getActiveProfile().getType(),
+        applicantUser.getActiveProfile().getImageUrl(),
+        applicantPerson.getFullName(),
+        applicantPerson.getCpf(),
+        applicantUser.getPhone(),
+        applicantUser.getEmail(),
+        applicantPerson.getGender().toString(),
+        applicantPerson.getBirthDate()
+    );
+
+    List<DocumentResponseDTO> documentDTOs = entity.getDocuments().stream()
+            .map(doc -> new DocumentResponseDTO(
+                    doc.getId(),
+                    doc.getName(),
+                    doc.getFileExtension(),
+                    doc.getFileUrl()
+            ))
+            .toList();
+        return new ConstructionLicenseRequirementDetailDTO(
+            entity.getId(),
+            entity.getCreatedAt(),
+            entity.getTechnicalResponsibleStatus(),
+            applicantDTO,
+            responsibleDTO,
+            entity.getOwner(),
+            entity.getPhone(),
+            entity.getCpfCnpj(),
+            entity.getCep(),
+            entity.getNeighborhood(),
+            entity.getConstructionAddress(),
+            entity.getPropertyNumber(),
+            entity.getReferencePoint(),
+            entity.getStartDate(),
+            entity.getEndDate(),
+            entity.getFloorCount(),
+            entity.getConstructionArea(),
+            entity.getHousingUnitNumber(),
+            entity.getTerrainArea(),
+            documentDTOs
+    );
+    }
 }

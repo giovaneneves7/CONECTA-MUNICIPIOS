@@ -16,11 +16,13 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.T
  */
 public interface ITechnicalResponsibleService {
 
-    TechnicalResponsibleResponseDto save(UUID userId, TechnicalResponsibleRequestDto dto);
+    TechnicalResponsibleResponseDto save(TechnicalResponsibleRequestDto dto);
 
     List<TechnicalResponsibleResponseDto> findAll();
 
     Optional<TechnicalResponsibleResponseDto> findById(UUID id);
 
     void delete(UUID id);
+
+    Optional<TechnicalResponsibleResponseDto> findByRegistrationId(String registrationId);
 }

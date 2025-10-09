@@ -1,5 +1,7 @@
 package br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model;
 
+import java.io.Serializable;
+
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -18,13 +20,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @DiscriminatorValue("TECHNICAL_RESPONSIBLE")
-public class TechnicalResponsible extends Profile{
+public class TechnicalResponsible extends Profile implements Serializable {
 
-    @Column(name = "registration_id", nullable = true)
+    @Column(name = "registration_id", unique = true)
     private String registrationId;
 
     @Column(name = "responsible_type", nullable = true)
-    private String ResponsibleType;
+    private String responsibleType;
 
 
 }

@@ -2,14 +2,13 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record RejectionRequestDTO(
-    @NotNull(message = "Responsible ID is mandatory.")
+public record AssociationActionRequestDTO(
+
+    @NotNull(message = "Technical Responsible ID is mandatory.")
     UUID technicalResponsibleId,
+
     @NotNull(message = "Construction License Requirement ID is mandatory.")
-    long constructionLicenseRequirementId,
-    @NotBlank(message = "Justification for rejection cannot be blank.")
-    String justification
+    long constructionLicenseRequirementId
 ) {}

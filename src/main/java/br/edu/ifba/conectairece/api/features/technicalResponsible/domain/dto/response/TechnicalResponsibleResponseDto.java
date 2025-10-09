@@ -12,14 +12,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 public record TechnicalResponsibleResponseDto(
-    @JsonProperty("id")
+    @JsonProperty(value = "id")
     UUID id,
 
-    @JsonProperty("registrationId")
+    @JsonProperty(value = "registrationId")
     String registrationId,
 
-    @JsonProperty("responsibleType")
-    String ResponsibleType
+    @JsonProperty(value = "responsibleType")
+    String responsibleType,
+
+    @JsonProperty(value = "imageUrl")
+    String imageUrl,
+
+    @JsonProperty(value = "responsibleName")
+    String responsibleName,
+
+    @JsonProperty("email")
+    String email,
+
+    @JsonProperty("phone")
+    String phone
 ) {
 
 }

@@ -3,8 +3,12 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.core.Authentication;
+
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 
@@ -46,7 +50,7 @@ public interface ConstructionLicenseRequirementIService {
      * @param id requirement ID
      * @return response DTO
      */
-    ConstructionLicenseRequirementResponseDTO findById(Long id);
+    ConstructionLicenseRequirementDetailDTO findById(Long id);
 
     /**
      * Deletes a construction license requirement by its identifier.
@@ -57,7 +61,9 @@ public interface ConstructionLicenseRequirementIService {
 
     ConstructionLicenseRequirementResponseDTO update(Long id, ConstructionLicenseRequirementRequestDTO dto);
 
-        void approveAssociation(Long requirementId, UUID responsibleId);
+    void approveAssociation(AssociationActionRequestDTO dto);
 
-        void rejectAssociation(Long requirementId, UUID responsibleId, RejectionRequestDTO dto);
+    void rejectAssociation(RejectionRequestDTO dto);
+
+    List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsible(UUID responsibleId);    
 }

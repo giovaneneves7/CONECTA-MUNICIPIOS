@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
@@ -129,7 +130,7 @@ public class ConstructionLicenseRequirementController {
             @ApiResponse(responseCode = "404", description = "Requirement not found")
     })
     @GetMapping(value = "/construction-license-requirement/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ConstructionLicenseRequirementResponseDTO> getById(
+    public ResponseEntity<ConstructionLicenseRequirementDetailDTO> getById(
             @PathVariable @NotNull Long id) {
         return ResponseEntity.ok(service.findById(id));
     }

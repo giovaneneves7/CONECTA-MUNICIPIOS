@@ -25,7 +25,13 @@ public record TechnicalResponsibleResponseDto(
     String imageUrl,
 
     @JsonProperty(value = "responsibleName")
-    String responsibleName
+    String responsibleName,
+
+    @JsonProperty("email")
+    String email,
+
+    @JsonProperty("phone")
+    String phone
 ) {
 
 }

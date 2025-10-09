@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
@@ -134,6 +135,20 @@ public class TechnicalResponsibleController {
         return service.findByRegistrationId(registrationId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "List all requirements for a specific Technical Responsible",
+               description = "Retrieves a list of all construction license requirements associated with a given technical responsible ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "List of requirements retrieved successfully"),
+        @ApiResponse(responseCode = "404", description = "Technical Responsible not found")
+    })
+    @GetMapping("/{responsibleId}/requirements")
+    public ResponseEntity<List<ConstructionLicenseRequirementResponseDTO>> getRequirementsByResponsibleId(
+            @PathVariable UUID responsibleId) {
+        
+        List<ConstructionLicenseRequirementResponseDTO> requirements = requirementService.findAllByTechnicalResponsible(responsibleId);
+        return ResponseEntity.ok(requirements);
     }
     
 }

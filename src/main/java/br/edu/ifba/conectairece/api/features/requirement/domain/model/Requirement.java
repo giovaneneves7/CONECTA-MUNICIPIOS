@@ -6,13 +6,16 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
+import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
@@ -67,4 +70,8 @@ public abstract class Requirement extends SimplePersistenceEntity{
 
     @OneToMany(mappedBy = "requirement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Document> documents = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "solicitante_user_id", nullable = false)
+    private User solicitante;
 }

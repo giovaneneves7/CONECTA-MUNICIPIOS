@@ -106,15 +106,21 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     private TechnicalResponsibleResponseDto convertToDto (TechnicalResponsible entity){
         User user = entity.getUser();
         String responsibleName = null;
+        String email = null;
+        String phone = null;
     if (user != null && user.getPerson() != null) {
         responsibleName = user.getPerson().getFullName();
+        email = user.getEmail();
+        phone = user.getPhone();
     }
         return new TechnicalResponsibleResponseDto(
             entity.getId(),
             entity.getRegistrationId(),
             entity.getResponsibleType(),
             entity.getImageUrl(),
-            responsibleName
+            responsibleName,
+            email,
+            phone
         );
     }
 

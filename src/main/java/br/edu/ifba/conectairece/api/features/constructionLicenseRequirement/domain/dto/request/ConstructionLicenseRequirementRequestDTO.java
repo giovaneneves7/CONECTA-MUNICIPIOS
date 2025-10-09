@@ -34,6 +34,10 @@ import jakarta.validation.constraints.NotNull;
  * Author: Caio Alves
  */
 public record ConstructionLicenseRequirementRequestDTO (
+    @JsonProperty("solicitanteId")
+    @NotNull(message = "Solicitante ID is mandatory.")
+    UUID solicitanteId,
+    
     @JsonProperty("municipalServiceId")
     @NotNull(message = "Municipal Service ID is mandatory.")
     Long municipalServiceId,

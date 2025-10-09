@@ -148,6 +148,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/technical-responsibles/technical-responsible/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/technical-responsibles/accept-requirement").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/technical-responsibles/refuse-requirement").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/technical-responsibles/*/requirements").permitAll()
 
                         //Public servant controller
                         .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles").permitAll()

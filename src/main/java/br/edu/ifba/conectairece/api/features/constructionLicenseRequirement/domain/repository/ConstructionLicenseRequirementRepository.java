@@ -1,5 +1,8 @@
 package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -20,4 +23,5 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 @Repository
 public interface ConstructionLicenseRequirementRepository extends JpaRepository<ConstructionLicenseRequirement, Long>{
 
+    List<ConstructionLicenseRequirement> findByTechnicalResponsibleId(UUID technicalResponsibleId);
 }

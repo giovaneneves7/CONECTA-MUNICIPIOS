@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequest;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.service.IPublicServantProfileService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -34,7 +35,7 @@ public class PublicServantProfileController {
     @Operation(summary = "Create a new Public Servant Profile, if your user has a admin profile",
             description = "Creates and persists a new Public Servant Profile in the system.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Profile successfully created",
+            @ApiResponse(responseCode = "200", description = "Profile successfully created",
                     content = @Content(schema = @Schema(implementation = PublicServantCreationRequest.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
@@ -51,7 +52,7 @@ public class PublicServantProfileController {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
         PublicServantProfile publicServantProfile = objectMapperUtil.map(dto, PublicServantProfile.class);
-        this.publicServantService.createPublicServantProfile(dto.userId(), publicServantProfile);
-        return ResponseEntity.noContent().build();
+        PublicServantRegisterResponseDTO response = this.publicServantService.createPublicServantProfile(dto.userId(), publicServantProfile);
+        return ResponseEntity.ok(response);
     }
 }

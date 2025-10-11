@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
+import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
@@ -54,4 +55,7 @@ public interface ProfileIService {
      * @return A {@link ProfileResponseCurrentType} object containing the updated active profile information.
      */
     ProfileResponseCurrentType changeActiveProfile(UUID userId, String newActiveType);
+
+    List<PermissionResponseDTO> findAllPermissionsByProfile(UUID profileId, Pageable pageable);
+
 }

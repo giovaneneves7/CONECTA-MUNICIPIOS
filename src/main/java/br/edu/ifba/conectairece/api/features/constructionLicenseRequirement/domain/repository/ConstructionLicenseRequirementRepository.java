@@ -24,4 +24,6 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 public interface ConstructionLicenseRequirementRepository extends JpaRepository<ConstructionLicenseRequirement, Long>{
 
     List<ConstructionLicenseRequirement> findByTechnicalResponsibleId(UUID technicalResponsibleId);
+
+    List<ConstructionLicenseRequirement> findByTechnicalResponsibleRegistrationId(String registrationId);
 }

@@ -108,10 +108,12 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
         String responsibleName = null;
         String email = null;
         String phone = null;
+        String cpf = null;
     if (user != null && user.getPerson() != null) {
         responsibleName = user.getPerson().getFullName();
         email = user.getEmail();
         phone = user.getPhone();
+        cpf = user.getPerson().getCpf();
     }
         return new TechnicalResponsibleResponseDto(
             entity.getId(),
@@ -119,6 +121,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
             entity.getResponsibleType(),
             entity.getImageUrl(),
             responsibleName,
+            cpf,
             email,
             phone
         );

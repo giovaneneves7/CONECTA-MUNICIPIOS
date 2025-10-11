@@ -34,9 +34,9 @@ import jakarta.validation.constraints.NotNull;
  * Author: Caio Alves
  */
 public record ConstructionLicenseRequirementRequestDTO (
-    @JsonProperty("solicitanteId")
+    @JsonProperty("solicitanteProfileId")
     @NotNull(message = "Solicitante ID is mandatory.")
-    UUID solicitanteId,
+    UUID solicitanteProfileId,
     
     @JsonProperty("municipalServiceId")
     @NotNull(message = "Municipal Service ID is mandatory.")
@@ -107,10 +107,10 @@ public record ConstructionLicenseRequirementRequestDTO (
     @NotNull(message = "Terrain area is mandatory.")
     Float terrainArea,
 
-    @JsonProperty("technicalResponsible")
-    @Valid
-    @NotNull(message = "Technical responsible is mandatory.")
-    UUID technicalResponsibleId,
+    @JsonProperty("technicalResponsibleRegistrationId") 
+    @NotNull(message = "Technical responsible registration ID is mandatory.")
+    @NotBlank(message = "Technical responsible registration ID cannot be blank.")
+    String technicalResponsibleRegistrationId,
 
     @JsonProperty("documents")
     @Valid

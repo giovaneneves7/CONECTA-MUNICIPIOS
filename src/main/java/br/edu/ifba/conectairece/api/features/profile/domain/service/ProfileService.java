@@ -1,5 +1,7 @@
 package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
+import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
+import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
@@ -19,8 +21,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Service class responsible for handling business logic related to {@link Profile}.
@@ -124,5 +128,21 @@ public class ProfileService implements ProfileIService {
         userRepository.save(user);
 
         return new ProfileResponseCurrentType(newActiveType);
+    }
+
+    @Override @Transactional(readOnly = true)
+    public List<PermissionResponseDTO> findAllPermissionsByProfile(UUID profileId, Pageable pageable) {
+        Profile profile = repository.findById(profileId)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        Role role = profile.getRole();
+
+        if (role == null || role.getPermissions() == null || role.getPermissions().isEmpty())  {
+            return Collections.emptyList();
+        }
+
+        return role.getPermissions().stream()
+                .map(permission -> this.objectMapperUtil.mapToRecord(permission, PermissionResponseDTO.class))
+                .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestChangeProfileType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
@@ -142,5 +143,18 @@ public class ProfileController {
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
                 : ResponseEntity.status(HttpStatus.CREATED).body(this.profileService.changeActiveProfile(dto.userId(), dto.activeType()));
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Find all permissions for a profile",
+                    content = @Content(schema = @Schema(implementation = PermissionResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "List not found")
+    })
+    @GetMapping(path = "/profile/{profileId}/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAllPermissionsByProfile (
+            @PathVariable("profileId") UUID profileId,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllPermissionsByProfile(profileId, pageable));
     }
 }

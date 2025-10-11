@@ -1,7 +1,7 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.permission.domain.dto.PermissionRequestAddDTO;
+import br.edu.ifba.conectairece.api.features.permission.domain.dto.request.PermissionRequestAddDTO;
 import br.edu.ifba.conectairece.api.features.role.domain.service.IRoleService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;

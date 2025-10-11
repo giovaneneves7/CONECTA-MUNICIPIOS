@@ -122,6 +122,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/profiles/profile").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/profiles/profile/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/profiles/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/profiles/profile/**").permitAll()
 
                         //Users - /api/v1/users
                         .requestMatchers(HttpMethod.GET, "/api/v1/users").permitAll()

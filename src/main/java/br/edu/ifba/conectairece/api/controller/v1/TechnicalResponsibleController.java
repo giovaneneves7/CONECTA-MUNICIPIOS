@@ -150,5 +150,15 @@ public class TechnicalResponsibleController {
         List<ConstructionLicenseRequirementResponseDTO> requirements = requirementService.findAllByTechnicalResponsible(responsibleId);
         return ResponseEntity.ok(requirements);
     }
+
+    @Operation(summary = "List all requirements by Technical Responsible's Registration ID",
+               description = "Retrieves a list of all construction license requirements associated with a given registration ID.")
+    @GetMapping("/registration/{registrationId}/requirements") 
+        public ResponseEntity<List<ConstructionLicenseRequirementResponseDTO>>      getRequirementsByRegistrationId(
+            @PathVariable String registrationId) {        
+                List<ConstructionLicenseRequirementResponseDTO> requirements = requirementService.findAllByTechnicalResponsibleRegistrationId(registrationId);
+        
+            return ResponseEntity.ok(requirements);
+    }
     
 }

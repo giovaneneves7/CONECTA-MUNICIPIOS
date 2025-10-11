@@ -1,6 +1,5 @@
 package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service;
 
-import java.beans.Transient;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -9,9 +8,8 @@ import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+
 
 import lombok.RequiredArgsConstructor;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
@@ -29,6 +27,8 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.Munic
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.RequirementTypeRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
@@ -37,7 +37,6 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.reposit
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
-import jakarta.transaction.Transactional;
 
 /**
  * Service responsible for managing {@link ConstructionLicenseRequirement} entities.
@@ -71,13 +70,16 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     private final TechnicalResponsibleRepository technicalResponsibleRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository; 
 
     @Override
     public ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
 
-        User solicitante = userRepository.findById(dto.solicitanteId())
-            .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+        Profile solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
+            .orElseThrow(() -> new BusinessException("Perfil do solicitante não encontrado"));
 
+        User solicitante = solicitanteProfile.getUser();
+        
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
 
         entity.setSolicitante(solicitante);
@@ -90,8 +92,9 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = technicalResponsibleRepository.findById(dto.technicalResponsibleId())
-            .orElseThrow(() -> new BusinessException("Technical Responsible not found"));
+        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(dto.technicalResponsibleRegistrationId())
+            .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: " + dto.technicalResponsibleRegistrationId()));
+
         entity.setTechnicalResponsible(responsible);
 
         entity.setTechnicalResponsibleStatus(AssociationStatus.PENDING);
@@ -142,8 +145,9 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
             .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = technicalResponsibleRepository.findById(dto.technicalResponsibleId())
-            .orElseThrow(() -> new BusinessException("Technical Responsible not found"));
+        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(dto.technicalResponsibleRegistrationId())
+            .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: " + dto.technicalResponsibleRegistrationId()));
+
         entity.setTechnicalResponsible(responsible);
 
 if (dto.documents() != null) {
@@ -311,7 +315,8 @@ if (dto.documents() != null) {
             responsibleEntity.getRegistrationId(),
             responsibleEntity.getResponsibleType(),
             responsibleEntity.getImageUrl(),
-            responsibleUser.getPerson().getFullName(), // Supondo que o nome vem da entidade Person
+            responsibleUser.getPerson().getFullName(),
+            responsibleUser.getPerson().getCpf(),
             responsibleUser.getEmail(),
             responsibleUser.getPhone()
     );
@@ -361,5 +366,13 @@ if (dto.documents() != null) {
             entity.getTerrainArea(),
             documentDTOs
     );
+    }
+
+    @Override
+    public List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsibleRegistrationId(String registrationId) {
+        List<ConstructionLicenseRequirement> requirements = repository.findByTechnicalResponsibleRegistrationId(registrationId);
+        return requirements.stream()
+                .map(this::toResponseDTO)
+                .toList();
     }
 }

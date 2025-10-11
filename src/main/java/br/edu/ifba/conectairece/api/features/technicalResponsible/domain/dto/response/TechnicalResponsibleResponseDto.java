@@ -27,6 +27,9 @@ public record TechnicalResponsibleResponseDto(
     @JsonProperty(value = "responsibleName")
     String responsibleName,
 
+    @JsonProperty("cpf")
+    String cpf,
+
     @JsonProperty("email")
     String email,
 

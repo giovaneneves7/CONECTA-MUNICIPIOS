@@ -65,5 +65,7 @@ public interface ConstructionLicenseRequirementIService {
 
     void rejectAssociation(RejectionRequestDTO dto);
 
-    List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsible(UUID responsibleId);    
+    List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsible(UUID responsibleId);
+    
+    List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsibleRegistrationId(String registrationId);
 }

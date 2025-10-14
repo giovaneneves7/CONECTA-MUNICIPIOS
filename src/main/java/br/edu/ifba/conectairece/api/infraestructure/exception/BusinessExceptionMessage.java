@@ -20,7 +20,8 @@ public enum BusinessExceptionMessage {
     USER_WITHOUT_PROFILES("User has no associated profiles."),
     INVALID_DATA("The data is not valid."),
     USER_ALREADY_HAS_THIS_PROFILE("The user already has this profile"),
-    PROFILE_ALREADY_HAS_THIS_PERMISSION("The profile already has this permission");
+    PROFILE_ALREADY_HAS_THIS_PERMISSION("The profile already has this permission"),
+    DOCUMENT_ALREADY_REVIEWED("The document has already been reviewed, and its status cannot be changed.");
 
     private final String message;
 

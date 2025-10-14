@@ -1,46 +1,108 @@
 package br.edu.ifba.conectairece.api.features.document.domain.model;
 
+import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Represents a document associated with a {@link Requirement}.
- * Stores metadata about uploaded files, such as:
- * - File name.
- * - File extension.
- * - File storage URL.
- *
- * Relationships:
- * - Many documents can belong to one requirement.
- *
- * This class is useful for managing and tracking supporting documentation
- * required by different municipal services and their respective requirements.
- * 
- * Author: Caio Alves
- */
+import org.springframework.util.Assert;
 
+/**
+ * Represents a document submitted as part of a {@link Requirement}.
+ * <p>
+ * This entity encapsulates all metadata and the lifecycle state of a single piece of
+ * documentation, such as a PDF or an image file. Its state transitions (e.g., from PENDING
+ * to APPROVED) are managed through explicit business methods to ensure consistency.
+ * </p>
+ *
+ * @author Caio Alves, Andesson Reis
+ */
 @Entity
 @Table(name = "documents")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Document extends PersistenceEntity{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Document extends PersistenceEntity {
 
+    /**
+     * The original name of the uploaded file.
+     */
+    @Column(nullable = false)
     private String name;
+
+    /**
+     * The file extension, stored separately for easier type identification.
+     */
+    @Column(nullable = false)
     private String fileExtension;
+
+    /**
+     * The URL pointing to the stored file, typically in a cloud storage service.
+     */
+    @Column(nullable = false)
     private String fileUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "requirement_id")
+    /**
+     * A note or justification related to the document's review process.
+     * Primarily used to store the reason for rejection.
+     */
+    @Column(columnDefinition = "TEXT")
+    private String reviewNote;
+
+    /**
+     * The current status of the document in the review lifecycle.
+     * Defaults to PENDING upon creation.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DocumentStatus status = DocumentStatus.PENDING;
+
+    /**
+     * The parent Requirement to which this document belongs.
+     * A document cannot exist without being associated with a requirement.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "requirement_id", nullable = false)
     private Requirement requirement;
 
+    public Document(String name, String fileExtension, String fileUrl, Requirement requirement) {
+        Assert.hasText(name, "Document name cannot be blank.");
+        Assert.hasText(fileUrl, "File URL cannot be blank.");
+        Assert.notNull(requirement, "Requirement cannot be null.");
+
+        this.name = name;
+        this.fileExtension = fileExtension;
+        this.fileUrl = fileUrl;
+        this.requirement = requirement;
+    }
+    /**
+     * Approves the document, transitioning its status to APPROVED.
+     * This action is only valid if the document is currently PENDING.
+     *
+     * @throws IllegalStateException if the document is not in PENDING status.
+     */
+    public void approve() {
+        Assert.state(this.status == DocumentStatus.PENDING, "Cannot approve a document that is not in PENDING status.");
+        this.status = DocumentStatus.APPROVED;
+        this.reviewNote = null; // Clear any previous notes on approval.
+    }
+
+    /**
+     * Rejects the document, transitioning its status to REJECTED.
+     * This action is only valid if the document is currently PENDING.
+     *
+     * @param justification The mandatory reason for the rejection.
+     * @throws IllegalStateException if the document is not in PENDING status.
+     */
+    public void reject(String justification) {
+        Assert.state(this.status == DocumentStatus.PENDING, "Cannot reject a document that is not in PENDING status.");
+        Assert.hasText(justification, "A justification is required to reject a document.");
+
+        this.status = DocumentStatus.REJECTED;
+        this.reviewNote = justification;
+    }
 }

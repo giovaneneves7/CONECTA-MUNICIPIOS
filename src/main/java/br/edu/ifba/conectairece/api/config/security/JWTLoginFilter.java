@@ -39,7 +39,7 @@ public class JWTLoginFilter extends OncePerRequestFilter {
             , "/api/v1/municipal-services/**", "/api/v1/municipal-services", "/api/v1/requests/**", "/api/v1/requests", "/api/v1/requirement-types/**",
             "/api/v1/requirement-types", "/api/v1/construction-license-requirements", "/api/v1/profiles", "/api/v1/profiles/**", "/api/v1/users", "/api/v1/users/**",
             "/api/v1/public-servant-profiles", "/api/v1/public-servant-profiles/**", "/api/v1/roles", "/api/v1/roles/**", "/api/v1/admin-profiles",
-            "/api/v1/admin-profiles/**");
+            "/api/v1/admin-profiles/**", "/api/v1/documents", "/api/v1/documents/**");
 
     private static final String AUTH_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";

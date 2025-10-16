@@ -66,7 +66,7 @@ public class AdminService implements IAdminService{
     }
 
     @Override @Transactional
-    public AdminResponseDTO update(UUID userId, AdminProfile profile) {
+    public void update(UUID userId, AdminProfile profile) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -79,7 +79,7 @@ public class AdminService implements IAdminService{
         existing.setType(profile.getType());
         existing.setImageUrl(profile.getImageUrl());
 
-        return objectMapperUtil.mapToRecord(adminProfileRepository.save(existing),  AdminResponseDTO.class);
+        adminProfileRepository.save(existing);
     }
 
     @Override @Transactional

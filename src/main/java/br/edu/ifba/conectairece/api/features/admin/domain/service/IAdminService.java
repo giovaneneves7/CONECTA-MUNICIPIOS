@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface IAdminService {
     AdminResponseDTO createAdmin(UUID userId, AdminProfile admin);
-    AdminResponseDTO update(UUID userId, AdminProfile admin);
+    void update(UUID userId, AdminProfile admin);
     void delete(UUID id);
     AdminResponseDTO findById(UUID id);
     List<AdminResponseDTO> findAll(Pageable pageable);

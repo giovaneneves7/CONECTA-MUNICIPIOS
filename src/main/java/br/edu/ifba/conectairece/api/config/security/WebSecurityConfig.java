@@ -175,6 +175,14 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         // Step controller
                         .requestMatchers(HttpMethod.POST, "/api/v1/steps/**").permitAll()
 
+                        //General Evaluation Item
+                        .requestMatchers(HttpMethod.POST, "/api/v1/general-evaluation-items").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/general-evaluation-items/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/general-evaluation-items/general-evaluation-item").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/general-evaluation-items/general-evaluation-item/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/general-evaluation-items/general-evaluation-item/request").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/general-evaluation-items/general-evaluation-item/request/**").permitAll()
+
                         // Database console for testing
                         //TODO: Remove it
                         .requestMatchers("/h2-console/**").permitAll()

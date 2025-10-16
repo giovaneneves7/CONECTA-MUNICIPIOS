@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.ifba.conectairece.api.features.generalEvaluationItem.domain.model.GeneralEvaluationItem;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import br.edu.ifba.conectairece.api.features.update.domain.model.Update;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
@@ -67,6 +68,8 @@ public class Request extends PersistenceEntity{
     @OneToMany(mappedBy = "request", orphanRemoval = true)
     private List<Update>  updates = new ArrayList<>();
 
+    @OneToMany(mappedBy = "request")
+    private List<GeneralEvaluationItem> generalEvaluationItems = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

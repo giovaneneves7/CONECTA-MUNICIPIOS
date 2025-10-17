@@ -2,6 +2,9 @@ package br.edu.ifba.conectairece.api.features.step.domain.service;
 
 import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepResponseDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * @author Giovane Neves
@@ -9,5 +12,6 @@ import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 public interface IStepService {
 
     StepResponseDTO createStep(Step step);
+    List<StepResponseDTO> getAllSteps(Pageable pageable);
 
 }

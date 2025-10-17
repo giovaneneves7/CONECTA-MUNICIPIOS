@@ -1,6 +1,8 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.step.domain.dto.request.StepRequestDTO;
+import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepFullDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepResponseDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.features.step.domain.service.IStepService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -12,14 +14,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Giovane Neves
@@ -41,7 +43,7 @@ public class StepController {
                     content = @Content),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
     })
-    @PostMapping(value = "/step", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/step", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<?> createStep(
             @RequestBody @Valid StepRequestDTO dto,
             BindingResult result
@@ -50,6 +52,30 @@ public class StepController {
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
                 : ResponseEntity.status(HttpStatus.CREATED).body(this.stepService.createStep(this.objectMapperUtil.map(dto, Step.class)));
+
+    }
+
+    @Operation(
+            summary = "Get all steps in the database",
+            description = "Get a list with all steps in the database"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Step list found",
+                    content = @Content(schema = @Schema(implementation = StepFullDataResponseDTO.class))
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Step list not found",
+                    content = @Content
+            )
+    })
+    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<?> getSteps(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.stepService.getAllSteps(pageable));
 
     }
 }

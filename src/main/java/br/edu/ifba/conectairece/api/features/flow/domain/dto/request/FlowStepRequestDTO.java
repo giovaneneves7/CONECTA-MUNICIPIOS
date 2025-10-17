@@ -14,6 +14,9 @@ public record FlowStepRequestDTO (
         UUID flowId,
         @NotNull(message = "stepId is required")
         @JsonProperty("stepId")
-        UUID stepId
+        UUID stepId,
+        @NotNull(message = "'stepOrder' is required")
+        @JsonProperty("stepOrder")
+        long stepOrder
 ){
 }

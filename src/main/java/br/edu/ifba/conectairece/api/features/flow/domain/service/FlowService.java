@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.flow.domain.service;
 
+import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowStepRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowFullDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowResponseDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowStepResponseDTO;
@@ -10,6 +11,8 @@ import br.edu.ifba.conectairece.api.features.flow.domain.repository.IFlowStepRep
 import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepFullDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.features.step.domain.repository.IStepRepository;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +41,18 @@ public class FlowService implements IFlowService {
     }
 
     @Override
-    public FlowStepResponseDTO createFlowStep(FlowStep flowStep) {
+    public FlowStepResponseDTO createFlowStep(FlowStepRequestDTO dto) {
+
+        Flow flow = this.flowRepository.findById(dto.flowId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        Step step = this.stepRepository.findById(dto.stepId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        FlowStep flowStep = new FlowStep();
+        flowStep.setFlow(flow);
+        flowStep.setStep(step);
+        flowStep.setStepOrder(dto.stepOrder());
 
         return this.objectMapperUtil.mapToRecord(this.flowStepRepository.save(flowStep), FlowStepResponseDTO.class);
 

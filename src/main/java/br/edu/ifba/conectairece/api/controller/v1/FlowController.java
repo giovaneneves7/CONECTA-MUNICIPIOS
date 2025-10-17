@@ -77,7 +77,7 @@ public class FlowController {
 
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
-                : ResponseEntity.status(HttpStatus.CREATED).body(this.flowService.createFlowStep(this.objectMapperUtil.map(dto, FlowStep.class)));
+                : ResponseEntity.status(HttpStatus.CREATED).body(this.flowService.createFlowStep(dto));
     }
 
     @Operation(summary = "List all flows",

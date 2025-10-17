@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.features.monitoring.domain.model;
 
 import br.edu.ifba.conectairece.api.features.monitoring.domain.enums.MonitoringStatus;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
+import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +48,9 @@ public class Monitoring extends PersistenceEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "monitoring_status", nullable = false, length = 20)
     private MonitoringStatus monitoringStatus;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "step_id", nullable = false)
+    private Step step;
 
 }

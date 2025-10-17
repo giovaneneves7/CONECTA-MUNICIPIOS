@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.features.step.domain.model;
 
 import br.edu.ifba.conectairece.api.features.flow.domain.model.FlowStep;
+import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,5 +47,8 @@ public class Step extends PersistenceEntity {
 
     @OneToMany(mappedBy = "step")
     private List<FlowStep> flowSteps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "step")
+    private List<Monitoring> monitorings = new ArrayList<>();
 
 }

@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
+import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowStepRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
@@ -9,6 +10,7 @@ import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,6 +25,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 /**
  * @author Giovane Neves
@@ -65,7 +69,7 @@ public class FlowController {
                     content = @Content),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
     })
-    @GetMapping(value = "/flow/steps/step", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/flow/steps/step", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<?> createFlowStep(
             @RequestBody @Valid FlowStepRequestDTO dto,
             BindingResult result
@@ -75,4 +79,19 @@ public class FlowController {
                 ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
                 : ResponseEntity.status(HttpStatus.CREATED).body(this.flowService.createFlowStep(this.objectMapperUtil.map(dto, FlowStep.class)));
     }
+
+    @Operation(summary = "List all flows",
+            description = "Retrieves a list of all registered flows.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of flows retrieved",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Flow.class))))
+    })
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<?> getAll(){
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(this.flowService.getAllFlows());
+
+    }
+
+
 }

@@ -22,5 +22,6 @@ public class FlowStep extends PersistenceEntity {
     @JoinColumn(name = "step_id", nullable = false)
     private Step step;
 
-    private long order;
+    @Column(name = "step_order")
+    private long stepOrder;
 }

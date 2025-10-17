@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.step.domain.dto;
+package br.edu.ifba.conectairece.api.features.step.domain.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;

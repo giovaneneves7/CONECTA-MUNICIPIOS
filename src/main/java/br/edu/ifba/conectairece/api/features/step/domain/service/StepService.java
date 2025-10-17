@@ -1,6 +1,6 @@
 package br.edu.ifba.conectairece.api.features.step.domain.service;
 
-import br.edu.ifba.conectairece.api.features.step.domain.dto.StepResponseDTO;
+import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepResponseDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.features.step.domain.repository.IStepRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;

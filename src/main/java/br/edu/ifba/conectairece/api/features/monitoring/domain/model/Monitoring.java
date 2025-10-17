@@ -39,16 +39,10 @@ public class Monitoring extends PersistenceEntity {
     @Column(name = "code", nullable = false)
     private String code;
 
-    @Column(name = "name",  nullable = false, length = 50)
-    private String name;
-
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "monitoring_status", nullable = false, length = 20)
     private MonitoringStatus monitoringStatus;
-    
+
     @ManyToOne
     @JoinColumn(name = "step_id", nullable = false)
     private Step step;

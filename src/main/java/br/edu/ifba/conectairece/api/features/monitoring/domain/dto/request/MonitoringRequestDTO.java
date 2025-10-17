@@ -14,27 +14,21 @@ import java.util.UUID;
  */
 public record MonitoringRequestDTO(
 
-        @NotNull(message = "requestId is required")
+        @NotNull(message = "'requestId' is required")
         @NotBlank(message = "requestId ")
         @JsonProperty("requestId")
         UUID requestId,
 
-        @NotNull(message = "Code is required")
+        @NotNull(message = "'stepId' is required")
+        @JsonProperty("stepId")
+        UUID stepId,
+
+        @NotNull(message = "'Code' is required")
         @NotBlank(message = "Code cannot be blank")
         @JsonProperty("code")
         String code,
 
-        @NotNull(message = "Name is required")
-        @NotBlank(message = "Name cannot be blank")
-        @JsonProperty("name")
-        String name,
-
-        @NotNull(message = "imageUrl is required")
-        @NotBlank(message = "ImageUrl cannot be blank")
-        @JsonProperty("imageUrl")
-        String imageUrl,
-
-        @NotNull(message = "monitoringStatus is required")
+        @NotNull(message = "'monitoringStatus' is required")
         @JsonProperty("monitoringStatus")
         MonitoringStatus monitoringStatus
 ) {

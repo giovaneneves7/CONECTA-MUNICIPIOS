@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 
 
 /**
@@ -51,8 +52,8 @@ public record ConstructionLicenseRequirementResponseDTO(
     @JsonProperty("constructionArea")
     Float constructionArea,
 
-    //@JsonProperty("technicalResponsible")
-   // TechnicalResponsibleResponseDTO technicalResponsible,
+    @JsonProperty("technicalResponsibleName") 
+    String technicalResponsibleName,
 
     //@JsonProperty("requirementType")
     //RequirementTypeResponseDTO requirementType,

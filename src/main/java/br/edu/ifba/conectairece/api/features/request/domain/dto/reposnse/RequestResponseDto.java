@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 
 /**
  * Data Transfer Object for representing Request data in API responses.
@@ -38,5 +37,4 @@ public record RequestResponseDto (
     @JsonProperty("note")
     String note
 
-    //MunicipalServiceResponseDto municipalService
 ){}

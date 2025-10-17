@@ -105,12 +105,10 @@ public class ProfileService implements ProfileIService {
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
     @Override
-    public List<RequestResponseDto> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
+    public Page<RequestResponseDto> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
 
         return this.requestRepository.findAllByProfileId(userId, pageable)
-                .stream()
-                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
-                .toList();
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class));
 
     }
 

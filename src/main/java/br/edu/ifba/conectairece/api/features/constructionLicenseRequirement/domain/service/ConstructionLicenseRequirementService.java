@@ -114,7 +114,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
 
         eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
 
-        return objectMapperUtil.mapToRecord(saved, ConstructionLicenseRequirementResponseDTO.class);
+        return toResponseDTO(saved);
     }
 
     @Override
@@ -229,6 +229,17 @@ if (dto.documents() != null) {
         if (entity == null) {
             return null;
         }
+
+        String responsibleName = null;
+        TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
+        
+        if (responsibleEntity != null && 
+            responsibleEntity.getUser() != null && 
+            responsibleEntity.getUser().getPerson() != null) {
+        
+        // Extraímos apenas o nome para uma variável String
+            responsibleName = responsibleEntity.getUser().getPerson().getFullName();
+        }
         
         return new ConstructionLicenseRequirementResponseDTO(
             entity.getId(),
@@ -239,6 +250,7 @@ if (dto.documents() != null) {
             entity.getCpfCnpj(),
             entity.getConstructionAddress(),
             entity.getConstructionArea(),
+            responsibleName,
             entity.getTechnicalResponsibleStatus()
         );
     }

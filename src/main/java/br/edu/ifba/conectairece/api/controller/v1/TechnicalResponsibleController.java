@@ -76,15 +76,6 @@ public class TechnicalResponsibleController {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @Operation(summary = "Retrieve a Technical Responsible by ID",
-        description = "Fetches details of a technical responsible by its ID.")
-
-    @GetMapping("/technical-responsible/{id}")
-    public ResponseEntity<TechnicalResponsibleResponseDto> getById(@PathVariable UUID id) {
-        return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
 
     @Operation(summary = "Delete a Technical Responsible by ID",
         description = "Deletes a technical responsible from the system by its ID.")
@@ -130,8 +121,8 @@ public class TechnicalResponsibleController {
                      content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDto.class))),
         @ApiResponse(responseCode = "404", description = "Technical Responsible not found with the given registration ID")
     })
-    @GetMapping("technical-responsible/search-by-registration-id")
-    public ResponseEntity<?> getByRegistrationId(@RequestParam String registrationId) {
+    @GetMapping("technical-responsible/{registrationId}")
+    public ResponseEntity<?> getByRegistrationId(@PathVariable String registrationId) {
         return service.findByRegistrationId(registrationId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

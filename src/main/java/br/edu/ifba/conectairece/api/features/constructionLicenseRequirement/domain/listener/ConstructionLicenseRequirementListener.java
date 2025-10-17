@@ -24,10 +24,10 @@ public class ConstructionLicenseRequirementListener {
         RequestPostRequestDto requestDto = new RequestPostRequestDto(
             requirement.getId().toString(),    
                             //    Check logic for estimating work completion
-            LocalDateTime.now().plusDays(30),  
+            requirement.getEndDate(),  
             requirement.getRequirementType().getName(),         
-            "Request created automatically from ConstructionLicenseRequirement " + requirement.getId(), 
-            requirement.getTechnicalResponsible().getId(),        
+            "Request created automatically from ConstructionLicenseRequirement " + requirement.getId(),
+            requirement.getSolicitante().getActiveProfile().getId(),    
             requirement.getMunicipalService().getId()            
         );
 

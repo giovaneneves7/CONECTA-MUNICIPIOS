@@ -7,6 +7,7 @@ import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowStepRe
 import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Giovane Neves
@@ -16,5 +17,6 @@ public interface IFlowService {
     FlowResponseDTO createFlow(final Flow flow);
     FlowStepResponseDTO createFlowStep(final FlowStepRequestDTO dto);
     List<FlowFullDataResponseDTO> getAllFlows();
+    FlowFullDataResponseDTO getFlowById(final UUID id);
 
 }

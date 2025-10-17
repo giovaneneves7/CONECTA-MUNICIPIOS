@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowStepRequestDTO;
+import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowFullDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowResponseDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
 import br.edu.ifba.conectairece.api.features.flow.domain.model.FlowStep;
 import br.edu.ifba.conectairece.api.features.flow.domain.service.IFlowService;
@@ -84,12 +86,28 @@ public class FlowController {
             description = "Retrieves a list of all registered flows.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of flows retrieved",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = Flow.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = FlowFullDataResponseDTO.class))))
     })
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<?> getAll(){
 
-        return ResponseEntity.status(HttpStatus.FOUND).body(this.flowService.getAllFlows());
+        return ResponseEntity.status(HttpStatus.OK).body(this.flowService.getAllFlows());
+
+    }
+
+    @Operation(summary = "Get a flow by the id passed as a parameter")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Get a flow by the id passed as a parameter",
+                    content = @Content(schema = @Schema(implementation = FlowFullDataResponseDTO.class))
+            )
+    })
+    @GetMapping(value = "/flow/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<?> getFlowById(@PathVariable("id") UUID id){
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.flowService.getFlowById(id));
 
     }
 

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Giovane Neves
@@ -66,25 +67,7 @@ public class FlowService implements IFlowService {
 
         for(Flow flow : flows) {
 
-            List<Step> steps = stepRepository.findAllByFlowId(flow.getId());
-
-            List<StepFullDataResponseDTO> stepDTOs = steps.stream()
-                    .map(step -> {
-
-                        FlowStep flowStep = flowStepRepository.findByFlowIdAndStepId(flow.getId(), step.getId())
-                                .orElse(null);
-                        long order = (flowStep != null) ? flowStep.getStepOrder() : 0;
-
-                        return new StepFullDataResponseDTO(
-                                step.getId(),
-                                step.getName(),
-                                step.getCode(),
-                                step.getImageUrl(),
-                                order
-                        );
-                    })
-                    .sorted(Comparator.comparingLong(StepFullDataResponseDTO::order))
-                    .toList();
+            List<StepFullDataResponseDTO> stepDTOs = this.findStepsByFlowId(flow.getId());
 
             FlowFullDataResponseDTO flowDTO = new FlowFullDataResponseDTO(
                     flow.getId(),
@@ -97,6 +80,44 @@ public class FlowService implements IFlowService {
         }
         return responseList;
 
+    }
+
+    @Override
+    public FlowFullDataResponseDTO getFlowById(final UUID id) {
+
+        Flow flow = this.flowRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        List<StepFullDataResponseDTO> stepDTOs = this.findStepsByFlowId(flow.getId());
+
+        return new FlowFullDataResponseDTO(
+                flow.getId(),
+                flow.getName(),
+                stepDTOs
+        );
+
+    }
+
+    private List<StepFullDataResponseDTO> findStepsByFlowId(final UUID flowId){
+        List<Step> steps = stepRepository.findAllByFlowId(flowId);
+
+        return steps.stream()
+                .map(step -> {
+
+                    FlowStep flowStep = flowStepRepository.findByFlowIdAndStepId(flowId, step.getId())
+                            .orElse(null);
+                    long order = (flowStep != null) ? flowStep.getStepOrder() : 0;
+
+                    return new StepFullDataResponseDTO(
+                            step.getId(),
+                            step.getName(),
+                            step.getCode(),
+                            step.getImageUrl(),
+                            order
+                    );
+                })
+                .sorted(Comparator.comparingLong(StepFullDataResponseDTO::order))
+                .toList();
     }
 
 }

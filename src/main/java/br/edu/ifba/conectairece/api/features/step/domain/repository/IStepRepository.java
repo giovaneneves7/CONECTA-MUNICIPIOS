@@ -16,7 +16,7 @@ public interface IStepRepository extends JpaRepository<Step, UUID> {
         FROM Step s
         JOIN FlowStep fs ON fs.step = s
         WHERE fs.flow.id = :flowId
-        ORDER BY fs.order ASC
+        ORDER BY fs.stepOrder ASC
     """)
     List<Step> findAllByFlowId(UUID id);
 

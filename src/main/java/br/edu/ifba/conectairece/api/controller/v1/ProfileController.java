@@ -118,7 +118,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "404", description = "Request list not found")
     })
     @GetMapping(path = "/profile/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<?>> getRequestListByUserId(@Valid @PathVariable("id") final UUID profileId, @ParameterObject  @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseEntity<Page<?>> getRequestListByUserId(@Valid @PathVariable("id") final UUID profileId, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
 
         return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllRequestsByProfileId(profileId, pageable));
 

@@ -1,0 +1,39 @@
+package br.edu.ifba.conectairece.api.features.evaluationItem.domain.model;
+
+import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
+import br.edu.ifba.conectairece.api.features.evaluationItem.domain.enums.EvaluationItemStatus;
+import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+/**
+ * Represents a single item used for evaluating a submitted document.
+ * <p>
+ * This entity stores the reviewer's note and the current status (e.g., COMPLETED, INCOMPLETE)
+ * for a specific part of the document review process. It maintains a Many-to-One relationship
+ * with the {@link Document} it evaluates.
+ *
+ * @author Jorge Roberto
+ */
+@Entity
+@Table(name = "evaluation_items")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
+public class EvaluationItem extends PersistenceEntity {
+
+    @Column(name = "note",  nullable = false)
+    private String note;
+
+    @Column(name = "status",  nullable = false)
+    private EvaluationItemStatus status;
+
+    /**
+     * The Document to which this evaluation item belongs.
+     * This establishes the Many-to-One relationship, linking the evaluation back to the document.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "document_id", nullable = false)
+    private Document document;
+}

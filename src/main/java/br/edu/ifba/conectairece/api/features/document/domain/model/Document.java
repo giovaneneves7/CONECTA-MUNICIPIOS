@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.features.document.domain.model;
 
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
+import br.edu.ifba.conectairece.api.features.evaluationItem.domain.model.EvaluationItem;
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.*;
@@ -10,6 +11,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.springframework.util.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a document submitted as part of a {@link Requirement}.
@@ -68,6 +72,9 @@ public class Document extends PersistenceEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "requirement_id", nullable = false)
     private Requirement requirement;
+
+    @OneToMany(mappedBy = "document")
+    private List<EvaluationItem> evaluationItems = new ArrayList<>();
 
     public Document(String name, String fileExtension, String fileUrl, Requirement requirement) {
         Assert.hasText(name, "Document name cannot be blank.");

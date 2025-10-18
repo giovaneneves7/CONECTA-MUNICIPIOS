@@ -202,6 +202,15 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/api/v1/general-evaluation-items/general-evaluation-item/request").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/general-evaluation-items/general-evaluation-item/request/**").permitAll()
 
+                        //Evaluation Item
+                        .requestMatchers(HttpMethod.POST, "/api/v1/evaluation-items/evaluation-item").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/evaluation-items/evaluation-item/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/evaluation-items/evaluation-item").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/evaluation-items/evaluation-item/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/evaluation-items/evaluation-item/document").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/evaluation-items/evaluation-item/document/**").permitAll()
+
+
                         // Database console for testing
                         //TODO: Remove it
                         .requestMatchers("/h2-console/**").permitAll()

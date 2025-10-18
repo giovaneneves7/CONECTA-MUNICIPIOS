@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link IDocumentService} responsible for handling the business logic
@@ -52,19 +54,6 @@ public class DocumentService implements IDocumentService {
     private final ObjectMapperUtil objectMapperUtil;
     private final RequirementRepository requirementRepository;
 
-    /**
-     * Creates a new {@link Document} associated with an existing requirement.
-     * <p>
-     * This method retrieves the corresponding requirement entity, binds it to
-     * the document, persists the document, and returns a DTO representation.
-     * The created document will typically have the initial state {@code PENDING}.
-     * </p>
-     *
-     * @param requirementId The numeric ID of the {@link br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement}.
-     * @param document      The document entity to be created and linked to the requirement.
-     * @return A {@link DocumentDetailResponseDTO} containing the persisted document details.
-     * @throws BusinessException if the requirement with the given ID does not exist.
-     */
     @Override
     @Transactional
     public DocumentDetailResponseDTO createDocument(Long requirementId, Document document) {
@@ -77,45 +66,36 @@ public class DocumentService implements IDocumentService {
         return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
     }
 
-    /**
-     * Approves a document by changing its state from {@code PENDING} to {@code APPROVED}.
-     * <p>
-     * This operation is transactional and ensures the document exists before updating.
-     * The state transition logic is handled internally by the {@link Document} entity.
-     * </p>
-     *
-     * @param documentId The unique identifier of the document to approve.
-     * @return A {@link DocumentDetailResponseDTO} containing the updated document state.
-     * @throws BusinessException if the document does not exist.
-     * @throws IllegalStateException if the document is not in a valid state for approval.
-     */
+    @Override
+    @Transactional(readOnly = true)
+    public DocumentDetailResponseDTO findDocumentById(UUID documentId) {
+        Document document = documentRepository.findById(documentId)
+                .orElseThrow(() -> new BusinessException("Document with ID " + documentId + " not found."));
+        return objectMapperUtil.mapToRecord(document, DocumentDetailResponseDTO.class);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DocumentDetailResponseDTO> findAllDocuments() {
+        return documentRepository.findAll().stream()
+                .map(doc -> objectMapperUtil.mapToRecord(doc, DocumentDetailResponseDTO.class))
+                .collect(Collectors.toList());
+    }
+
     @Override
     @Transactional
     public DocumentDetailResponseDTO approveDocument(UUID documentId) {
-        Document document = findDocumentById(documentId);
+        Document document = findDocumentEntityById(documentId);
         document.approve();
 
         Document savedDocument = documentRepository.save(document);
         return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
     }
 
-    /**
-     * Rejects a document with a provided justification.
-     * <p>
-     * This operation transitions the document’s state from {@code PENDING} to {@code REJECTED}.
-     * The rejection reason is stored in the document entity for auditing purposes.
-     * </p>
-     *
-     * @param documentId   The unique identifier of the document to reject.
-     * @param rejectionDto A DTO containing the rejection justification.
-     * @return A {@link DocumentDetailResponseDTO} representing the rejected document.
-     * @throws BusinessException if the document does not exist.
-     * @throws IllegalStateException if the document is not in a {@code PENDING} state.
-     */
     @Override
     @Transactional
     public DocumentDetailResponseDTO rejectDocument(UUID documentId, DocumentRejectionDTO rejectionDto) {
-        Document document = findDocumentById(documentId);
+        Document document = findDocumentEntityById(documentId);
         document.reject(rejectionDto.getJustification());
 
         Document savedDocument = documentRepository.save(document);
@@ -124,16 +104,12 @@ public class DocumentService implements IDocumentService {
 
     /**
      * Retrieves a {@link Document} by its unique identifier or throws a standardized exception.
-     * <p>
-     * This helper method encapsulates lookup logic and ensures consistent error handling
-     * throughout the service layer.
-     * </p>
      *
      * @param documentId The UUID of the document to retrieve.
      * @return The corresponding {@link Document} entity.
      * @throws BusinessException if no document is found with the provided ID.
      */
-    private Document findDocumentById(UUID documentId) {
+    private Document findDocumentEntityById(UUID documentId) {
         return documentRepository.findById(documentId)
                 .orElseThrow(() -> new BusinessException("Document with ID " + documentId + " not found."));
     }

@@ -176,6 +176,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/documents").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/documents/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/documents").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/documents/**").permitAll()
 
 
                         // flow controller

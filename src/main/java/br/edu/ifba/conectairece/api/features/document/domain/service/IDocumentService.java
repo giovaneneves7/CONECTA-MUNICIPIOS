@@ -4,20 +4,21 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.request.Documen
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
  * Service interface for managing the business logic of {@link Document} entities.
  * <p>
- * Defines the contract for core document-related operations — creation, approval, and rejection —
- * encapsulating the domain logic and abstracting persistence or controller-specific concerns.
+ * Defines the contract for document management operations such as creation, retrieval,
+ * approval, rejection, and any other document-related workflows.
+ * Encapsulates domain logic and abstracts persistence or controller-specific concerns.
  * </p>
  *
- * @author
- *     Andesson Reis
- * @since
- *     1.0
+ * @author Andesson
+ * @since 1.0
  */
+
 public interface IDocumentService {
 
     /**
@@ -40,7 +41,22 @@ public interface IDocumentService {
      */
     DocumentDetailResponseDTO createDocument(Long requirementId, Document document);
 
+    /**
+     * Retrieves a document by its unique identifier.
+     *
+     * @param documentId The UUID of the document to retrieve.
+     * @return A {@link DocumentDetailResponseDTO} representing the document.
+     * @throws br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException
+     *         if the document does not exist.
+     */
+    DocumentDetailResponseDTO findDocumentById(UUID documentId);
 
+    /**
+     * Retrieves all documents in the system.
+     *
+     * @return A list of {@link DocumentDetailResponseDTO} representing all documents.
+     */
+    List<DocumentDetailResponseDTO> findAllDocuments();
     /**
      * Approves a document by its unique identifier.
      * <p>

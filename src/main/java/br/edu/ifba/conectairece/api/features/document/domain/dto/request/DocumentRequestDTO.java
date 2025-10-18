@@ -28,5 +28,8 @@ public record DocumentRequestDTO (
 
     @JsonProperty("fileUrl")
     @NotBlank(message = "File URL cannot be blank.")
-    String fileUrl
+    String fileUrl,
+
+    @JsonProperty("submissionNote")
+    String submissionNote
 ) {}

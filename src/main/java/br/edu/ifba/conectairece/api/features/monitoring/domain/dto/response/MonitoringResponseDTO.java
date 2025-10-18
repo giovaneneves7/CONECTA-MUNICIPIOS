@@ -19,11 +19,8 @@ public record MonitoringResponseDTO(
     @JsonProperty("code")
     String code,
 
-    @JsonProperty("name")
-    String name,
-
-    @JsonProperty("imageUrl")
-    String imageUrl,
+    @JsonProperty("stepId")
+    UUID stepId,
 
     @JsonProperty("monitoringStatus")
     MonitoringStatus monitoringStatus

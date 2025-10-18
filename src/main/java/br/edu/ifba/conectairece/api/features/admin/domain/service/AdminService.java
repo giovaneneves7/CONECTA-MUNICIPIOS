@@ -1,10 +1,25 @@
 package br.edu.ifba.conectairece.api.features.admin.domain.service;
 
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.repository.AdminProfileRepository;
+import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.service.IPublicServantProfileService;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -27,6 +42,13 @@ public class AdminService implements IAdminService{
     private final AdminProfileRepository adminProfileRepository;
     private final RoleRepository roleRepository;
     private final ObjectMapperUtil objectMapperUtil;
+    private final ITechnicalResponsibleService technicalResponsibleService;
+    private final IPublicServantProfileService publicServantProfileService;
+    private final TechnicalResponsibleRepository technicalResponsibleRepository;
+    private final PublicServantProfileRepository publicServantProfileRepository;
+    private final ProfileRepository profileRepository;
+
+
 
     @Override @Transactional
     public AdminResponseDTO createAdmin(UUID userId, AdminProfile admin) {
@@ -108,5 +130,107 @@ public class AdminService implements IAdminService{
                         profile.getImageUrl()
                 ))
                 .toList();
+    }
+
+    /**
+     * Assigns a Technical Responsible profile to a specified user.
+     * This action reuses the existing logic for creating a Technical Responsible profile.
+     *
+     * @param dto The DTO containing the user ID and the new profile's data.
+     * @return A DTO with the details of the newly created Technical Responsible profile.
+     * @author Caio Alves
+     */
+    @Override
+    public TechnicalResponsibleResponseDto assignTechnicalResponsibleProfile(AdminAssingnTechnicalResponsibleDTO dto) {
+        TechnicalResponsibleRequestDto requestDto = new TechnicalResponsibleRequestDto(
+            dto.registrationId(),
+            dto.responsibleType(),
+            dto.imageUrl(),
+            dto.userId()
+        );
+        return technicalResponsibleService.save(requestDto);
+    }
+
+    /**
+     * Assigns a Public Servant profile to a specified user.
+     * This action reuses the existing logic for creating a Public Servant profile.
+     *
+     * @param dto The DTO containing the user ID and the new profile's data.
+     * @return A DTO with the details of the newly created Public Servant profile.
+     * @author Caio Alves
+     */   
+    @Override
+    public PublicServantRegisterResponseDTO assignPublicServantProfile(AdminAssignPublicServantDTO dto) {
+        PublicServantProfile profile = new PublicServantProfile();
+        profile.setEmployeeId(dto.employeeId());
+        profile.setImageUrl(dto.imageUrl());
+        profile.setType("PUBLIC_SERVANT");
+
+        return publicServantProfileService.createPublicServantProfile(dto.userId(), profile);
+    }
+
+    /**
+     * Removes the Technical Responsible profile from a user, based on the profile's ID.
+     * It also handles detaching the profile from the user's profile list.
+     *
+     * @param profileId The ID of the Technical Responsible profile to be removed.
+     * @author Caio Alves
+     */
+    @Override @Transactional
+        public void removeTechnicalResponsibleProfile(UUID profileId) {
+        TechnicalResponsible profileToRemove = technicalResponsibleRepository.findById(profileId)
+            .orElseThrow(() -> new BusinessException("Perfil de Responsável Técnico não encontrado com o ID fornecido."));
+
+        User user = profileToRemove.getUser();
+        user.getProfiles().remove(profileToRemove);
+        
+        if (user.getActiveProfile() != null && user.getActiveProfile().getId().equals(profileToRemove.getId())) {
+            user.setActiveProfile(null); 
+        }
+        
+        userRepository.save(user);
+        technicalResponsibleRepository.delete(profileToRemove);
+    }
+
+    /**
+     * Removes the Public Servant profile from a user, based on the profile's ID.
+     * It also handles detaching the profile from the user's profile list.
+     *
+     * @param profileId The ID of the Public Servant profile to be removed.
+     * @author Caio Alves
+     */
+    @Override @Transactional
+    public void removePublicServantProfile(UUID profileId) {
+        PublicServantProfile profileToRemove = publicServantProfileRepository.findById(profileId)
+                .orElseThrow(() -> new BusinessException("Perfil de Funcionário Público não encontrado com o ID fornecido."));
+
+        User user = profileToRemove.getUser();
+
+        user.getProfiles().remove(profileToRemove);
+            if (user.getActiveProfile() != null && user.getActiveProfile().getId().equals(profileToRemove.getId())) {
+            user.setActiveProfile(null);
+        }
+        
+        userRepository.save(user);
+        publicServantProfileRepository.delete(profileToRemove);
+    }
+
+    /**
+     * Changes a user's status to INACTIVE, effectively disabling their account.
+     *
+     * @param userId The ID of the user to be deactivated.
+     * @return A DTO with the updated data of the deactivated user.
+     * @author Caio Alves
+     */    
+    @Override @Transactional
+    public UserDataResponseDTO deactivateUser(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+
+        user.setStatus(UserStatus.INACTIVE);
+        
+        User updatedUser = userRepository.save(user);
+        
+        return objectMapperUtil.map(updatedUser, UserDataResponseDTO.class); 
     }
 }

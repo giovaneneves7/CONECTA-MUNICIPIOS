@@ -1,10 +1,15 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.service.IAdminService;
+import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequest;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
@@ -113,4 +118,118 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.adminService.findAll(pageable));
     }
+
+    /**
+     * Endpoint for an administrator to assign a Technical Responsible profile to a user.
+     *
+     * @param dto    The request body containing user and profile data.
+     * @param result The binding result for validation.
+     * @return A ResponseEntity with the created profile data or validation errors.
+     * @author Caio Alves
+     */
+    @Operation(summary = "Assign Technical Responsible profile to a user",
+               description = "Allows an administrator to create and assign a Technical Responsible profile to a specific user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Technical Responsible profile assigned successfully",
+                         content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "409", description = "User already has this profile or registration ID already exists")
+    })
+    @PostMapping("/technical-responsible")
+    public ResponseEntity<?> assignTechnicalResponsible(
+            @RequestBody @Valid AdminAssingnTechnicalResponsibleDTO dto,
+            BindingResult result 
+    ) {
+        if (result.hasErrors()) { 
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
+        }
+        TechnicalResponsibleResponseDto response = adminService.assignTechnicalResponsibleProfile(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }  
+    
+    /**
+     * Endpoint for an administrator to assign a Public Servant profile to a user.
+     *
+     * @param dto    The request body containing user and profile data.
+     * @param result The binding result for validation.
+     * @return A ResponseEntity with the created profile data or validation errors.
+     * @author Caio Alves
+     */
+    @Operation(summary = "Assign Public Servant profile to a user",
+               description = "Allows an administrator to create and assign a Public Servant profile to a specific user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Public Servant profile assigned successfully",
+                         content = @Content(schema = @Schema(implementation = PublicServantRegisterResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "409", description = "User already has this profile")
+    })
+    @PostMapping("/public-servant")
+    public ResponseEntity<?> assignPublicServant(
+            @RequestBody @Valid AdminAssignPublicServantDTO dto,
+            BindingResult result 
+    ) {
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
+        }
+        PublicServantRegisterResponseDTO response = adminService.assignPublicServantProfile(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    /**
+     * Endpoint for an administrator to remove a Technical Responsible profile by its ID.
+     *
+     * @param profileId The UUID of the profile to be removed.
+     * @return A ResponseEntity with status 204 (No Content) on success.
+     * @author Caio Alves
+     */
+    @Operation(summary = "Remove Technical Responsible profile from a profile",
+               description = "Allows an administrator to remove the Technical Responsible profile assignment from a profile.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Profile removed successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found or does not have the specified profile")
+    })
+    @DeleteMapping("/technical-responsible/{profileId}")
+    public ResponseEntity<Void> removeTechnicalResponsible(@PathVariable UUID profileId) {
+        adminService.removeTechnicalResponsibleProfile(profileId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for an administrator to remove a Public Servant profile by its ID.
+     *
+     * @param profileId The UUID of the profile to be removed.
+     * @return A ResponseEntity with status 204 (No Content) on success.
+     * @author Caio Alves
+     */
+    @Operation(summary = "Remove Public Servant profile from a profile",
+               description = "Allows an administrator to remove the Public Servant profile assignment from a profile.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Profile removed successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found or does not have the specified profile")
+    })
+    @DeleteMapping("/public-servant/{profileId}")
+    public ResponseEntity<Void> removePublicServant(@PathVariable UUID profileId) {
+        adminService.removePublicServantProfile(profileId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint for an administrator to deactivate a user.
+     *
+     * @param userId The UUID of the user to deactivate.
+     * @return A ResponseEntity with the updated user data.
+     * @author Caio Alves
+     */
+    @Operation(summary = "Deactivate a user",
+               description = "Allows an administrator to change a user's status to INACTIVE, preventing them from logging in.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User deactivated successfully",
+                         content = @Content(schema = @Schema(implementation = UserDataResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PatchMapping("/user/{userId}")
+    public ResponseEntity<UserDataResponseDTO> deactivateUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(adminService.deactivateUser(userId));
+    }
+
 }

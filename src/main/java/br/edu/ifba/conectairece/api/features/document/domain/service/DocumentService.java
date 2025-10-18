@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.features.document.domain.service;
 
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRejectionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.document.domain.repository.DocumentRepository;
 import br.edu.ifba.conectairece.api.features.requirement.domain.repository.RequirementRepository; 
@@ -81,6 +82,38 @@ public class DocumentService implements IDocumentService {
                 .map(doc -> objectMapperUtil.mapToRecord(doc, DocumentDetailResponseDTO.class))
                 .collect(Collectors.toList());
     }
+
+
+    @Override
+    @Transactional
+    public DocumentDetailResponseDTO updateDocument(UUID documentId, Document documentUpdateData) {
+        Document existingDocument = findDocumentEntityById(documentId);
+        if (existingDocument.getStatus() != DocumentStatus.PENDING) {
+            throw new IllegalStateException("Apenas documentos com status PENDENTE podem ser atualizados.");
+        }
+        existingDocument.setName(documentUpdateData.getName());
+        existingDocument.setFileExtension(documentUpdateData.getFileExtension());
+        existingDocument.setFileUrl(documentUpdateData.getFileUrl());
+        existingDocument.setReviewNote(documentUpdateData.getReviewNote());
+        
+        Document savedDocument = documentRepository.save(existingDocument);
+        return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
+    }
+
+
+
+@Override
+    @Transactional
+    public DocumentDetailResponseDTO deleteDocument(UUID documentId) {
+        Document document = findDocumentEntityById(documentId);
+        if (document.getStatus() != DocumentStatus.PENDING) {
+            throw new IllegalStateException("Apenas documentos com status PENDENTE podem ser excluídos.");
+        }
+        DocumentDetailResponseDTO deletedDocumentDTO = objectMapperUtil.mapToRecord(document, DocumentDetailResponseDTO.class);
+        documentRepository.delete(document);
+        return deletedDocumentDTO;
+    }
+
 
     @Override
     @Transactional

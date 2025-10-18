@@ -5,6 +5,8 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.request.Documen
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.document.domain.service.IDocumentService;
+import br.edu.ifba.conectairece.api.features.function.domain.dto.request.FunctionUpdateRequestDTO;
+import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -129,12 +131,67 @@ public class DocumentController {
                      content = @Content(schema = @Schema(implementation = DocumentDetailResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Document not found with the given ID.")
     })
-    @GetMapping("/{documentId}")
+    @GetMapping("/document/{documentId}")
     public ResponseEntity<DocumentDetailResponseDTO> findDocumentById(@PathVariable UUID documentId) {
         return ResponseEntity.ok(documentService.findDocumentById(documentId));
     }
 
+    /**
+     * Updates an existing {@link Document} identified by its UUID.
+     *
+     * @param documentId  The UUID of the document to update.
+     * @param documentDto The DTO containing updated document data.
+     * @param result      Validation result holder for request body errors.
+     * @return A {@link ResponseEntity} with:
+     * <ul>
+     *   <li><b>200 OK</b> – When the document is successfully updated.</li>
+     *   <li><b>404 Not Found</b> – When the document with the given UUID does not exist.</li>
+     *   <li><b>422 Unprocessable Entity</b> – When validation errors occur.</li>
+     * </ul>
+     */
+    @Operation(summary = "Update Document",
+               description = "Updates the properties of a document identified by its UUID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Document updated successfully"),
+        @ApiResponse(responseCode = "404", description = "Document not found"),
+        @ApiResponse(responseCode = "422", description = "Validation error")
+    })
+    @PutMapping("/document/{documentId}")
+    public ResponseEntity<?> updateDocument(
+            @PathVariable UUID documentId,
+            @RequestBody @Valid DocumentRequestDTO documentDto,
+            BindingResult result) {
 
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body(ResultError.getResultErrors(result));
+        }
+
+        return ResponseEntity.ok(this.documentService.updateDocument(documentId, objectMapperUtil.map(documentDto, Document.class)));
+    }
+
+    /**
+     * Deletes a {@link Document} by its UUID.
+     *
+     * @param documentId The UUID of the document to delete.
+     * @return A {@link ResponseEntity} with:
+     * <ul>
+     *   <li><b>204 No Content</b> – When the document is successfully deleted.</li>
+     *   <li><b>404 Not Found</b> – When no document exists with the provided UUID.</li>
+     * </ul>
+     */
+     @Operation(summary = "Delete Document",
+               description = "Removes a document from the system identified by its UUID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Document deleted successfully"),
+        @ApiResponse(responseCode = "404", description = "Document not found")
+    })
+    @DeleteMapping("/{documentId}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable UUID documentId) {
+        documentService.deleteDocument(documentId);
+        return ResponseEntity.noContent().build();
+    }
+    
     /**
      * Approves a {@link Document}, transitioning its status from PENDING to APPROVED.
      *

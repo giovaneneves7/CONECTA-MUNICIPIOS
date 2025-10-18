@@ -52,6 +52,41 @@ public interface IDocumentService {
     DocumentDetailResponseDTO findDocumentById(UUID documentId);
 
     /**
+     * Updates the data of an existing document.
+     * <p>
+     * This operation is restricted to documents in a PENDING state.
+     * </p>
+     *
+     * @param documentId The UUID of the document to be updated.
+     * @param documentUpdateData An entity containing the new data for the document.
+     * @return A DTO representing the updated state of the document.
+     * @throws br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException if the document is not found.
+     * @throws IllegalStateException if the document is not in a PENDING state.
+     */
+    DocumentDetailResponseDTO updateDocument(UUID documentId, Document documentUpdateData);
+
+
+    /**
+     * Deletes a {@link Document} by its UUID.
+     * <p>
+     * This operation removes the document from persistent storage. If the document does not exist,
+     * the implementation should handle the scenario appropriately (e.g., throwing an exception or returning an error response DTO).
+     * </p>
+     *
+     * @param documentId The UUID of the document to delete.
+     * @return A {@link DocumentDetailResponseDTO} containing details about the deletion operation.
+     *         <ul>
+     *             <li>{@code success = true} – When the document was found and deleted.</li>
+     *             <li>{@code success = false} – When no document exists with the provided UUID, including an error message.</li>
+     *         </ul>
+     * @throws IllegalArgumentException If the provided UUID is null.
+     * @throws DocumentNotFoundException If the document with the given UUID does not exist (implementation dependent).
+     */
+    DocumentDetailResponseDTO deleteDocument(UUID documentId);
+
+
+
+    /**
      * Retrieves all documents in the system.
      *
      * @return A list of {@link DocumentDetailResponseDTO} representing all documents.

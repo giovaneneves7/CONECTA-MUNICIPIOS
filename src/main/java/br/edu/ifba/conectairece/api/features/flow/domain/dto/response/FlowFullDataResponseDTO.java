@@ -15,7 +15,9 @@ public record FlowFullDataResponseDTO(
         @JsonProperty("name")
         String name,
         @JsonProperty("flowSteps")
-        List<StepFullDataResponseDTO> flowSteps
+        List<StepFullDataResponseDTO> flowSteps,
+        @JsonProperty("municipalServiceId")
+        Long municipalServiceId
 
 ) {
 }

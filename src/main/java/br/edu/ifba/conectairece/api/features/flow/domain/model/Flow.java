@@ -1,10 +1,8 @@
 package br.edu.ifba.conectairece.api.features.flow.domain.model;
 
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,5 +36,9 @@ public class Flow extends PersistenceEntity {
 
     @OneToMany(mappedBy = "flow")
     private List<FlowStep> flowSteps = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "municipal_service_id", nullable = false, unique = true)
+    private MunicipalService municipalService;
 
 }

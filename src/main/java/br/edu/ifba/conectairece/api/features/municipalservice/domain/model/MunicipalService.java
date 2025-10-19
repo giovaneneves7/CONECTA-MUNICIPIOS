@@ -5,15 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
+import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.infraestructure.model.SimplePersistenceEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -53,4 +48,8 @@ public class MunicipalService extends SimplePersistenceEntity {
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories = new ArrayList<>();
+
+    @OneToOne(mappedBy = "municipalService")
+    private Flow flow;
+
 }

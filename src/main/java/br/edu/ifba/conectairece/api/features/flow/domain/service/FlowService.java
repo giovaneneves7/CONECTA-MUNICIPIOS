@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.flow.domain.service;
 
+import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowStepRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowFullDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowResponseDTO;
@@ -8,6 +9,8 @@ import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
 import br.edu.ifba.conectairece.api.features.flow.domain.model.FlowStep;
 import br.edu.ifba.conectairece.api.features.flow.domain.repository.IFlowRepository;
 import br.edu.ifba.conectairece.api.features.flow.domain.repository.IFlowStepRepository;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepFullDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.features.step.domain.repository.IStepRepository;
@@ -33,9 +36,16 @@ public class FlowService implements IFlowService {
     private final IFlowRepository flowRepository;
     private final IFlowStepRepository flowStepRepository;
     private final IStepRepository stepRepository;
+    private final MunicipalServiceRepository municipalServiceRepository;
 
     @Override
-    public FlowResponseDTO createFlow(Flow flow) {
+    public FlowResponseDTO createFlow(FlowRequestDTO dto) {
+
+        MunicipalService municipalService = this.municipalServiceRepository.findById(dto.municipalServiceId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        Flow flow = this.objectMapperUtil.map(dto, Flow.class);
+        flow.setMunicipalService(municipalService);
 
         return this.objectMapperUtil.mapToRecord(this.flowRepository.save(flow),  FlowResponseDTO.class);
 
@@ -72,7 +82,8 @@ public class FlowService implements IFlowService {
             FlowFullDataResponseDTO flowDTO = new FlowFullDataResponseDTO(
                     flow.getId(),
                     flow.getName(),
-                    stepDTOs
+                    stepDTOs,
+                    flow.getMunicipalService().getId()
             );
 
             responseList.add(flowDTO);
@@ -93,7 +104,8 @@ public class FlowService implements IFlowService {
         return new FlowFullDataResponseDTO(
                 flow.getId(),
                 flow.getName(),
-                stepDTOs
+                stepDTOs,
+                flow.getMunicipalService().getId()
         );
 
     }

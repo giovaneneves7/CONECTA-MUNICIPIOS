@@ -19,5 +19,6 @@ public interface IFlowService {
     FlowStepResponseDTO createFlowStep(final FlowStepRequestDTO dto);
     List<FlowFullDataResponseDTO> getAllFlows();
     FlowFullDataResponseDTO getFlowById(final UUID id);
+    FlowFullDataResponseDTO getFlowByMunicipalServiceId(final Long id);
 
 }

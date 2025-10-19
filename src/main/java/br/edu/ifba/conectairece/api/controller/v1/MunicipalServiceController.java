@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import br.edu.ifba.conectairece.api.features.flow.domain.service.IFlowService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 public class MunicipalServiceController {
 
     private final MunicipalServiceIService municipalServiceService;
+    private final IFlowService flowService;
 
     /**
      * Endpoint to create a new municipal service.
@@ -116,4 +118,19 @@ public class MunicipalServiceController {
         municipalServiceService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "Get a flow by the municipal service id passed as a parameter",
+               description = "Get a municipal service flow by the id passed as a parameter")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Municipal Service flow found"),
+            @ApiResponse(responseCode = "404", description = "Municipal Service flow not found")
+    })
+    @GetMapping(path = "/municipal-service/{id}/flows/flow", produces =  MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getFlowByMunicipalServiceId(@PathVariable("id") Long id) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(this.flowService.getFlowByMunicipalServiceId(id));
+
+    }
+
 }

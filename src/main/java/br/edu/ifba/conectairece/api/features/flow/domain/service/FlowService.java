@@ -110,6 +110,24 @@ public class FlowService implements IFlowService {
 
     }
 
+    @Override
+    public FlowFullDataResponseDTO getFlowByMunicipalServiceId(Long id) {
+
+        MunicipalService municipalService = this.municipalServiceRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        Flow flow = this.flowRepository.findByMunicipalService(municipalService);
+
+        List<StepFullDataResponseDTO> stepDTOs = this.findStepsByFlowId(flow.getId());
+
+        return new FlowFullDataResponseDTO(
+                flow.getId(),
+                flow.getName(),
+                stepDTOs,
+                flow.getMunicipalService().getId()
+        );
+
+    }
+
     private List<StepFullDataResponseDTO> findStepsByFlowId(final UUID flowId){
         List<Step> steps = stepRepository.findAllByFlowId(flowId);
 

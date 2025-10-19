@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * protocol number, creation and update timestamps, estimated completion date,
  * type, notes, and the associated municipal service.
  *
- * @author Caio Alves
+ * @author Caio Alves, Giovane Neves
  */
 
 public record RequestResponseDto (
@@ -35,6 +35,9 @@ public record RequestResponseDto (
     String type,
 
     @JsonProperty("note")
-    String note
+    String note,
+
+    @JsonProperty("municipalServiceId")
+    Long municipalServiceId
 
 ){}

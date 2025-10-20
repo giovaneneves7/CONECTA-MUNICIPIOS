@@ -34,4 +34,14 @@ public interface RequestIService {
 
     Page<UpdateResponseDTO> getUpdateListByRequestId(UUID id, Pageable pageable);
 
+    /**
+     * Retrieves a paginated list of requests filtered by a specific type.
+     *
+     * @param type The type to filter requests by (e.g., "Solicitação de Alvará de Construção").
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing RequestResponseDto objects matching the specified type.
+     * @author Caio Alves
+     */
+    Page<RequestResponseDto> findByType(String type, Pageable pageable);
+
 }

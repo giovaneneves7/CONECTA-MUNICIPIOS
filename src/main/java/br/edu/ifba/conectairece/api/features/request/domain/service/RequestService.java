@@ -161,4 +161,19 @@ public class RequestService implements RequestIService {
 
     }
 
+    /**
+     * Finds and retrieves a paginated list of requests filtered by the specified type.
+     * It uses the repository to fetch the data and maps the entities to DTOs.
+     *
+     * @param type The type used to filter the requests.
+     * @param pageable The pagination and sorting parameters.
+     * @return A Page object containing the filtered and paginated RequestResponseDto list.
+     * @author Caio Alves
+     */
+    @Override
+    public Page<RequestResponseDto> findByType(String type, Pageable pageable) {
+        Page<Request> requestPage = requestRepository.findByType(type, pageable);
+        return requestPage.map(request -> objectMapperUtil.mapToRecord(request, RequestResponseDto.class));
+    }
+
 }

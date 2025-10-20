@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
+
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
@@ -235,5 +239,32 @@ public class RequestController {
             @RequestBody @Valid RejectionRequestDTO dto) {
         var response = constructionLicenseRequirementService.rejectRequest(id, dto);
         return ResponseEntity.ok(response);
-    }    
+    }
+
+
+   /**
+     * Endpoint to retrieve a paginated list of requests filtered by type.
+     * The type is provided as a query parameter.
+     *
+     * @param type The request type to filter by (passed as query parameter ?type=...).
+     * @param pageable Pagination and sorting information provided by Spring Web.
+     * @return A ResponseEntity containing a Page of RequestResponseDto.
+     * @author Caio Alves
+     */ 
+    @Operation(summary = "List Requests by Type",
+               description = "Retrieves a paginated list of requests filtered by a specific type.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated list of requests retrieved successfully"),
+                @ApiResponse(responseCode = "400", description = "Invalid type parameter"),
+                @ApiResponse(responseCode = "404", description = "Request not found")
+    })
+    @GetMapping(params = "type") 
+    public ResponseEntity<Page<RequestResponseDto>> getRequestsByType(
+            @RequestParam String type,         
+            @ParameterObject 
+            Pageable pageable
+    ) {
+        Page<RequestResponseDto> requests = requestService.findByType(type, pageable);
+        return ResponseEntity.ok(requests);
+    }
 }

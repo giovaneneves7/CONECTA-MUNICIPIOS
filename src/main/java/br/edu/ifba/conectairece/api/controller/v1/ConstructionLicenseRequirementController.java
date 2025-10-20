@@ -2,6 +2,9 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
@@ -58,6 +62,7 @@ public class ConstructionLicenseRequirementController {
      *
      * @param dto DTO containing requirement data
      * @return response with created requirement
+     * @author Caio Alves
      */
      @Operation(summary = "Create a new Construction License Requirement",
             description = "Creates and persists a new construction license requirement in the system.")
@@ -81,6 +86,7 @@ public class ConstructionLicenseRequirementController {
          * @param id  requirement ID
         * @param dto DTO containing updated requirement data
          * @return updated requirement
+         * @author Caio Alves
      */
         @Operation(summary = "Update a Construction License Requirement by ID",
         description = "Updates and persists changes to a construction license requirement.")
@@ -104,6 +110,7 @@ public class ConstructionLicenseRequirementController {
      * Endpoint to list all construction license requirements.
      *
      * @return list of requirements
+     * @author Caio Alves
      */
         @Operation(summary = "List all Construction License Requirements",
             description = "Retrieves a list of all registered construction license requirements.")
@@ -121,6 +128,7 @@ public class ConstructionLicenseRequirementController {
      *
      * @param id requirement ID
      * @return response with requirement data
+     * @author Caio Alves
      */
     @Operation(summary = "Retrieve a Construction License Requirement by ID",
             description = "Fetches details of a requirement by its ID.")
@@ -140,6 +148,7 @@ public class ConstructionLicenseRequirementController {
      *
      * @param id requirement ID
      * @return no content if deletion is successful
+     * @author Caio Alves
      */
     @Operation(summary = "Delete a Construction License Requirement by ID",
             description = "Deletes a construction license requirement by its ID.")
@@ -151,5 +160,32 @@ public class ConstructionLicenseRequirementController {
     public ResponseEntity<Void> delete(@PathVariable @NotNull Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Endpoint to retrieve a paginated list of construction license requirements filtered by the associated RequirementType name.
+     * The type name is provided as a query parameter.
+     *
+     * @param typeName The RequirementType name to filter by (passed as query parameter ?typeName=...).
+     * @param pageable Pagination and sorting information provided by Spring Web.
+     * @return A ResponseEntity containing a Page of ConstructionLicenseRequirementResponseDTO.
+     * @author Your Name // Substitua pelo nome correto
+     */
+    @Operation(summary = "List Construction License Requirements by Type Name",
+               description = "Retrieves a paginated list of construction license requirements filtered by the name of their associated RequirementType.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated list of requirements retrieved successfully"),
+                @ApiResponse(responseCode = "400", description = "Invalid type name or pagination parameters"),
+                @ApiResponse(responseCode = "404", description = "Requirement not found")
+    })
+    @GetMapping(params = "typeName")
+    public ResponseEntity<Page<ConstructionLicenseRequirementResponseDTO>> getRequirementsByTypeName(
+            @RequestParam String typeName, 
+            
+            @ParameterObject 
+            Pageable pageable
+    ) {
+        Page<ConstructionLicenseRequirementResponseDTO> requirements = service.findByRequirementTypeName(typeName, pageable);
+        return ResponseEntity.ok(requirements);
     }
 }

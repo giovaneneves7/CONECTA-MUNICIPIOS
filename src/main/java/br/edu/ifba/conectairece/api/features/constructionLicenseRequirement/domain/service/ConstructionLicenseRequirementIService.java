@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
@@ -68,4 +70,14 @@ public interface ConstructionLicenseRequirementIService {
     List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsible(UUID responsibleId);
     
     List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsibleRegistrationId(String registrationId);
+
+    /**
+     * Retrieves a paginated list of construction license requirements filtered by the name of their associated RequirementType.
+     *
+     * @param typeName The name of the RequirementType to filter by (e.g., "Construção", "Reforma").
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing ConstructionLicenseRequirementResponseDTO objects matching the specified type name.
+     * @author Caio Alves
+     */
+    Page<ConstructionLicenseRequirementResponseDTO> findByRequirementTypeName(String typeName, Pageable pageable);
 }

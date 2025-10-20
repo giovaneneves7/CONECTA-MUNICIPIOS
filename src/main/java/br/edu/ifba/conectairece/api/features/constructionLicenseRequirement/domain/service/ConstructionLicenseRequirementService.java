@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -386,5 +388,21 @@ if (dto.documents() != null) {
         return requirements.stream()
                 .map(this::toResponseDTO)
                 .toList();
+    }
+
+    /**
+     * Finds and retrieves a paginated list of construction license requirements filtered by the specified RequirementType name.
+     * It uses the repository to fetch the data and maps the entities to DTOs using the existing toResponseDTO method.
+     *
+     * @param typeName The RequirementType name used to filter the requirements.
+     * @param pageable The pagination and sorting parameters.
+     * @return A Page object containing the filtered and paginated ConstructionLicenseRequirementResponseDTO list.
+     * @author Caio Alves
+     */
+    @Override
+    public Page<ConstructionLicenseRequirementResponseDTO> findByRequirementTypeName(String typeName, Pageable pageable) {
+        Page<ConstructionLicenseRequirement> requirementPage = repository.findByRequirementTypeName(typeName, pageable);
+
+        return requirementPage.map(this::toResponseDTO);
     }
 }

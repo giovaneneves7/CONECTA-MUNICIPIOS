@@ -1,14 +1,22 @@
 package br.edu.ifba.conectairece.api.features.document.domain.service;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.ConstructionLicenseRequirementRepository;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentCorrectionSuggestionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRejectionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.document.domain.repository.DocumentRepository;
-import br.edu.ifba.conectairece.api.features.requirement.domain.repository.RequirementRepository; 
+import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
+import br.edu.ifba.conectairece.api.features.requirement.domain.repository.RequirementRepository;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +62,8 @@ public class DocumentService implements IDocumentService {
     private final DocumentRepository documentRepository;
     private final ObjectMapperUtil objectMapperUtil;
     private final RequirementRepository requirementRepository;
+    private final TechnicalResponsibleRepository technicalResponsibleRepository;
+    private final ConstructionLicenseRequirementRepository constructionLicenseRequirementRepository;
 
     @Override
     @Transactional
@@ -145,5 +155,51 @@ public class DocumentService implements IDocumentService {
     private Document findDocumentEntityById(UUID documentId) {
         return documentRepository.findById(documentId)
                 .orElseThrow(() -> new BusinessException("Document with ID " + documentId + " not found."));
+    }
+
+    /**
+     * Allows a Technical Responsible to suggest corrections for a document.
+     * Sets the document status to CORRECTION_SUGGESTED and records the justification.
+     * Ensures only the assigned Technical Responsible can perform this action.
+     *
+     * @param documentId The ID of the document to suggest corrections for.
+     * @param responsibleId The ID of the Technical Responsible making the suggestion.
+     * @param dto DTO containing the justification for the suggestion.
+     * @return The updated document details.
+     * @author Caio Alves
+     */
+
+    @Override
+    @Transactional
+    public DocumentDetailResponseDTO suggestCorrection(DocumentCorrectionSuggestionDTO dto) {
+
+        UUID documentId = dto.documentId();
+        String registrationId = dto.registrationId();
+
+        Document document = findDocumentEntityById(documentId);
+
+        if (document.getStatus() != DocumentStatus.PENDING) {
+            throw new BusinessException("Correction can only be suggested for documents with PENDING status.");
+        }
+
+        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
+            .orElseThrow(() -> new BusinessException("Technical Responsible not found with registration ID: " + registrationId));
+
+        Requirement requirementBase = document.getRequirement();
+
+        ConstructionLicenseRequirement clr = constructionLicenseRequirementRepository.findById(requirementBase.getId())
+        .orElseThrow(() -> 
+            new BusinessException("This operation is only supported for Construction License Requirements.")
+        );
+
+        if (clr.getTechnicalResponsible() == null || !clr.getTechnicalResponsible().getId().equals(responsible.getId())) {
+        throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement's documents.");
+    }
+
+        document.setStatus(DocumentStatus.CORRECTION_SUGGESTED);
+        document.setReviewNote(dto.justification());
+
+        Document updatedDocument = documentRepository.save(document);
+        return objectMapperUtil.mapToRecord(updatedDocument, DocumentDetailResponseDTO.class);
     }
 }

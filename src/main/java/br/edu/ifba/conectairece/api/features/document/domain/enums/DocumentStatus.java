@@ -25,5 +25,11 @@ public enum DocumentStatus {
      * Indicates that the document has been reviewed and was found to be invalid or insufficient.
      * A justification is typically required when a document is moved to this state.
      */
-    REJECTED
+    REJECTED,
+
+    /**
+     * Indicates that the document has been reviewed for Technical Responsible and requires additional information or corrections.
+     * The submitter is expected to provide the necessary updates.
+     */
+    CORRECTION_SUGGESTED
 }

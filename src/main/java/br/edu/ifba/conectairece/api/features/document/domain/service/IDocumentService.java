@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.document.domain.service;
 
+import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentCorrectionSuggestionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRejectionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
@@ -124,4 +125,17 @@ public interface IDocumentService {
      *         if the document is not in a <b>PENDING</b> state.
      */
     DocumentDetailResponseDTO rejectDocument(UUID documentId, DocumentRejectionDTO rejectionDto);
+
+    /**
+     * Allows a Technical Responsible to suggest corrections for a document.
+     * Sets the document status to CORRECTION_SUGGESTED and records the justification.
+     * Ensures only the assigned Technical Responsible can perform this action.
+     *
+     * @param documentId The ID of the document to suggest corrections for.
+     * @param responsibleId The ID of the Technical Responsible making the suggestion.
+     * @param dto DTO containing the justification for the suggestion.
+     * @return The updated document details.
+     * @author Caio Alves
+     */
+    DocumentDetailResponseDTO suggestCorrection(DocumentCorrectionSuggestionDTO dto);
 }

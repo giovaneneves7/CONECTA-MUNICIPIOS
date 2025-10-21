@@ -169,7 +169,7 @@ public class ConstructionLicenseRequirementController {
      * @param typeName The RequirementType name to filter by (passed as query parameter ?typeName=...).
      * @param pageable Pagination and sorting information provided by Spring Web.
      * @return A ResponseEntity containing a Page of ConstructionLicenseRequirementResponseDTO.
-     * @author Your Name // Substitua pelo nome correto
+     * @author Caio Alves
      */
     @Operation(summary = "List Construction License Requirements by Type Name",
                description = "Retrieves a paginated list of construction license requirements filtered by the name of their associated RequirementType.")
@@ -178,7 +178,7 @@ public class ConstructionLicenseRequirementController {
                 @ApiResponse(responseCode = "400", description = "Invalid type name or pagination parameters"),
                 @ApiResponse(responseCode = "404", description = "Requirement not found")
     })
-    @GetMapping(params = "typeName")
+    @GetMapping(path = "/by-type", params = "typeName", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<ConstructionLicenseRequirementResponseDTO>> getRequirementsByTypeName(
             @RequestParam String typeName, 
             

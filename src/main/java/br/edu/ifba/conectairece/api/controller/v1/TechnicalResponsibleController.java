@@ -19,6 +19,9 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentCorrectionSuggestionDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.service.IDocumentService;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
@@ -30,7 +33,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -47,7 +49,17 @@ public class TechnicalResponsibleController {
 
     private final ITechnicalResponsibleService service;
     private final ConstructionLicenseRequirementIService requirementService;
+    private final IDocumentService documentService;
 
+    /**
+     * Endpoint to create a new Technical Responsible profile.
+     * Validates the request body before processing.
+     *
+     * @param dto    The request body containing data for the new Technical Responsible.
+     * @param result BindingResult for validation errors.
+     * @return ResponseEntity with the created Technical Responsible data or validation errors.
+     * @author Caio Alves
+     */
     @Operation(summary = "Create new Technical Responsible",
             description = "Creates and persists a new technical responsible in the system.")
     @ApiResponses(value = {
@@ -69,6 +81,12 @@ public class TechnicalResponsibleController {
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    /**
+     * Endpoint to retrieve a list of all registered Technical Responsibles.
+     *
+     * @return ResponseEntity containing a list of Technical Responsible DTOs.
+     * @author Caio Alves
+     */
     @Operation(summary = "List all Technical Responsibles",
         description = "Retrieves a list of all registered technical responsibles.")
     @GetMapping
@@ -77,6 +95,13 @@ public class TechnicalResponsibleController {
     }
 
 
+    /**
+     * Endpoint to delete a Technical Responsible profile by its unique ID.
+     *
+     * @param id The UUID of the Technical Responsible profile to delete.
+     * @return ResponseEntity with status 204 (No Content) upon successful deletion.
+     * @author Caio Alves
+     */
     @Operation(summary = "Delete a Technical Responsible by ID",
         description = "Deletes a technical responsible from the system by its ID.")
     @DeleteMapping("/technical-responsible/{id}")
@@ -85,6 +110,14 @@ public class TechnicalResponsibleController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for a Technical Responsible to accept association with a requirement.
+     * Requires authorization check to ensure the user matches the responsible ID.
+     *
+     * @param dto DTO containing the requirement and responsible IDs.
+     * @return ResponseEntity with status 204 (No Content) on success.
+     * @author Caio Alves
+     */    
         @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Association accepted successfully"),
         @ApiResponse(responseCode = "403", description = "Forbidden - User is not the designated responsible"),
@@ -98,6 +131,14 @@ public class TechnicalResponsibleController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for a Technical Responsible to refuse association with a requirement.
+     * Requires authorization check and a justification in the request body.
+     *
+     * @param dto DTO containing the requirement/responsible IDs and justification.
+     * @return ResponseEntity with status 204 (No Content) on success.
+     * @author Caio Alves
+     */
         @Operation(summary = "Refuse a requirement association",
                description = "Allows a technical responsible to refuse being linked to a construction license requirement.")
     @ApiResponses(value = {
@@ -114,6 +155,13 @@ public class TechnicalResponsibleController {
         return ResponseEntity.noContent().build();
     }
     
+    /**
+     * Endpoint to retrieve a Technical Responsible by their unique registration ID.
+     *
+     * @param registrationId The registration ID (String) of the Technical Responsible.
+     * @return ResponseEntity with the Technical Responsible data if found, or 404 Not Found.
+     * @author Caio Alves
+     */
     @Operation(summary = "Retrieve a Technical Responsible by Registration ID",
                description = "Fetches details of a technical responsible by its unique registration ID.")
     @ApiResponses(value = {
@@ -128,6 +176,13 @@ public class TechnicalResponsibleController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Endpoint to list all Construction License Requirements associated with a specific Technical Responsible ID (UUID).
+     *
+     * @param responsibleId The UUID of the Technical Responsible.
+     * @return ResponseEntity containing a list of requirement DTOs.
+     * @author Caio Alves
+     */
     @Operation(summary = "List all requirements for a specific Technical Responsible",
                description = "Retrieves a list of all construction license requirements associated with a given technical responsible ID.")
     @ApiResponses(value = {
@@ -142,6 +197,13 @@ public class TechnicalResponsibleController {
         return ResponseEntity.ok(requirements);
     }
 
+    /**
+     * Endpoint to list all Construction License Requirements associated with a specific Technical Responsible, identified by their registration ID.
+     *
+     * @param registrationId The registration ID (String) of the Technical Responsible.
+     * @return ResponseEntity containing a list of requirement DTOs.
+     * @author Caio Alves
+     */
     @Operation(summary = "List all requirements by Technical Responsible's Registration ID",
                description = "Retrieves a list of all construction license requirements associated with a given registration ID.")
     @GetMapping("/registration/{registrationId}/requirements") 
@@ -150,6 +212,36 @@ public class TechnicalResponsibleController {
                 List<ConstructionLicenseRequirementResponseDTO> requirements = requirementService.findAllByTechnicalResponsibleRegistrationId(registrationId);
         
             return ResponseEntity.ok(requirements);
+    }
+
+    /**
+     * Endpoint for a Technical Responsible to suggest corrections for a specific document.
+     * The document ID, responsible's registration ID, and justification are passed in the request body.
+     *
+     * @param dto    The DTO containing document ID, registration ID, and justification.
+     * @param result BindingResult for validation errors.
+     * @return ResponseEntity with the updated document details or validation errors.
+     * @author Caio Alves
+     */
+    @Operation(summary = "Suggest Correction for a Document",
+               description = "Allows the designated Technical Responsible to suggest corrections for a specific document associated with one of their requirements.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Correction suggestion registered successfully",
+                     content = @Content(schema = @Schema(implementation = DocumentDetailResponseDTO.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid request (e.g., document not PENDING, missing justification)"),
+        @ApiResponse(responseCode = "403", description = "Forbidden - User is not the designated responsible for this document"),
+        @ApiResponse(responseCode = "404", description = "Document or Requirement not found")
+    })
+    @PostMapping("/documents/suggest-correction")
+    public ResponseEntity<?> suggestDocumentCorrection(
+            @RequestBody @Valid DocumentCorrectionSuggestionDTO dto,
+            BindingResult result) {
+
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
+        }
+        DocumentDetailResponseDTO updatedDocument = documentService.suggestCorrection(dto);
+        return ResponseEntity.ok(updatedDocument);
     }
     
 }

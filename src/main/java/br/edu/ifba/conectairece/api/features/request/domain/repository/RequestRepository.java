@@ -35,4 +35,13 @@ public interface RequestRepository extends JpaRepository<Request, UUID>{
      */
     Page<Request> findByType(String type, Pageable pageable);
 
+    /**
+     * Retrieves a paginated list of Requests filtered by the new status recorded in the StatusHistory.
+     * The query navigates the one-to-one relationship to the StatusHistory entity.
+     *
+     * @param statusHistoryNewStatus The new status to filter requests by.
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing Requests matching the status.
+     */
+    Page<Request> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable);
 }

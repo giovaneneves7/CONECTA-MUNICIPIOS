@@ -10,6 +10,7 @@ import br.edu.ifba.conectairece.api.features.update.domain.model.Update;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
+import br.edu.ifba.conectairece.api.infraestructure.model.StatusHistory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -70,6 +71,10 @@ public class Request extends PersistenceEntity{
 
     @OneToMany(mappedBy = "request")
     private List<GeneralEvaluationItem> generalEvaluationItems = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "status_history_id", unique = true)
+    private StatusHistory statusHistory;
 
     @PrePersist
     public void prePersist() {

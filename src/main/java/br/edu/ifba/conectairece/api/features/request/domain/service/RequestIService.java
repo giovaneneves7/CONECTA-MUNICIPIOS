@@ -44,4 +44,16 @@ public interface RequestIService {
      */
     Page<RequestResponseDto> findByType(String type, Pageable pageable);
 
+    /**
+     * Retrieves a paginated list of Requests filtered by the latest recorded status (newStatus)
+     * in the associated StatusHistory.
+     * <p>
+     * This method utilizes a query derivation based on the relationship path
+     * (Request -> StatusHistory -> newStatus) to fetch filtered data efficiently.
+     *
+     * @param statusHistoryNewStatus The target status (e.g., "APPROVED", "PENDING") to filter the requests by.
+     * @param pageable Pagination and sorting criteria.
+     * @return A {@link Page} of {@link RequestResponseDto} containing the filtered and paginated results.
+     */
+    Page<RequestResponseDto> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable);
 }

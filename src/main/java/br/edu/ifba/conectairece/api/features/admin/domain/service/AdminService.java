@@ -3,12 +3,16 @@ package br.edu.ifba.conectairece.api.features.admin.domain.service;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.repository.AdminProfileRepository;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
+import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
@@ -33,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -232,5 +237,46 @@ public class AdminService implements IAdminService{
         User updatedUser = userRepository.save(user);
         
         return objectMapperUtil.map(updatedUser, UserDataResponseDTO.class); 
+    }
+
+    /**
+     * Retrieves detailed information about a specific user, including their core data
+     * and a list of all their associated profiles.
+     *
+     * @param userId The UUID of the user to retrieve details for.
+     * @return An AdminUserDetailResponseDTO containing the user's details.
+     * @throws BusinessException if the user is not found.
+     * @author Caio Alves
+     */
+    @Override @Transactional
+    public Page<AdminUserDetailResponseDto> findAllUserDetails(Pageable pageable) {
+
+        Page<User> userPage = userRepository.findAll(pageable);
+
+        return userPage.map(user -> {
+            Person person = user.getPerson();
+            Profile activeProfile = user.getActiveProfile();
+
+            ProfilePublicDataResponseDTO contentDto = new ProfilePublicDataResponseDTO(
+                    user.getId(),
+                    activeProfile != null ? activeProfile.getType() : null,
+                    activeProfile != null ? activeProfile.getImageUrl() : null,
+                    person != null ? person.getFullName() : null,
+                    person != null ? person.getCpf() : null,
+                    user.getPhone(),
+                    user.getEmail(),
+                    person != null && person.getGender() != null ? person.getGender().toString() : null,
+                    person != null ? person.getBirthDate() : null
+            );
+
+            List<ProfileResponseDTO> profileListDto = user.getProfiles().stream()
+                    .map(profile -> new ProfileResponseDTO(
+                            profile.getId(),
+                            profile.getType(),
+                            profile.getImageUrl()))
+                    .collect(Collectors.toList());
+
+            return new AdminUserDetailResponseDto(contentDto, profileListDto);
+        });
     }
 }

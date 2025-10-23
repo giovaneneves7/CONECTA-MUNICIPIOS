@@ -239,7 +239,6 @@ if (dto.documents() != null) {
             responsibleEntity.getUser() != null && 
             responsibleEntity.getUser().getPerson() != null) {
         
-        // Extraímos apenas o nome para uma variável String
             responsibleName = responsibleEntity.getUser().getPerson().getFullName();
         }
         

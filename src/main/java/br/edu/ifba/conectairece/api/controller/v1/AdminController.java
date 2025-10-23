@@ -4,6 +4,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssig
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.service.IAdminService;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
@@ -20,6 +21,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -232,4 +236,27 @@ public class AdminController {
         return ResponseEntity.ok(adminService.deactivateUser(userId));
     }
 
+    /**
+     * Endpoint for an administrator to retrieve a paginated list of detailed information for all users.
+     * Includes core user data and a list of associated profiles for each user.
+     *
+     * @param pageable Pagination and sorting information.
+     * @return A ResponseEntity containing a Page of detailed user information.
+     * @author Caio Alves
+     */
+    @Operation(summary = "List All Users Details (Paginated)",
+               description = "Retrieves a paginated list of all users with their details (personal data and profiles) for administrative use.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Paginated user list retrieved successfully",
+                 content = @Content(schema = @Schema(implementation = Page.class))),
+        })
+     @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<AdminUserDetailResponseDto>> getAllUserDetails(
+            @ParameterObject 
+            @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findAllUserDetails(pageable);
+        return ResponseEntity.ok(userDetailsPage);
+    }
 }

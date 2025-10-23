@@ -3,11 +3,14 @@ package br.edu.ifba.conectairece.api.features.admin.domain.service;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -66,4 +69,14 @@ public interface IAdminService {
      * @author Caio Alves
      */
     UserDataResponseDTO deactivateUser(UUID userId);
+
+/**
+     * Retrieves a paginated list of detailed information for all users.
+     * Includes core user data and a list of associated profiles for each user.
+     *
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing AdminUserDetailResponseDTO objects for all users.
+     * @author Caio Alves
+     */
+    Page<AdminUserDetailResponseDto> findAllUserDetails(Pageable pageable);
 }

@@ -79,4 +79,15 @@ public interface IAdminService {
      * @author Caio Alves
      */
     Page<AdminUserDetailResponseDto> findAllUserDetails(Pageable pageable);
+
+    /**
+     * Retrieves a paginated list of detailed information for users filtered by a specific role name
+     * associated with any of their profiles.
+     *
+     * @param roleName The name of the Role to filter users by.
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing AdminUserDetailResponseDTO objects for the filtered users.
+     * @author Caio Alves
+     */
+    Page<AdminUserDetailResponseDto> findUserDetailsByRoleName(String roleName, Pageable pageable);
 }

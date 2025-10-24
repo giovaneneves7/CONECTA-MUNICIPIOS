@@ -127,7 +127,7 @@ private final String BASE_URL = "/api/v1/technical-responsibles";
 
     @Test
     void acceptRequirement_ShouldReturn204_WhenSuccessful() throws Exception {
-        AssociationActionRequestDTO requestDto = new AssociationActionRequestDTO(SAMPLE_RESPONSIBLE_ID, SAMPLE_REQUIREMENT_ID);
+        AssociationActionRequestDTO requestDto = new AssociationActionRequestDTO(SAMPLE_REGISTRATION_ID, SAMPLE_REQUIREMENT_ID);
 
         doNothing().when(requirementService).approveAssociation(any(AssociationActionRequestDTO.class));
 
@@ -141,7 +141,7 @@ private final String BASE_URL = "/api/v1/technical-responsibles";
 
     @Test
     void refuseRequirement_ShouldReturn204_WhenSuccessful() throws Exception {
-        RejectionRequestDTO requestDto = new RejectionRequestDTO(SAMPLE_RESPONSIBLE_ID, SAMPLE_REQUIREMENT_ID, "Justificativa válida.");
+        RejectionRequestDTO requestDto = new RejectionRequestDTO(SAMPLE_REGISTRATION_ID, SAMPLE_REQUIREMENT_ID, "Justificativa válida.");
 
         doNothing().when(requirementService).rejectAssociation(any(RejectionRequestDTO.class));
 
@@ -155,7 +155,7 @@ private final String BASE_URL = "/api/v1/technical-responsibles";
 
     @Test
     void refuseRequirement_ShouldReturn400_WhenDtoIsInvalid() throws Exception {
-        RejectionRequestDTO invalidDto = new RejectionRequestDTO(SAMPLE_RESPONSIBLE_ID, SAMPLE_REQUIREMENT_ID, "");
+        RejectionRequestDTO invalidDto = new RejectionRequestDTO(SAMPLE_REGISTRATION_ID, SAMPLE_REQUIREMENT_ID, "");
 
         mockMvc.perform(post(BASE_URL + "/refuse-requirement")
                         .contentType(MediaType.APPLICATION_JSON)

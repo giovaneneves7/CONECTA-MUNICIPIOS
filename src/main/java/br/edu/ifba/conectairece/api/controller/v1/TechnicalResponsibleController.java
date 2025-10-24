@@ -124,7 +124,6 @@ public class TechnicalResponsibleController {
         @ApiResponse(responseCode = "404", description = "Requirement or Responsible not found")
     })
     @PostMapping("/accept-requirement")
-    @PreAuthorize("#responsibleId.toString() == principal.username") 
     public ResponseEntity<Void> acceptRequirement(@RequestBody @Valid AssociationActionRequestDTO dto) {
 
         requirementService.approveAssociation(dto);
@@ -147,7 +146,6 @@ public class TechnicalResponsibleController {
         @ApiResponse(responseCode = "404", description = "Requirement or Responsible not found")
     })
     @PostMapping("/refuse-requirement")
-    @PreAuthorize("#responsibleId.toString() == principal.username")
     public ResponseEntity<Void> refuseRequirement( 
             @RequestBody @Valid RejectionRequestDTO dto) {
 

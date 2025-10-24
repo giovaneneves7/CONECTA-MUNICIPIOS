@@ -190,16 +190,20 @@ if (dto.documents() != null) {
     @Override
     public void approveAssociation(AssociationActionRequestDTO dto){
         Long requirementId = dto.constructionLicenseRequirementId();
-        UUID responsibleId = dto.technicalResponsibleId();
+        String registrationId = dto.registrationId();
 
+
+        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
+                .orElseThrow(() -> new BusinessException("Technical Responsible not found with registration ID: " + registrationId));
+        
         ConstructionLicenseRequirement entity = repository.findById(requirementId)
             .orElseThrow(() -> new BusinessException("Requirement not found"));
 
             if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
                 throw new BusinessException("This request has alrady been processed.");
             }
-            if (!entity.getTechnicalResponsible().getId().equals(responsibleId)) {
-                throw new AccessDeniedException("You are not authorized to approve this requirement.");
+            if (entity.getTechnicalResponsible() == null || !entity.getTechnicalResponsible().getId().equals(responsible.getId())) {
+                throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement.");
             }
             entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
             repository.save(entity);
@@ -209,7 +213,10 @@ if (dto.documents() != null) {
     public void rejectAssociation(RejectionRequestDTO dto){
 
         Long requirementId = dto.constructionLicenseRequirementId();
-        UUID responsibleId = dto.technicalResponsibleId();
+        String registrationId = dto.registrationId();
+
+        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
+                .orElseThrow(() -> new BusinessException("Technical Responsible not found with registration ID: " + registrationId));
 
         ConstructionLicenseRequirement entity = repository.findById(requirementId)
             .orElseThrow(() -> new BusinessException("Requirement not found"));
@@ -218,8 +225,8 @@ if (dto.documents() != null) {
                 throw new BusinessException("This request has alrady been processed.");
             }
 
-            if (!entity.getTechnicalResponsible().getId().equals(responsibleId)) {
-                throw new AccessDeniedException("You are not authorized to reject this requirement.");
+            if (entity.getTechnicalResponsible() == null || !entity.getTechnicalResponsible().getId().equals(responsible.getId())) {
+                throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement.");
             }
 
             entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);

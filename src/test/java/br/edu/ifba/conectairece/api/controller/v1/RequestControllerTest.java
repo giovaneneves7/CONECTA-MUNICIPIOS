@@ -62,6 +62,7 @@ class RequestControllerTest {
     private final Long SAMPLE_CLR_ID = 1L; 
     private final UUID SAMPLE_PROFILE_ID = UUID.fromString("f0e9d8c7-b6a5-4321-fedc-ba9876543210");
     private final Long SAMPLE_MUNICIPAL_SERVICE_ID = 10L;
+    private final String SAMPLE_REGISTRATION_ID = "12345-D";
 
     @BeforeEach
     void setUp() {
@@ -238,7 +239,7 @@ class RequestControllerTest {
 
     @Test
     void rejectRequest_ShouldReturn200AndUpdatedDto_WhenSuccessful() throws Exception {
-        RejectionRequestDTO rejectionDto = new RejectionRequestDTO(UUID.randomUUID(), SAMPLE_CLR_ID, "Documentação incompleta.");
+        RejectionRequestDTO rejectionDto = new RejectionRequestDTO(SAMPLE_REGISTRATION_ID, SAMPLE_CLR_ID, "Documentação incompleta.");
         ConstructionLicenseRequirementResponseDTO responseDto = new ConstructionLicenseRequirementResponseDTO(SAMPLE_CLR_ID, LocalDateTime.now(), "Owner", "Phone", "CEP", "CPF", "Addr", 100f, "Resp Name", AssociationStatus.REJECTED);
 
         when(constructionLicenseRequirementService.rejectRequest(eq(SAMPLE_CLR_ID), any(RejectionRequestDTO.class))).thenReturn(responseDto);

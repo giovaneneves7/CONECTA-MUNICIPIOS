@@ -259,4 +259,33 @@ public class AdminController {
         Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findAllUserDetails(pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
+
+/**
+     * Endpoint for an administrator to retrieve a paginated list of user details,
+     * filtered by a specific role name associated with their profiles.
+     *
+     * @param roleName The name of the Role to filter users by (e.g., "ADMIN", "ROLE_TECHNICAL_RESPONSIBLE").
+     * @param pageable Pagination and sorting information.
+     * @return A ResponseEntity containing a Page of filtered detailed user information.
+     * @author Caio Alves
+     */
+        @Operation(summary = "List Users Details by Role Name (Paginated)",
+            description = "Retrieves a paginated list of users filtered by a specific role name, including their details.")
+        @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated and filtered user list retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Missing or invalid 'roleName' parameter") 
+        })
+        @GetMapping(value = "/users/role-name", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<AdminUserDetailResponseDto>> getUserDetailsByRole(
+            @RequestParam String roleName, 
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        if (roleName == null || roleName.isBlank()) {
+             return ResponseEntity.badRequest().build();
+        }
+        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByRoleName(roleName, pageable);
+        return ResponseEntity.ok(userDetailsPage);
+    }
 }

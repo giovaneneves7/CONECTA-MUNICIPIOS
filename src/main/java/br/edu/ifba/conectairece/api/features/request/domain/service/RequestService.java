@@ -22,6 +22,7 @@ import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service responsible for managing {@link Request} entities.
@@ -176,4 +177,13 @@ public class RequestService implements RequestIService {
         return requestPage.map(request -> objectMapperUtil.mapToRecord(request, RequestResponseDto.class));
     }
 
+    @Override @Transactional(readOnly = true)
+    public Page<RequestResponseDto> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable) {
+        Page<Request> requestsPage = requestRepository.findAllByStatusHistory_NewStatus(statusHistoryNewStatus, pageable);
+        return requestsPage.map(
+                request -> this.objectMapperUtil.mapToRecord(
+                        request, RequestResponseDto.class
+                )
+        );
+    }
 }

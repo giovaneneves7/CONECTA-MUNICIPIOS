@@ -241,30 +241,46 @@ public class RequestController {
         return ResponseEntity.ok(response);
     }
 
-
-   /**
-     * Endpoint to retrieve a paginated list of requests filtered by type.
-     * The type is provided as a query parameter.
+    /**
+     * Endpoint to retrieve a paginated list of requests filtered by type OR status.
+     * Both filters (type and status) are optional and provided as query parameters.
      *
-     * @param type The request type to filter by (passed as query parameter ?type=...).
-     * @param pageable Pagination and sorting information provided by Spring Web.
-     * @return A ResponseEntity containing a Page of RequestResponseDto.
-     * @author Caio Alves
-     */ 
-    @Operation(summary = "List Requests by Type",
-               description = "Retrieves a paginated list of requests filtered by a specific type.")
+     * @param type The request type to filter by (optional).
+     * @param status The status (newStatus) to filter requests by (optional).
+     * @param pageable Pagination and sorting information.
+     * @return A Page of RequestResponseDto (Status 200 OK).
+     * @author Jorge Roberto / Caio Alves
+     */
+    @Operation(summary = "List Requests by Filter (Type or Status)",
+            description = "Retrieves a paginated list of service requests filtered by a specific type or by the current status recorded in the Status History. Filters are optional.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Paginated list of requests retrieved successfully"),
-                @ApiResponse(responseCode = "400", description = "Invalid type parameter"),
-                @ApiResponse(responseCode = "404", description = "Request not found")
+            @ApiResponse(responseCode = "200", description = "Paginated list of requests retrieved successfully",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDto.class)))),
+            @ApiResponse(responseCode = "404", description = "No requests found matching the criteria.")
     })
-    @GetMapping(params = "type") 
-    public ResponseEntity<Page<RequestResponseDto>> getRequestsByType(
-            @RequestParam String type,         
-            @ParameterObject 
+    @GetMapping(path="/", params = "status")
+    public ResponseEntity<?> getRequestsByFilter(
+            @RequestParam(required = false, name = "status")
+            @Schema(description = "The status (newStatus) to filter requests by.")
+            String status,
+
+            @RequestParam(required = false)
+            String type,
+
+            @ParameterObject
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable
     ) {
-        Page<RequestResponseDto> requests = requestService.findByType(type, pageable);
-        return ResponseEntity.ok(requests);
+        if (status != null && !status.isEmpty()) {
+            Page<RequestResponseDto> requests = requestService.findAllByStatusHistory_NewStatus(status, pageable);
+            return ResponseEntity.ok(requests);
+        }
+
+        if (type != null && !type.isEmpty()) {
+            Page<RequestResponseDto> requests = requestService.findByType(type, pageable);
+            return ResponseEntity.ok(requests);
+        }
+
+        return ResponseEntity.ok(Page.empty());
     }
 }

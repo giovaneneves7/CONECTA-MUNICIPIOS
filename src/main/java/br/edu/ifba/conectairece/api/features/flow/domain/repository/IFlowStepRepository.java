@@ -17,4 +17,7 @@ public interface IFlowStepRepository extends JpaRepository<FlowStep, UUID> {
     Optional<FlowStep> findByFlowIdAndStepId(UUID flowId, UUID stepId);
 
     UUID flow(Flow flow);
+
+    Optional<FlowStep> findFirstByFlowOrderByStepOrderAsc(Flow flow);
+
 }

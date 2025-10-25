@@ -128,6 +128,17 @@ public class FlowService implements IFlowService {
 
     }
 
+    @Override
+    public FlowStep getFirstFlowStepByFlowUd(UUID flowId) {
+
+        Flow flow = this.flowRepository.findById(flowId)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        return flowStepRepository.findFirstByFlowOrderByStepOrderAsc(flow)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+    }
+
     private List<StepFullDataResponseDTO> findStepsByFlowId(final UUID flowId){
         List<Step> steps = stepRepository.findAllByFlowId(flowId);
 

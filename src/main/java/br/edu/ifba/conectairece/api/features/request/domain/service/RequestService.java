@@ -7,10 +7,12 @@ import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.Moni
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.event.RequestCreatedEvent;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import br.edu.ifba.conectairece.api.features.update.domain.repository.IUpdateRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,7 @@ public class RequestService implements RequestIService {
     private final ProfileRepository profileRepository;
     private final IMonitoringRepository monitoringRepository;
     private final IUpdateRepository updateRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
 
     /**
@@ -56,7 +59,8 @@ public class RequestService implements RequestIService {
      * @return DTO with saved request information
      */
     @Override
-    public RequestResponseDto save(RequestPostRequestDto dto){
+    public RequestResponseDto save(final RequestPostRequestDto dto){
+
         MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
         .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -70,7 +74,9 @@ public class RequestService implements RequestIService {
         request.setMunicipalService(service);
         request.setProfile(profile);
 
-        requestRepository.save(request);
+        Request saved = requestRepository.save(request);
+
+        eventPublisher.publishEvent(new RequestCreatedEvent(saved));
 
         return objectMapperUtil.mapToRecord(request, RequestResponseDto.class);
     }

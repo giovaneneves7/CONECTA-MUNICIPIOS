@@ -6,6 +6,7 @@ import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowFullDa
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowResponseDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowStepResponseDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
+import br.edu.ifba.conectairece.api.features.flow.domain.model.FlowStep;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,5 +21,5 @@ public interface IFlowService {
     List<FlowFullDataResponseDTO> getAllFlows();
     FlowFullDataResponseDTO getFlowById(final UUID id);
     FlowFullDataResponseDTO getFlowByMunicipalServiceId(final Long id);
-
+    FlowStep getFirstFlowStepByFlowUd(final UUID flowId);
 }

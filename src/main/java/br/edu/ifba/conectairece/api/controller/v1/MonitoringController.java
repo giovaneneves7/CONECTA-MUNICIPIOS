@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringRequestDTO;
+import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
@@ -56,17 +57,41 @@ public class MonitoringController {
     @Operation(summary = "Create a new Monitoring",
             description = "Creates and persists a new monitoring in the system.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Monitoring successfully created",
+            @ApiResponse(responseCode = "201", description = "Monitoring successfully created",
                     content = @Content(schema = @Schema(implementation = MonitoringRequestDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body"),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
-    @PostMapping("/monitoring")
+    @PostMapping(path = "/monitoring", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@RequestBody MonitoringRequestDTO dto, BindingResult result){
 
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
-                : ResponseEntity.ok(this.monitoringService.save(dto));
+                : ResponseEntity.status(HttpStatus.CREATED).body(this.monitoringService.save(dto));
+
+    }
+
+
+    /**
+     * Endpoint to update a existing monitoring.
+     *
+     * @param dto DTO containing monitoring data.
+     * @return Response with updated monitoring data.
+     */
+    @Operation(summary = "Update a existing Monitoring",
+            description = "Updates a existing monitoring in the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Monitoring successfully updated",
+                    content = @Content(schema = @Schema(implementation = MonitoringUpdateRequestDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body"),
+            @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
+    })
+    @PutMapping(path = "/monitoring", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<?> update(@RequestBody MonitoringUpdateRequestDTO dto, BindingResult result){
+
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                : ResponseEntity.status(HttpStatus.OK).body(this.monitoringService.updateMonitoring(dto));
 
     }
 

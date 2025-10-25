@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.features.monitoring.domain.service;
 
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringRequestDTO;
+import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
@@ -59,8 +60,15 @@ public class MonitoringService implements IMonitoringService{
     }
 
     @Override
-    public MonitoringResponseDTO update(final Monitoring monitoring) {
-        return null;
+    public MonitoringResponseDTO updateMonitoring(final MonitoringUpdateRequestDTO dto) {
+
+        this.monitoringRepository.findById(dto.id())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        Monitoring monitoring = this.objectMapperUtil.map(dto,  Monitoring.class);
+
+        return this.objectMapperUtil.mapToRecord(monitoringRepository.save(monitoring), MonitoringResponseDTO.class);
+
     }
 
     @Override

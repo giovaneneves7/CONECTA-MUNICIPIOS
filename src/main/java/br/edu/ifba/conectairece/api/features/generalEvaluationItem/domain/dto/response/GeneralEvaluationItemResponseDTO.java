@@ -4,6 +4,9 @@ import br.edu.ifba.conectairece.api.features.generalEvaluationItem.domain.enums.
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record GeneralEvaluationItemResponseDTO(
+        @JsonProperty("id")
+        Long id,
+
         @JsonProperty("note")
         String note,
 

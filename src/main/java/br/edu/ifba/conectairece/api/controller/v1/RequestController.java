@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import java.util.List;
 import java.util.UUID;
 
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 
 import org.springdoc.core.annotations.ParameterObject;
@@ -282,5 +283,28 @@ public class RequestController {
         }
 
         return ResponseEntity.ok(Page.empty());
+    }
+
+    /**
+     * Endpoint to retrieve a paginated list of requests that have been completed or rejected.
+     *
+     * @param pageable Pagination and sorting information.
+     * @return A Page of RequestResponseWithDetailsDTO (Status 200 OK).
+     */
+    @Operation(summary = "List Finalized Requests (Completed or Rejected)",
+            description = "Retrieves a paginated list of requests whose Status History indicates a final status (COMPLETE or REJECTED).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated list of finalized requests retrieved successfully",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDto.class)))),
+            @ApiResponse(responseCode = "404", description = "No finalized requests found.")
+    })
+    @GetMapping("/finalized")
+    public ResponseEntity<Page<?>> getFinalizedRequests(
+            @ParameterObject
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        Page<RequestResponseWithDetailsDTO> requests = requestService.findAllFinalizedRequests(pageable);
+        return ResponseEntity.ok(requests);
     }
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
@@ -56,4 +57,12 @@ public interface RequestIService {
      * @return A {@link Page} of {@link RequestResponseDto} containing the filtered and paginated results.
      */
     Page<RequestResponseDto> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable);
+
+    /**
+     * Retrieves a paginated list of Requests that have reached a final status (COMPLETE or REJECTED).
+     *
+     * @param pageable Pagination and sorting criteria.
+     * @return A Page of RequestResponseWithDetailsDTO containing final-status requests.
+     */
+    public Page<RequestResponseWithDetailsDTO> findAllFinalizedRequests(Pageable pageable);
 }

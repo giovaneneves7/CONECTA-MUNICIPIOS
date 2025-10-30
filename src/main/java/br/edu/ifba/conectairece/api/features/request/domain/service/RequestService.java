@@ -7,6 +7,7 @@ import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.Moni
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.event.RequestCreatedEvent;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import br.edu.ifba.conectairece.api.features.update.domain.repository.IUpdateRepository;
@@ -191,5 +192,41 @@ public class RequestService implements RequestIService {
                         request, RequestResponseDto.class
                 )
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<RequestResponseWithDetailsDTO> findAllFinalizedRequests(Pageable pageable) {
+
+        Page<Request> requestsPage = requestRepository.findAllByStatusHistory_NewStatusIn(
+                List.of("COMPLETE", "REJECTED"),
+                pageable
+        );
+
+        return requestsPage.map(request -> {
+            String statusValue = null;
+            if (request.getStatusHistory() != null) {
+                statusValue = request.getStatusHistory().getNewStatus();
+            }
+
+            RequestResponseWithDetailsDTO baseDto = objectMapperUtil.mapToRecord(
+                    request,
+                    RequestResponseWithDetailsDTO.class
+            );
+
+            return new RequestResponseWithDetailsDTO(
+                    baseDto.id(),
+                    baseDto.protocolNumber(),
+                    baseDto.createdAt(),
+                    baseDto.estimatedCompletionDate(),
+                    baseDto.updatedAt(),
+                    baseDto.type(),
+                    baseDto.note(),
+                    baseDto.municipalServiceId(),
+                    statusValue,
+                    request.getProfile().getUser().getPerson().getFullName(),
+                    request.getProfile().getUser().getPerson().getCpf()
+            );
+        });
     }
 }

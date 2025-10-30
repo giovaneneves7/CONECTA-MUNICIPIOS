@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.request.domain.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -44,4 +45,22 @@ public interface RequestRepository extends JpaRepository<Request, UUID>{
      * @return A Page containing Requests matching the status.
      */
     Page<Request> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable);
+
+    /**
+     * Retrieves the first Request associated with the given Municipal Service ID,
+     * ordered by creation date in descending order.
+     * <p>
+     * This is typically used to find the most recently created Request linked to a service.
+     * * @param municipalServiceId The ID of the Municipal Service.
+     * @return An Optional containing the most recent Request found.
+     */
+    Optional<Request> findFirstByMunicipalServiceIdOrderByCreatedAtDesc(Long municipalServiceId);
+
+    /**
+     * Finds a Request entity by its unique protocol number.
+     *
+     * @param protocolNumber The protocol number of the Request.
+     * @return An Optional containing the Request found.
+     */
+    Optional<Request> findByProtocolNumber(String protocolNumber);
 }

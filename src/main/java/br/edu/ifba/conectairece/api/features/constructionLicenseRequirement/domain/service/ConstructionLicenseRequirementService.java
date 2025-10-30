@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
+import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.context.ApplicationEventPublisher;
@@ -72,10 +75,11 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     private final TechnicalResponsibleRepository technicalResponsibleRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final UserRepository userRepository;
-    private final ProfileRepository profileRepository; 
+    private final ProfileRepository profileRepository;
+    private final RequestRepository requestRepository;
 
     @Override
-    public ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
+    public ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
 
         Profile solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
             .orElseThrow(() -> new BusinessException("Perfil do solicitante não encontrado"));
@@ -116,7 +120,11 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
 
         eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
 
-        return toResponseDTO(saved);
+        Request createdRequest = requestRepository.findFirstByMunicipalServiceIdOrderByCreatedAtDesc(
+                saved.getMunicipalService().getId()
+        ).orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        return this.toResponseWithRequestIdDTO(saved, createdRequest.getId());
     }
 
     @Override
@@ -260,6 +268,48 @@ if (dto.documents() != null) {
             entity.getConstructionArea(),
             responsibleName,
             entity.getTechnicalResponsibleStatus()
+        );
+    }
+
+    /**
+     * Converts a {@link ConstructionLicenseRequirement} entity into a
+     * {@link ConstructionLicenseRequirementWithRequestIDResponseDTO},
+     * including the UUID of the associated {@link Request}.
+     * <p>
+     * This helper method ensures that the technical responsible's full name is resolved
+     * and included in the response DTO.
+     *
+     * @param entity The saved ConstructionLicenseRequirement entity.
+     * @param requestId The UUID of the Request associated with this requirement.
+     * @return The response DTO populated with all fields.
+     */
+    private ConstructionLicenseRequirementWithRequestIDResponseDTO toResponseWithRequestIdDTO(ConstructionLicenseRequirement entity, UUID requestId) {
+        if (entity == null) {
+            return null;
+        }
+
+        String responsibleName = null;
+        TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
+
+        if (responsibleEntity != null &&
+                responsibleEntity.getUser() != null &&
+                responsibleEntity.getUser().getPerson() != null) {
+
+            responsibleName = responsibleEntity.getUser().getPerson().getFullName();
+        }
+
+        return new ConstructionLicenseRequirementWithRequestIDResponseDTO(
+                entity.getId(),
+                requestId,
+                entity.getCreatedAt(),
+                entity.getOwner(),
+                entity.getPhone(),
+                entity.getCep(),
+                entity.getCpfCnpj(),
+                entity.getConstructionAddress(),
+                entity.getConstructionArea(),
+                responsibleName,
+                entity.getTechnicalResponsibleStatus()
         );
     }
 

@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 import java.util.List;
 import java.util.UUID;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -32,12 +34,17 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 public interface ConstructionLicenseRequirementIService {
 
     /**
-     * Saves a new construction license requirement.
+     * Saves a new Construction License Requirement, processes associated documents,
+     * and triggers the asynchronous creation of a corresponding Request entity.
+     * <p>
+     * After saving, it retrieves the {@link Request} created by the event listener
+     * (using the most recent creation timestamp) and returns its ID.
      *
-     * @param dto request data
-     * @return response DTO with saved data
+     * @param dto Data Transfer Object containing all requirement details.
+     * @return A DTO containing the saved requirement details and the UUID of the newly created Request.
+     * @throws br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException if any linked entity (User, Service, Responsible) is not found.
      */
-    ConstructionLicenseRequirementResponseDTO save(ConstructionLicenseRequirementRequestDTO dto);
+    ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto);
 
     /**
      * Retrieves all construction license requirements.

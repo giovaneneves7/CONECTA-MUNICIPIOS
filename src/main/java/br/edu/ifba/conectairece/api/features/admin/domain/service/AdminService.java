@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.features.admin.domain.service;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserContentResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.repository.AdminProfileRepository;
@@ -253,31 +254,7 @@ public class AdminService implements IAdminService{
 
         Page<User> userPage = userRepository.findAll(pageable);
 
-        return userPage.map(user -> {
-            Person person = user.getPerson();
-            Profile activeProfile = user.getActiveProfile();
-
-            ProfilePublicDataResponseDTO contentDto = new ProfilePublicDataResponseDTO(
-                    user.getId(),
-                    activeProfile != null ? activeProfile.getType() : null,
-                    activeProfile != null ? activeProfile.getImageUrl() : null,
-                    person != null ? person.getFullName() : null,
-                    person != null ? person.getCpf() : null,
-                    user.getPhone(),
-                    user.getEmail(),
-                    person != null && person.getGender() != null ? person.getGender().toString() : null,
-                    person != null ? person.getBirthDate() : null
-            );
-
-            List<ProfileResponseDTO> profileListDto = user.getProfiles().stream()
-                    .map(profile -> new ProfileResponseDTO(
-                            profile.getId(),
-                            profile.getType(),
-                            profile.getImageUrl()))
-                    .collect(Collectors.toList());
-
-            return new AdminUserDetailResponseDto(contentDto, profileListDto);
-        });
+        return userPage.map(this::mapUserToAdminDetailDto);
     }
 
         /**
@@ -295,28 +272,54 @@ public class AdminService implements IAdminService{
 
         Page<User> userPage = userRepository.findByProfileRoleName(roleName, pageable);
 
-        return userPage.map(user -> {
-            Person person = user.getPerson();
-            Profile activeProfile = user.getActiveProfile();
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
 
-            ProfilePublicDataResponseDTO contentDto = new ProfilePublicDataResponseDTO( user.getId(),
-                    activeProfile != null ? activeProfile.getType() : null,
-                    activeProfile != null ? activeProfile.getImageUrl() : null,
-                    person != null ? person.getFullName() : null,
-                    person != null ? person.getCpf() : null,
-                    user.getPhone(),
-                    user.getEmail(),
-                    person != null && person.getGender() != null ? person.getGender().toString() : null,
-                    person != null ? person.getBirthDate() : null); 
+    /**
+     * Retrieves a paginated list of detailed information for users filtered by a specific status.
+     *
+     * @param status The UserStatus enum to filter users by.
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing AdminUserDetailResponseDTO objects for the filtered users.
+     * @author Caio Alves
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AdminUserDetailResponseDto> findUserDetailsByStatus(UserStatus status, Pageable pageable) {
+        Page<User> userPage = userRepository.findByStatus(status, pageable);
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
 
-            List<ProfileResponseDTO> profileListDto = user.getProfiles().stream()
-                    .map(profile -> new ProfileResponseDTO(
-                            profile.getId(),
-                            profile.getType(),
-                            profile.getImageUrl())) 
-                    .collect(Collectors.toList());
+    /**
+     * Maps a User entity to the detailed AdminUserDetailResponseDto.
+     * @param user The User entity to map.
+     * @return The corresponding AdminUserDetailResponseDto.
+     * @Author Caio Alves
+     */
+    private AdminUserDetailResponseDto mapUserToAdminDetailDto(User user) {
+        Person person = user.getPerson();
+        Profile activeProfile = user.getActiveProfile();
 
-            return new AdminUserDetailResponseDto(contentDto, profileListDto);
-        });
+        AdminUserContentResponseDTO contentDto = new AdminUserContentResponseDTO(
+                user.getId(),
+                activeProfile != null ? activeProfile.getType() : null,
+                activeProfile != null ? activeProfile.getImageUrl() : null,
+                person != null ? person.getFullName() : null,
+                person != null ? person.getCpf() : null,
+                user.getPhone(),
+                user.getEmail(),
+                person != null && person.getGender() != null ? person.getGender().toString() : null,
+                person != null ? person.getBirthDate() : null,
+                user.getStatus() != null ? user.getStatus().toString() : null
+        );
+
+        List<ProfileResponseDTO> profileListDto = user.getProfiles().stream()
+                .map(profile -> new ProfileResponseDTO(
+                        profile.getId(),
+                        profile.getType(),
+                        profile.getImageUrl()))
+                .collect(Collectors.toList());
+
+        return new AdminUserDetailResponseDto(contentDto, profileListDto);
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 
 /**
@@ -14,7 +13,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.Profile
  */
 public record AdminUserDetailResponseDto(
     @JsonProperty("content") 
-    ProfilePublicDataResponseDTO content,
+    AdminUserContentResponseDTO content,
     @JsonProperty("profiles") 
     List<ProfileResponseDTO> profiles
 ) {}

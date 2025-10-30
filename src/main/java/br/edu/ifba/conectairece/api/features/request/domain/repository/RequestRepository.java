@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.request.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,6 +46,15 @@ public interface RequestRepository extends JpaRepository<Request, UUID>{
      * @return A Page containing Requests matching the status.
      */
     Page<Request> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable);
+
+    /**
+     * Retrieves a paginated list of Requests filtered by a list of statuses (newStatus) recorded in the StatusHistory.
+     *
+     * @param statuses The list of target statuses (e.g., ["COMPLETE", "REJECTED"]).
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing Requests matching any of the provided statuses.
+     */
+    Page<Request> findAllByStatusHistory_NewStatusIn(List<String> statuses, Pageable pageable);
 
     /**
      * Retrieves the first Request associated with the given Municipal Service ID,

@@ -64,8 +64,9 @@ public class MonitoringService implements IMonitoringService{
 
         this.monitoringRepository.findById(dto.id())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        Monitoring monitoring;
 
-        Monitoring monitoring = this.objectMapperUtil.map(dto,  Monitoring.class);
+        monitoring = this.objectMapperUtil.map(dto,  Monitoring.class);
 
         return this.objectMapperUtil.mapToRecord(monitoringRepository.save(monitoring), MonitoringResponseDTO.class);
 

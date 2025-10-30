@@ -6,6 +6,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResp
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -90,4 +91,14 @@ public interface IAdminService {
      * @author Caio Alves
      */
     Page<AdminUserDetailResponseDto> findUserDetailsByRoleName(String roleName, Pageable pageable);
+
+    /**
+     * Retrieves a paginated list of detailed information for users filtered by a specific status.
+     *
+     * @param status The UserStatus enum to filter users by.
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing AdminUserDetailResponseDTO objects for the filtered users.
+     * @author Caio Alves
+     */
+    Page<AdminUserDetailResponseDto> findUserDetailsByStatus(UserStatus status, Pageable pageable);
 }

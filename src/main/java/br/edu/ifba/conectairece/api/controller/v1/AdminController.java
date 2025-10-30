@@ -8,6 +8,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUser
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.service.IAdminService;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
+import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequest;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
@@ -286,6 +287,43 @@ public class AdminController {
              return ResponseEntity.badRequest().build();
         }
         Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByRoleName(roleName, pageable);
+        return ResponseEntity.ok(userDetailsPage);
+    }
+
+    /**
+     * Endpoint for an administrator to retrieve a paginated list of user details,
+     * filtered by a specific user status (e.g., ACTIVE, INACTIVE).
+     *
+     * @param status The status to filter users by (case-insensitive string: "ACTIVE" or "INACTIVE").
+     * @param pageable Pagination and sorting information.
+     * @return A ResponseEntity containing a Page of filtered detailed user information.
+     * @author Caio Alves
+     */
+    @Operation(summary = "List Users Details by Status (Paginated)",
+               description = "Retrieves a paginated list of users filtered by a specific status (e.g., ACTIVE, INACTIVE).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated and filtered user list retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid 'status' parameter. Must be 'ACTIVE' or 'INACTIVE'.")
+    })
+    @GetMapping(value = "/users/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserDetailsByStatus(
+            @RequestParam String status, // receives as string
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        UserStatus userStatusEnum;
+        try {
+            // Convert string for enum
+            userStatusEnum = UserStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid status value. Must be one of: " + 
+                          java.util.Arrays.toString(UserStatus.values()));
+        }
+
+        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByStatus(userStatusEnum, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 }

@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.user.domain.repository;
 
+import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 
 import org.springframework.data.domain.Page;
@@ -36,4 +37,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      */
     @Query("SELECT u FROM User u JOIN u.profiles p JOIN p.role r WHERE r.name = :roleName")
     Page<User> findByProfileRoleName(@Param("roleName") String roleName, Pageable pageable);
+
+    /**
+     * Finds a paginated list of users filtered by their status (e.g., ACTIVE, INACTIVE).
+     *
+     * @param status The UserStatus enum to filter by.
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing the Users matching the status.
+     * @author Caio Alves
+     */
+    Page<User> findByStatus(UserStatus status, Pageable pageable);
 }

@@ -22,4 +22,7 @@ public class GeneralEvaluationItem extends SimplePersistenceEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", nullable = false)
     private Request request;
+
+    @Column(name = "name")
+    private String name;
 }

@@ -135,6 +135,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         //Monitorings - /api/v1/monitorings
                         .requestMatchers(HttpMethod.POST, "/api/v1/monitorings").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/monitorings/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/monitorings/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/monitorings").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/monitorings/**").permitAll()
 

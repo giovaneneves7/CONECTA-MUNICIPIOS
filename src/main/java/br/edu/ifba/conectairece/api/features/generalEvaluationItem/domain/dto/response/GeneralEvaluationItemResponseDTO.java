@@ -10,6 +10,9 @@ public record GeneralEvaluationItemResponseDTO(
         @JsonProperty("note")
         String note,
 
+        @JsonProperty(value = "name")
+        String name,
+
         @JsonProperty("status")
         GeneralEvaluationItemStatus status
 ) {

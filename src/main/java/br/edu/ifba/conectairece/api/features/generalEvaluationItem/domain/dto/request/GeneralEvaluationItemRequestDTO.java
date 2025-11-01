@@ -17,6 +17,10 @@ public record GeneralEvaluationItemRequestDTO(
         @NotBlank(message = "Note is mandatory")
         String note,
 
+        @JsonProperty(value = "name")
+        @NotBlank(message = "Name is mandatory")
+        String name,
+
         @JsonProperty(value = "status")
         @NotNull(message = "Status cannot be null")
         GeneralEvaluationItemStatus status

@@ -246,6 +246,11 @@ if (dto.documents() != null) {
             entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
             entity.setRejectionJustification(dto.justification());
             repository.save(entity);
+
+        List<Request> requests = entity.getMunicipalService().getRequests();
+        Request request = requests.get(requests.size() - 1);
+        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, false);
+
     }
 
     private ConstructionLicenseRequirementResponseDTO toResponseDTO(ConstructionLicenseRequirement entity) {

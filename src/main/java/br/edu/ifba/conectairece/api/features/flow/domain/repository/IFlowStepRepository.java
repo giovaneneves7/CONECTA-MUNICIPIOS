@@ -3,6 +3,8 @@ package br.edu.ifba.conectairece.api.features.flow.domain.repository;
 import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
 import br.edu.ifba.conectairece.api.features.flow.domain.model.FlowStep;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -19,5 +21,8 @@ public interface IFlowStepRepository extends JpaRepository<FlowStep, UUID> {
     UUID flow(Flow flow);
 
     Optional<FlowStep> findFirstByFlowOrderByStepOrderAsc(Flow flow);
+
+    @Query("SELECT fs FROM FlowStep fs WHERE fs.flow.id = :flowId AND fs.stepOrder = :order + 1")
+    Optional<FlowStep> findNextStep(@Param("flowId") UUID flowId, @Param("order") Long order);
 
 }

@@ -17,6 +17,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 /**
  * Represents a Monitoring entity that stores information about Request entity updates made by the public servants.
@@ -46,5 +49,9 @@ public class Monitoring extends PersistenceEntity {
     @ManyToOne
     @JoinColumn(name = "step_id", nullable = false)
     private Step step;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
 }

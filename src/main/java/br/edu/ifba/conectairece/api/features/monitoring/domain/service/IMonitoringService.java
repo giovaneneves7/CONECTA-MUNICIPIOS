@@ -4,6 +4,7 @@ import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.Monit
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
+import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface IMonitoringService {
     MonitoringResponseDTO findById(final UUID id);
     List<MonitoringResponseDTO> getAllMonitorings(Pageable pageable);
     void  delete(final UUID id);
+    void completeCurrentMonitoringAndActivateNext(final Request request, boolean approved);
+
 }

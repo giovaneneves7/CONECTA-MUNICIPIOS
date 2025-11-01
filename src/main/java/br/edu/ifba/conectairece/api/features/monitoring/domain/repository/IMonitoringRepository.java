@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.monitoring.domain.repository;
 
+import br.edu.ifba.conectairece.api.features.monitoring.domain.enums.MonitoringStatus;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -30,5 +32,15 @@ public interface IMonitoringRepository extends JpaRepository<Monitoring, UUID> {
             countQuery = "SELECT COUNT(m) FROM Monitoring m WHERE m.request.id = :requestId"
     )
     Page<Monitoring> findAllByRequestId(@Param("requestId") UUID requestId, Pageable pageable);
-
+    @Query("""
+        SELECT m\s
+        FROM Monitoring m\s
+        WHERE m.request.id = :requestId\s
+          AND m.monitoringStatus = :status
+        ORDER BY m.createdAt DESC
+   \s""")
+    Optional<Monitoring> findFirstByRequestIdAndStatusOrderByCreatedAtDesc(
+            @Param("requestId") UUID requestId,
+            @Param("status") MonitoringStatus status
+    );
 }

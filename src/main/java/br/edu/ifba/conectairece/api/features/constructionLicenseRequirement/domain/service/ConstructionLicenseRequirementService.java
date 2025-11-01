@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
+import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -67,6 +68,8 @@ import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 @Service
 @RequiredArgsConstructor
 public class ConstructionLicenseRequirementService implements ConstructionLicenseRequirementIService{
+
+    private final IMonitoringService monitoringService;
 
     private final ConstructionLicenseRequirementRepository repository;
     private final MunicipalServiceRepository municipalServiceRepository;
@@ -200,7 +203,6 @@ if (dto.documents() != null) {
         Long requirementId = dto.constructionLicenseRequirementId();
         String registrationId = dto.registrationId();
 
-
         TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
                 .orElseThrow(() -> new BusinessException("Technical Responsible not found with registration ID: " + registrationId));
         
@@ -215,6 +217,10 @@ if (dto.documents() != null) {
             }
             entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
             repository.save(entity);
+
+        List<Request> requests = entity.getMunicipalService().getRequests();
+        Request request = requests.get(requests.size() - 1);
+        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, true);
     }
 
     @Override

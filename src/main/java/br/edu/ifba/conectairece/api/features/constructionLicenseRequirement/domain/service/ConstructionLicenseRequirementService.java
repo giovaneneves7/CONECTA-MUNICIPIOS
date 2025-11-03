@@ -179,9 +179,12 @@ if (dto.documents() != null) {
 
     @Override
     public List<ConstructionLicenseRequirementResponseDTO> findAll() {
-        return repository.findAll().stream()
+
+        return repository.findAllApproved()
+                .stream()
                 .map(this::toResponseDTO)
                 .toList();
+
     }
 
     @Override

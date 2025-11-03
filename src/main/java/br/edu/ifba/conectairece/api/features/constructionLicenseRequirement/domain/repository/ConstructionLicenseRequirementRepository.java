@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
@@ -19,7 +21,7 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
  * construction-related requirement records, 
  * including their associations with documents and technical responsibles.
  *
- * Author: Caio Alves
+ * Author: Caio Alves, Giovane Neves
  */
 
 @Repository
@@ -39,4 +41,11 @@ public interface ConstructionLicenseRequirementRepository extends JpaRepository<
      * @author Caio Alves
      */
     Page<ConstructionLicenseRequirement> findByRequirementTypeName(String typeName, Pageable pageable);
+
+    @Query("SELECT r FROM ConstructionLicenseRequirement r WHERE r.technicalResponsibleStatus = 'APPROVED'")
+    List<ConstructionLicenseRequirement> findAllApproved();
+
+    @Query("SELECT r FROM ConstructionLicenseRequirement r WHERE r.technicalResponsible.id = :responsibleId")
+    List<ConstructionLicenseRequirement> findAllByTechnicalResponsible(@Param("responsibleId") UUID responsibleId);
+
 }

@@ -6,6 +6,7 @@ import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requiremen
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -58,6 +59,13 @@ public class Document extends PersistenceEntity {
     private String reviewNote;
 
     /**
+     * An optional note provided by the user during the document submission.
+     * This can include additional context or information about the document.
+     */
+    @Column(columnDefinition = "TEXT")
+    private String submissionNote;
+
+    /**
      * The current status of the document in the review lifecycle.
      * Defaults to PENDING upon creation.
      */
@@ -76,7 +84,7 @@ public class Document extends PersistenceEntity {
     @OneToMany(mappedBy = "document")
     private List<EvaluationItem> evaluationItems = new ArrayList<>();
 
-    public Document(String name, String fileExtension, String fileUrl, Requirement requirement) {
+    public Document(String name, String fileExtension, String fileUrl, Requirement requirement, String submissionNote) {
         Assert.hasText(name, "Document name cannot be blank.");
         Assert.hasText(fileUrl, "File URL cannot be blank.");
         Assert.notNull(requirement, "Requirement cannot be null.");
@@ -85,6 +93,7 @@ public class Document extends PersistenceEntity {
         this.fileExtension = fileExtension;
         this.fileUrl = fileUrl;
         this.requirement = requirement;
+        this.submissionNote = submissionNote;
     }
     /**
      * Approves the document, transitioning its status to APPROVED.

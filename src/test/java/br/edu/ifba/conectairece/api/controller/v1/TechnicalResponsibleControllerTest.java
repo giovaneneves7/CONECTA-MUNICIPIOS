@@ -230,7 +230,7 @@ private final String BASE_URL = "/api/v1/technical-responsibles";
     void suggestDocumentCorrection_ShouldReturn200AndUpdatedDocument_WhenDtoIsValid() throws Exception {
         DocumentCorrectionSuggestionDTO requestDto = new DocumentCorrectionSuggestionDTO(SAMPLE_DOCUMENT_ID, SAMPLE_REGISTRATION_ID, "Corrigir a planta baixa.");
         
-        DocumentDetailResponseDTO responseDto = new DocumentDetailResponseDTO(SAMPLE_DOCUMENT_ID, "Planta Baixa", ".pdf", "http://url/doc.pdf", DocumentStatus.CORRECTION_SUGGESTED, "Corrigir a planta baixa.");
+        DocumentDetailResponseDTO responseDto = new DocumentDetailResponseDTO(SAMPLE_DOCUMENT_ID, "Planta Baixa", ".pdf", "http://url/doc.pdf", DocumentStatus.CORRECTION_SUGGESTED, "Corrigir a planta baixa.", null);
 
         when(documentService.suggestCorrection(any(DocumentCorrectionSuggestionDTO.class))).thenReturn(responseDto);
 

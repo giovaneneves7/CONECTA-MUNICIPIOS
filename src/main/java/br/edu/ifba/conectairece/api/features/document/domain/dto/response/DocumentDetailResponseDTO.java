@@ -1,6 +1,9 @@
 package br.edu.ifba.conectairece.api.features.document.domain.dto.response;
 
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
+import br.edu.ifba.conectairece.api.features.evaluationItem.domain.dto.response.EvaluationItemResponseDTO;
+
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -18,7 +21,7 @@ import java.util.UUID;
  * @param status The current review status of the document.
  * @param reviewNote The justification or note provided during the review process, especially for REJECTED documents.
  *
- * @author Andesson Reis (Refactored)
+ * @author Andesson Reis 
  */
 public record DocumentDetailResponseDTO(
     UUID id,
@@ -26,5 +29,6 @@ public record DocumentDetailResponseDTO(
     String fileExtension,
     String fileUrl,
     DocumentStatus status,
-    String reviewNote
+    String reviewNote,
+    List<EvaluationItemResponseDTO> evaluationItems
 ) {}

@@ -104,7 +104,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.UNAUTHORIZED;
         } else if (BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage().equals(errorMessage)
                 || BusinessExceptionMessage.USER_ALREADY_HAS_THIS_PROFILE.getMessage().equals(errorMessage)
-                || BusinessExceptionMessage.PROFILE_ALREADY_HAS_THIS_PERMISSION.getMessage().equals(errorMessage))
+                || BusinessExceptionMessage.PROFILE_ALREADY_HAS_THIS_PERMISSION.getMessage().equals(errorMessage)
+                || BusinessExceptionMessage.INVALID_REQUEST_TO_FINALIZE.getMessage().equals(errorMessage)
+        )
         {
             status = HttpStatus.CONFLICT;
         } else if (BusinessExceptionMessage.INVALID_PROFILE.getMessage().equals(errorMessage) || BusinessExceptionMessage.INVALID_DATA.getMessage().equals(errorMessage)) {

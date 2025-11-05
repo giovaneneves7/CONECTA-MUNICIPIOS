@@ -2,6 +2,8 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizeResponseDTO;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -187,5 +189,65 @@ public class ConstructionLicenseRequirementController {
     ) {
         Page<ConstructionLicenseRequirementResponseDTO> requirements = service.findByRequirementTypeName(typeName, pageable);
         return ResponseEntity.ok(requirements);
+    }
+
+    /**
+     * Endpoint for the Public Servant to officially approve a Construction License Requirement.
+     * This action finalizes the requirement's status to ACCEPTED and records the justification (Comment).
+     *
+     * @param constructionLicenseRequirementId The ID of the requirement to be approved.
+     * @param dto DTO containing the Public Servant ID and the acceptance note/comment.
+     * @param result Validation binding result.
+     * @return Response DTO with the finalized requirement details (Status 200 OK).
+     */
+    @Operation(summary = "Approve Construction License Requirement",
+            description = "Finalizes the review process by the Public Servant, setting the Requirement status to ACCEPTED and recording the justification/comment.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requirement successfully approved",
+                    content = @Content(schema = @Schema(implementation = ConstructionLicenseRequirementFinalizeResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields"),
+            @ApiResponse(responseCode = "404", description = "Requirement or Public Servant profile not found"),
+            @ApiResponse(responseCode = "409", description = "Workflow Conflict: Technical Responsible approval/association is still PENDING or missing."),
+            @ApiResponse(responseCode = "422", description = "Validation error in fields")
+    })
+    @PostMapping(path = "/construction-license-requirement/{constructionLicenseRequirementId}/approve")
+    public ResponseEntity<?> approveConstructionLicenseRequirement(
+            @PathVariable("constructionLicenseRequirementId") Long constructionLicenseRequirementId,
+            @RequestBody @Valid ConstructionLicenseRequirementFinalizeRequestDTO dto,
+            BindingResult result
+    ) {
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                : ResponseEntity.ok(service.approveConstructionLicenseRequirement(constructionLicenseRequirementId, dto));
+    }
+
+    /**
+     * Endpoint for the Public Servant to officially reject a Construction License Requirement.
+     * This action finalizes the requirement's status to REJECTED and records the mandatory justification (Comment).
+     *
+     * @param constructionLicenseRequirementId The ID of the requirement to be rejected.
+     * @param dto DTO containing the Public Servant ID and the mandatory rejection comment.
+     * @param result Validation binding result.
+     * @return Response DTO with the finalized requirement details (Status 200 OK).
+     */
+    @Operation(summary = "Reject Construction License Requirement",
+            description = "Finalizes the review process by the Public Servant, setting the Requirement status to REJECTED and recording the mandatory justification/comment.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Requirement successfully rejected",
+                    content = @Content(schema = @Schema(implementation = ConstructionLicenseRequirementFinalizeResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields"),
+            @ApiResponse(responseCode = "404", description = "Requirement or Public Servant profile not found"),
+            @ApiResponse(responseCode = "409", description = "Workflow Conflict: Technical Responsible approval/association is still PENDING or missing."),
+            @ApiResponse(responseCode = "422", description = "Validation error in fields")
+    })
+    @PostMapping(path = "/construction-license-requirement/{constructionLicenseRequirementId}/rejected")
+    public ResponseEntity<?> rejectedConstructionLicenseRequirement(
+            @PathVariable("constructionLicenseRequirementId") Long constructionLicenseRequirementId,
+            @RequestBody @Valid ConstructionLicenseRequirementFinalizeRequestDTO dto,
+            BindingResult result
+    ) {
+        return result.hasErrors()
+                ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
+                : ResponseEntity.ok(service.rejectConstructionLicenseRequirement(constructionLicenseRequirementId, dto));
     }
 }

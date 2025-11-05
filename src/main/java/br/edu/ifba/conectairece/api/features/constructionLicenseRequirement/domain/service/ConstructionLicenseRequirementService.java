@@ -4,10 +4,17 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import br.edu.ifba.conectairece.api.features.comment.domain.model.Comment;
+import br.edu.ifba.conectairece.api.features.comment.domain.repository.CommentRepository;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizeResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
+import br.edu.ifba.conectairece.api.features.requirement.domain.enums.RequirementStatus;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.context.ApplicationEventPublisher;
@@ -80,6 +87,8 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final RequestRepository requestRepository;
+    private final PublicServantProfileRepository publicServantProfileRepository;
+    private final CommentRepository  commentRepository;
 
     @Override
     public ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
@@ -474,5 +483,67 @@ if (dto.documents() != null) {
         Page<ConstructionLicenseRequirement> requirementPage = repository.findByRequirementTypeName(typeName, pageable);
 
         return requirementPage.map(this::toResponseDTO);
+    }
+
+    public ConstructionLicenseRequirementFinalizeResponseDTO rejectConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
+        ConstructionLicenseRequirement license = repository.findById(constructionLicenseRequirementId).orElseThrow(
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
+        );
+
+        PublicServantProfile publicServant =  publicServantProfileRepository.findById(dto.publicServantId()).orElseThrow(
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
+        );
+
+        if (license.getTechnicalResponsibleStatus() != AssociationStatus.APPROVED) {
+            throw new BusinessException(BusinessExceptionMessage.INVALID_REQUEST_TO_FINALIZE.getMessage());
+        }
+
+        license.setStatus(RequirementStatus.REJECTED);
+
+        Comment comment = new Comment();
+        comment.setRequirement(license);
+        comment.setNote(dto.comment());
+
+        comment = commentRepository.save(comment);
+
+        license.setComment(comment);
+
+        return new ConstructionLicenseRequirementFinalizeResponseDTO(
+                constructionLicenseRequirementId,
+                publicServant.getId(),
+                comment.getNote(),
+                license.getStatus().toString()
+        );
+    }
+
+    public ConstructionLicenseRequirementFinalizeResponseDTO approveConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
+        ConstructionLicenseRequirement license = repository.findById(constructionLicenseRequirementId).orElseThrow(
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
+        );
+
+        PublicServantProfile publicServant =  publicServantProfileRepository.findById(dto.publicServantId()).orElseThrow(
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
+        );
+
+        if (license.getTechnicalResponsibleStatus() != AssociationStatus.APPROVED) {
+            throw new BusinessException(BusinessExceptionMessage.INVALID_REQUEST_TO_FINALIZE.getMessage());
+        }
+
+        license.setStatus(RequirementStatus.ACCEPTED);
+
+        Comment comment = new Comment();
+        comment.setRequirement(license);
+        comment.setNote(dto.comment());
+
+        comment = commentRepository.save(comment);
+
+        license.setComment(comment);
+
+        return new ConstructionLicenseRequirementFinalizeResponseDTO(
+                constructionLicenseRequirementId,
+                publicServant.getId(),
+                comment.getNote(),
+                license.getStatus().toString()
+        );
     }
 }

@@ -3,8 +3,11 @@ package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.dom
 import java.util.List;
 import java.util.UUID;
 
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizeResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
+import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -87,4 +90,30 @@ public interface ConstructionLicenseRequirementIService {
      * @author Caio Alves
      */
     Page<ConstructionLicenseRequirementResponseDTO> findByRequirementTypeName(String typeName, Pageable pageable);
+
+    /**
+     * Finalizes the review process by approving a Construction License Requirement
+     * and records the provided acceptance note (Comment) by the Public Servant.
+     *
+     * @param constructionLicenseRequirementId The ID of the requirement being approved.
+     * @param dto DTO containing the public servant's ID and the acceptance note/comment.
+     * @return A DTO confirming the approval details and final status (ACCEPTED).
+     *
+     * @throws BusinessException if the requirement or public servant profile is not found.
+     * @throws BusinessException if Technical Responsible approval/association is still PENDING or REJECTED.
+     */
+    ConstructionLicenseRequirementFinalizeResponseDTO approveConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto);
+
+    /**
+     * Finalizes the review process by rejecting a Construction License Requirement
+     * and records the mandatory justification (Comment) provided by the Public Servant.
+     *
+     * @param constructionLicenseRequirementId The ID of the requirement being rejected.
+     * @param dto DTO containing the public servant's ID and the rejection note/comment.
+     * @return A DTO confirming the rejection details and final status (REJECTED).
+     *
+     * @throws BusinessException if the requirement or public servant profile is not found.
+     * @throws BusinessException if Technical Responsible approval/association is still PENDING or REJECTED.
+     */
+    ConstructionLicenseRequirementFinalizeResponseDTO rejectConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto);
 }

@@ -108,6 +108,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
                         // Functions for Construction License Requirements /api/v1/construction-license-requirements
                         .requestMatchers(HttpMethod.POST, "/api/v1/construction-license-requirements/construction-license-requirement").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/construction-license-requirements/construction-license-requirement/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/construction-license-requirements").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/construction-license-requirements/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/construction-license-requirements/**").permitAll()

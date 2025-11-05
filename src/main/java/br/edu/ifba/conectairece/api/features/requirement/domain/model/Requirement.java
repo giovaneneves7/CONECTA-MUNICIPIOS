@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.edu.ifba.conectairece.api.features.comment.domain.model.Comment;
+import br.edu.ifba.conectairece.api.features.requirement.domain.enums.RequirementStatus;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
@@ -12,16 +15,6 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.Munic
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.infraestructure.model.SimplePersistenceEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -74,4 +67,14 @@ public abstract class Requirement extends SimplePersistenceEntity{
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "solicitante_user_id", nullable = false)
     private User solicitante;
+
+    /**
+     * The single Comment or justification associated with this requirement.
+     * This is the inverse side of the One-to-One relationship.
+     */
+    @OneToOne(mappedBy = "requirement", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Comment comment;
+
+    @Column(name = "status")
+    private RequirementStatus status;
 }

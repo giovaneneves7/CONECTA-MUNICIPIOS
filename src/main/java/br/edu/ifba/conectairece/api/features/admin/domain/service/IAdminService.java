@@ -70,7 +70,7 @@ public interface IAdminService {
      * @author Caio Alves 
      */
     UserDataResponseDTO activateUser(UUID userId);
-    
+
     /**
      * Changes a user's status to INACTIVE, effectively disabling their account.
      *
@@ -110,4 +110,14 @@ public interface IAdminService {
      * @author Caio Alves
      */
     Page<AdminUserDetailResponseDto> findUserDetailsByStatus(UserStatus status, Pageable pageable);
+
+   /**
+     * Searches for users (with admin details) by name or CPF.
+     *
+     * @param term The search term (name or CPF).
+     * @param pageable Pagination information.
+     * @return A Page of DTOs with the details of the found users.
+     * @author Caio Alves
+     */ 
+    Page<AdminUserDetailResponseDto> findUserDetailsByNameOrCpf(String term, Pageable pageable);
 }

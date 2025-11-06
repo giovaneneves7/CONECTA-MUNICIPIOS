@@ -184,6 +184,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/api/v1/admin-profiles/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/admin-profiles/users/role-name").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/admin-profiles/users/status").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/admin-profiles/users/search").permitAll()
 
                         //Document controller
 

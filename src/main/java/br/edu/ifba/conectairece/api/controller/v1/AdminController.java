@@ -237,7 +237,7 @@ public class AdminController {
     public ResponseEntity<UserDataResponseDTO> activateUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(adminService.activateUser(userId));
     }
-    
+
     /**
      * Endpoint for an administrator to deactivate a user.
      *
@@ -344,6 +344,35 @@ public class AdminController {
         }
 
         Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByStatus(userStatusEnum, pageable);
+        return ResponseEntity.ok(userDetailsPage);
+    }
+
+    /**
+     * Endpoint for the administrator to search for users by name or CPF (paginated).
+     *
+     * @param query The search term (part of the name or CPF).
+     * @param pageable Pagination information.
+     * @return A ResponseEntity containing the Page of found users.
+     * @author Your Name // Replace with the correct name
+     */
+    @Operation(summary = "Search Users by Name or CPF (Paginated)",
+               description = "Returns a paginated list of users whose details (Name or CPF) match the search term.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Search completed successfully"),
+            @ApiResponse(responseCode = "400", description = "Parameter 'query' is missing or empty")
+    })
+    @GetMapping(value = "/users/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> searchUserDetails(
+            @RequestParam String query, 
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        if (query == null || query.isBlank()) {
+            return ResponseEntity.badRequest().body("The 'query' parameter cannot be empty.");
+        }
+        
+        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByNameOrCpf(query, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 }

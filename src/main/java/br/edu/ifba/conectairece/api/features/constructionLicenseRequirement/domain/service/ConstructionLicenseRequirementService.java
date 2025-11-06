@@ -544,11 +544,20 @@ if (dto.documents() != null) {
 
         license.setComment(comment);
 
+        // INFO: Updates the monitoring status
+        List<Request> requests = license.getMunicipalService().getRequests();
+        if (requests.isEmpty()) {
+            throw new BusinessException("No requests found for this municipal service.");
+        }
+        Request request = requests.get(requests.size() - 1);
+        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, true);
+
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,
                 publicServant.getId(),
                 comment.getNote(),
                 license.getStatus().toString()
         );
+
     }
 }

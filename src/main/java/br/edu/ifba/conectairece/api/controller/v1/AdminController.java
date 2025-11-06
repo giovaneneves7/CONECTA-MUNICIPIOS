@@ -218,6 +218,26 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    // --- NOVO ENDPOINT DE ATIVAÇÃO ---
+    /**
+     * Endpoint for an administrator to activate a user.
+     *
+     * @param userId The UUID of the user to activate.
+     * @return A ResponseEntity with the updated user data.
+     * @author Caio Alves
+     */
+    @Operation(summary = "Activate a user (PUT)",
+               description = "Allows an administrator to change a user's status to ACTIVE.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User activated successfully",
+                         content = @Content(schema = @Schema(implementation = UserDataResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    @PutMapping("/user/{userId}/activate")
+    public ResponseEntity<UserDataResponseDTO> activateUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(adminService.activateUser(userId));
+    }
+    
     /**
      * Endpoint for an administrator to deactivate a user.
      *
@@ -232,7 +252,7 @@ public class AdminController {
                          content = @Content(schema = @Schema(implementation = UserDataResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    @PatchMapping("/user/{userId}")
+    @PutMapping("/user/{userId}/deactivate")
     public ResponseEntity<UserDataResponseDTO> deactivateUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(adminService.deactivateUser(userId));
     }

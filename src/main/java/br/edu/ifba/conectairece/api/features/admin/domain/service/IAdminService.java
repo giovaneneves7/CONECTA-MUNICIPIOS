@@ -63,6 +63,15 @@ public interface IAdminService {
     void removePublicServantProfile(UUID profileId);
 
     /**
+     * Changes a user's status to ACTIVE, effectively enabling their account.
+     *
+     * @param userId The ID of the user to be activated.
+     * @return A DTO with the updated data of the activated user.
+     * @author Caio Alves 
+     */
+    UserDataResponseDTO activateUser(UUID userId);
+    
+    /**
      * Changes a user's status to INACTIVE, effectively disabling their account.
      *
      * @param userId The ID of the user to be deactivated.

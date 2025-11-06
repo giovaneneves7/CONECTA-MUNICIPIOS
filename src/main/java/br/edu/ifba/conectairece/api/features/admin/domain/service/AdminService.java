@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.features.admin.domain.service;
 
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminProfileListResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserContentResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
@@ -222,6 +223,18 @@ public class AdminService implements IAdminService{
     }
 
     /**
+     * Changes a user's status to ACTIVE, effectively enabling their account.
+     *
+     * @param userId The ID of the user to be activated.
+     * @return A DTO with the updated data of the activated user.
+     * @author Caio Alves
+     */
+    @Override @Transactional
+    public UserDataResponseDTO activateUser(UUID userId){
+        return updateUserStatus(userId, UserStatus.ACTIVE);
+    }
+
+    /**
      * Changes a user's status to INACTIVE, effectively disabling their account.
      *
      * @param userId The ID of the user to be deactivated.
@@ -230,14 +243,27 @@ public class AdminService implements IAdminService{
      */    
     @Override @Transactional
     public UserDataResponseDTO deactivateUser(UUID userId) {
+        return updateUserStatus(userId, UserStatus.INACTIVE); 
+    }
+
+    /**
+     * Helper method to find a user, set their status, save, and return the DTO.
+     *
+     * @param userId The ID of the user to update.
+     * @param newStatus The new UserStatus (ACTIVE or INACTIVE).
+     * @return A DTO with the updated user data.
+     * @author Caio Alves
+     */
+    private UserDataResponseDTO updateUserStatus(UUID userId, UserStatus newStatus){
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
 
-        user.setStatus(UserStatus.INACTIVE);
-        
+        user.setStatus(newStatus);
+
         User updatedUser = userRepository.save(user);
-        
-        return objectMapperUtil.map(updatedUser, UserDataResponseDTO.class); 
+
+        return objectMapperUtil.map(updatedUser, UserDataResponseDTO.class);
     }
 
     /**
@@ -313,11 +339,39 @@ public class AdminService implements IAdminService{
                 user.getStatus() != null ? user.getStatus().toString() : null
         );
 
-        List<ProfileResponseDTO> profileListDto = user.getProfiles().stream()
-                .map(profile -> new ProfileResponseDTO(
-                        profile.getId(),
-                        profile.getType(),
-                        profile.getImageUrl()))
+        List<AdminProfileListResponseDTO> profileListDto = user.getProfiles().stream()
+                .map(profile -> {
+                    
+                    String displayType; 
+                    String specificType = null;
+
+                    if (profile instanceof TechnicalResponsible) {
+                        TechnicalResponsible tr = (TechnicalResponsible) profile;
+                        displayType = "Técnico Responsável"; 
+                        specificType = tr.getResponsibleType(); 
+
+                    } else if (profile instanceof PublicServantProfile) {
+                        PublicServantProfile ps = (PublicServantProfile) profile;
+                        displayType = "Servidor Público";
+                        specificType = ps.getType(); 
+                    
+                    } else if (profile instanceof AdminProfile) {
+                        AdminProfile ap = (AdminProfile) profile;
+                        displayType = "Administrador";
+                        specificType = ap.getType();
+                        
+                    
+                    } else {
+                        displayType = profile.getType(); 
+                    }
+                    
+                    return new AdminProfileListResponseDTO(
+                            profile.getId(),
+                            displayType, 
+                            profile.getImageUrl(),
+                            specificType  
+                    );
+                })
                 .collect(Collectors.toList());
 
         return new AdminUserDetailResponseDto(contentDto, profileListDto);

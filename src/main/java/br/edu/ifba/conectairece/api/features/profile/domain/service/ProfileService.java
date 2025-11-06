@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.features.profile.domain.service;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
@@ -42,14 +43,21 @@ public class ProfileService implements ProfileIService {
     private  final UserRepository userRepository;
 
     @Override @Transactional
-    public ProfileResponseDTO update(Profile profile) {
+    public ProfileWithRoleResponseDTO update(Profile profile) {
         Profile existing = this.repository.findById(profile.getId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         existing.setType(profile.getType());
         existing.setImageUrl(profile.getImageUrl());
 
-        return objectMapperUtil.mapToRecord(repository.save(existing),  ProfileResponseDTO.class);
+        existing = repository.save(existing);
+
+        return new ProfileWithRoleResponseDTO(
+                existing.getId(),
+                existing.getRole().getName(),
+                existing.getType(),
+                existing.getImageUrl()
+        );
     }
 
     @Override @Transactional
@@ -84,12 +92,13 @@ public class ProfileService implements ProfileIService {
     }
 
     @Override @Transactional(readOnly = true)
-    public List<ProfileResponseDTO> getAllProfiles(Pageable pageable) {
+    public List<ProfileWithRoleResponseDTO> getAllProfiles(Pageable pageable) {
 
         Page<Profile> profiles = repository.findAll(pageable);
         return profiles.stream()
-                .map(profile -> new ProfileResponseDTO(
+                .map(profile -> new ProfileWithRoleResponseDTO(
                         profile.getId(),
+                        profile.getRole().getName(),
                         profile.getType(),
                         profile.getImageUrl()
                 ))
@@ -125,7 +134,7 @@ public class ProfileService implements ProfileIService {
         user.setActiveProfile(newActiveProfile);
         userRepository.save(user);
 
-        return new ProfileResponseCurrentType(newActiveType);
+        return new ProfileResponseCurrentType(newActiveType, newActiveProfile.getRole().getName());
     }
 
     @Override @Transactional(readOnly = true)

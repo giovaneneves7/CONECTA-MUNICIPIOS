@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.features.user.domain.service;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.dto.response.UserResponseDTO;
@@ -46,13 +47,14 @@ public class UserService implements IUserService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProfileResponseDTO> getUserProfiles(final UUID id){
+    public List<ProfileWithRoleResponseDTO> getUserProfiles(final UUID id){
 
         List<Profile> profiles = this.profileRepository.findAllByUserId(id);
 
         return profiles.stream()
-                .map(profile -> new ProfileResponseDTO(
+                .map(profile -> new ProfileWithRoleResponseDTO(
                         profile.getId(),
+                        profile.getRole().getName(),
                         profile.getType(),
                         profile.getImageUrl()
                 ))
@@ -61,7 +63,7 @@ public class UserService implements IUserService {
 
 
     @Override @Transactional(readOnly = true)
-    public ProfileResponseDTO findActiveProfileByUserId(UUID id) {
+    public ProfileWithRoleResponseDTO findActiveProfileByUserId(UUID id) {
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -71,8 +73,9 @@ public class UserService implements IUserService {
 
         Profile profile = user.getActiveProfile();
 
-        return new ProfileResponseDTO(
+        return new ProfileWithRoleResponseDTO(
                 profile.getId(),
+                profile.getRole().getName(),
                 profile.getType(),
                 profile.getImageUrl()
         );

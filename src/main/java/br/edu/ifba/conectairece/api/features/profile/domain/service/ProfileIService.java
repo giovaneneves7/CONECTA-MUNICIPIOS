@@ -4,6 +4,7 @@ import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.Perm
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
@@ -24,7 +25,7 @@ public interface ProfileIService {
     /**
      * Updates an existing profile in the database.
      */
-    ProfileResponseDTO update(Profile profile);
+    ProfileWithRoleResponseDTO update(Profile profile);
 
     /**
      * Deletes a profile by its identifier.
@@ -39,7 +40,7 @@ public interface ProfileIService {
     /**
      * Retrieves a paginated list of projected {@link ProfileProjection} entities.
      */
-    List<ProfileResponseDTO> getAllProfiles(Pageable pageable);
+    List<ProfileWithRoleResponseDTO> getAllProfiles(Pageable pageable);
 
     /**
      * Find all requests linked to the user id passed as a parameter

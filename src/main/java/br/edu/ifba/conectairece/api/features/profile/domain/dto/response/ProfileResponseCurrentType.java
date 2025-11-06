@@ -9,5 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public record ProfileResponseCurrentType (
         @JsonProperty("active_type")
-        String activeType
+        String activeType,
+
+        @JsonProperty("role")
+        String role
 ) {}

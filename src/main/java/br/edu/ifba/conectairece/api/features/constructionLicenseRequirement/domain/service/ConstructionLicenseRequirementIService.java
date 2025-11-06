@@ -101,6 +101,7 @@ public interface ConstructionLicenseRequirementIService {
      *
      * @throws BusinessException if the requirement or public servant profile is not found.
      * @throws BusinessException if Technical Responsible approval/association is still PENDING or REJECTED.
+     * @throws BusinessException if 3 or more documents were not approved.
      */
     ConstructionLicenseRequirementFinalizeResponseDTO approveConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto);
 

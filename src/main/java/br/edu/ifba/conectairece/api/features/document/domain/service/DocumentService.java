@@ -8,6 +8,10 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.response.Docume
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.document.domain.repository.DocumentRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantApproveDocumentRequestDTO;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantRejectDocumentRequestDTO;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
 import br.edu.ifba.conectairece.api.features.requirement.domain.repository.RequirementRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
@@ -64,6 +68,7 @@ public class DocumentService implements IDocumentService {
     private final RequirementRepository requirementRepository;
     private final TechnicalResponsibleRepository technicalResponsibleRepository;
     private final ConstructionLicenseRequirementRepository constructionLicenseRequirementRepository;
+    private final PublicServantProfileRepository publicServantProfileRepository;
 
     @Override
     @Transactional
@@ -202,4 +207,52 @@ public class DocumentService implements IDocumentService {
         Document updatedDocument = documentRepository.save(document);
         return objectMapperUtil.mapToRecord(updatedDocument, DocumentDetailResponseDTO.class);
     }
+
+
+    @Override
+    @Transactional
+    public DocumentDetailResponseDTO approveDocumentByPublicServant(PublicServantApproveDocumentRequestDTO dto) {
+        PublicServantProfile publicServant = publicServantProfileRepository.findById(dto.publicServantProfileId())
+                .orElseThrow(() -> new BusinessException("Public Servant Profile not found."));
+
+        Document document = findDocumentEntityById(dto.documentId());
+
+        if (document.getStatus() != DocumentStatus.APPROVED
+                && document.getStatus() != DocumentStatus.CORRECTION_SUGGESTED) {
+            throw new IllegalStateException(
+                    "Document must be in 'APPROVED' or 'CORRECTION_SUGGESTED' status to be analyzed by a Public Servant.");
+        }
+
+        document.setStatus(DocumentStatus.APPROVED);
+
+        if (dto.comment() != null && !dto.comment().isBlank()) {
+            document.setReviewNote(dto.comment());
+        }
+
+        Document savedDocument = documentRepository.save(document);
+        return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public DocumentDetailResponseDTO rejectDocumentByPublicServant(PublicServantRejectDocumentRequestDTO dto) {
+        PublicServantProfile publicServant = publicServantProfileRepository.findById(dto.publicServantProfileId())
+                .orElseThrow(() -> new BusinessException("Public Servant Profile not found."));
+
+        Document document = findDocumentEntityById(dto.documentId());
+
+        if (document.getStatus() != DocumentStatus.APPROVED
+                && document.getStatus() != DocumentStatus.CORRECTION_SUGGESTED) {
+            throw new IllegalStateException(
+                    "Document must be in 'APPROVED' or 'CORRECTION_SUGGESTED' status to be analyzed by a Public Servant.");
+        }
+
+        document.setStatus(DocumentStatus.REJECTED);
+        document.setReviewNote(dto.justification());
+
+        Document savedDocument = documentRepository.save(document);
+        return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
+    }
 }
+
+

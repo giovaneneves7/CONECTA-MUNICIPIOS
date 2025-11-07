@@ -4,6 +4,8 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.request.Documen
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRejectionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantApproveDocumentRequestDTO;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantRejectDocumentRequestDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -138,4 +140,9 @@ public interface IDocumentService {
      * @author Caio Alves
      */
     DocumentDetailResponseDTO suggestCorrection(DocumentCorrectionSuggestionDTO dto);
+
+    DocumentDetailResponseDTO approveDocumentByPublicServant(PublicServantApproveDocumentRequestDTO dto);
+
+    DocumentDetailResponseDTO rejectDocumentByPublicServant(PublicServantRejectDocumentRequestDTO dto);
+
 }

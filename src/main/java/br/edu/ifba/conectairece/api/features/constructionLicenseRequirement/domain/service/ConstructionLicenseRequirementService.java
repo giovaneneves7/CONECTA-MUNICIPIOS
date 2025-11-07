@@ -482,7 +482,7 @@ if (dto.documents() != null) {
         return requirementPage.map(this::toResponseDTO);
     }
 
-    public ConstructionLicenseRequirementFinalizeResponseDTO rejectConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
+public ConstructionLicenseRequirementFinalizeResponseDTO rejectConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
         ConstructionLicenseRequirement license = repository.findById(constructionLicenseRequirementId).orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
         );
@@ -498,13 +498,12 @@ if (dto.documents() != null) {
         license.setStatus(RequirementStatus.REJECTED);
 
         Comment comment = new Comment();
-        comment.setRequirement(license);
+        comment.setRequirement(license); 
         comment.setNote(dto.comment());
-
         comment = commentRepository.save(comment);
-
-        license.setComment(comment);
-
+        
+        repository.save(license);
+        
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,
                 publicServant.getId(),
@@ -525,7 +524,6 @@ if (dto.documents() != null) {
         if (license.getTechnicalResponsibleStatus() != AssociationStatus.APPROVED) {
             throw new BusinessException(BusinessExceptionMessage.INVALID_REQUEST_TO_FINALIZE.getMessage());
         }
-
         license.setStatus(RequirementStatus.ACCEPTED);
 
         Comment comment = new Comment();
@@ -534,8 +532,8 @@ if (dto.documents() != null) {
 
         comment = commentRepository.save(comment);
 
-        license.setComment(comment);
-
+        repository.save(license);
+        
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,
                 publicServant.getId(),

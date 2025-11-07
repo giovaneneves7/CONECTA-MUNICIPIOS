@@ -77,19 +77,4 @@ public class UserController {
     public ResponseEntity<?> findAllUsers () {
         return ResponseEntity.ok(this.userService.findAllUsers());
     }
-
-    @Operation(summary = "Update an user status",
-            description = "Updates a user status by replacing its data with the provided payload.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "User Status successfully updated"),
-            @ApiResponse(responseCode = "400", description = "Invalid request content", content = @Content),
-    })
-    @PatchMapping("/user/status/{id}")
-    public ResponseEntity<?> updateUserStatus(
-            @PathVariable("id") @NotNull UUID id,
-            @RequestBody @Valid UserStatusRequestDTO userStatus
-    ) {
-        this.userService.updateUserStatus(id, userStatus.status());
-        return ResponseEntity.noContent().build();
-    }
 }

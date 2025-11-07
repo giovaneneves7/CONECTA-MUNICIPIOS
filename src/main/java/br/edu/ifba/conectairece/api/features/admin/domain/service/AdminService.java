@@ -317,6 +317,21 @@ public class AdminService implements IAdminService{
     }
 
     /**
+     * Searches for users (with admin details) by name or CPF.
+     *
+     * @param term The search term (name or CPF).
+     * @param pageable Pagination information.
+     * @return A Page of DTOs with the details of the found users.
+     * @author Caio Alves
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AdminUserDetailResponseDto> findUserDetailsByNameOrCpf(String term, Pageable pageable) {
+        Page<User> userPage = userRepository.findByFullNameOrCpfContaining(term, pageable);
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
+    
+    /**
      * Maps a User entity to the detailed AdminUserDetailResponseDto.
      * @param user The User entity to map.
      * @return The corresponding AdminUserDetailResponseDto.

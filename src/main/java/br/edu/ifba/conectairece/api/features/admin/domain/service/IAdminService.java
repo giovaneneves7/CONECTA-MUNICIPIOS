@@ -9,7 +9,6 @@ import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataRe
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
-import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -120,4 +119,15 @@ public interface IAdminService {
      * @author Caio Alves
      */ 
     Page<AdminUserDetailResponseDto> findUserDetailsByNameOrCpf(String term, Pageable pageable);
+
+    /**
+     * Searches for users (with admin details) by both role name and user status.
+     *
+     * @param roleName The name of the Role to filter by.
+     * @param status The UserStatus to filter by.
+     * @param pageable Pagination information.
+     * @return A Page of DTOs with the details of the found users.
+     * @author Caio Alves 
+     */
+    Page<AdminUserDetailResponseDto> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable);
 }

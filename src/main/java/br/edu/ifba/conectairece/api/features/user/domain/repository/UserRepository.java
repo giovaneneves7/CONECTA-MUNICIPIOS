@@ -62,4 +62,18 @@ public interface UserRepository extends JpaRepository<User, UUID> {
            "WHERE lower(p.fullName) LIKE lower(concat('%', :term, '%')) " +
            "OR p.cpf LIKE concat('%', :term, '%')")
     Page<User> findByFullNameOrCpfContaining(@Param("term") String term, Pageable pageable);
+
+    /**
+     * Finds a paginated list of users filtered by both their status AND a specific role name
+     * associated with one of their profiles.
+     *
+     * @param roleName The name of the Role to filter by.
+     * @param status The UserStatus enum to filter by.
+     * @param pageable Pagination and sorting information.
+     * @return A Page containing the Users matching both criteria.
+     * @author Caio Alves
+     */
+    @Query("SELECT u FROM User u JOIN u.profiles p JOIN p.role r " +
+           "WHERE r.name = :roleName AND u.status = :status")
+    Page<User> findByProfileRoleNameAndStatus(@Param("roleName") String roleName, @Param("status") UserStatus status, Pageable pageable);
 }

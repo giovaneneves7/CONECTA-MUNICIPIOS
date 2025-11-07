@@ -218,7 +218,6 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // --- NOVO ENDPOINT DE ATIVAÇÃO ---
     /**
      * Endpoint for an administrator to activate a user.
      *
@@ -327,7 +326,7 @@ public class AdminController {
     })
     @GetMapping(value = "/users/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getUserDetailsByStatus(
-            @RequestParam String status, // receives as string
+            @RequestParam String status, 
             @ParameterObject
             @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
             Pageable pageable
@@ -353,7 +352,7 @@ public class AdminController {
      * @param query The search term (part of the name or CPF).
      * @param pageable Pagination information.
      * @return A ResponseEntity containing the Page of found users.
-     * @author Your Name // Replace with the correct name
+     * @author Caio Alves
      */
     @Operation(summary = "Search Users by Name or CPF (Paginated)",
                description = "Returns a paginated list of users whose details (Name or CPF) match the search term.")
@@ -373,6 +372,46 @@ public class AdminController {
         }
         
         Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByNameOrCpf(query, pageable);
+        return ResponseEntity.ok(userDetailsPage);
+    }
+
+    /**
+     * Endpoint for an administrator to retrieve a paginated list of user details,
+     * filtered by both a specific role name AND a user status.
+     *
+     * @param roleName The name of the Role to filter users by.
+     * @param status The status to filter users by (e.g., "ACTIVE", "INACTIVE").
+     * @param pageable Pagination and sorting information.
+     * @return A ResponseEntity containing a Page of filtered detailed user information.
+     * @author Caio Alves 
+     */
+    @Operation(summary = "List Users Details by Role and Status (Paginated)",
+               description = "Retrieves a paginated list of users filtered by both a specific role name AND a status.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paginated and filtered user list retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Missing or invalid 'roleName' or 'status' parameter")
+    })
+    @GetMapping(value = "/users/filter/by-role-and-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUserDetailsByRoleAndStatus(
+            @RequestParam String roleName, 
+            @RequestParam String status,  
+            @ParameterObject
+            @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
+            Pageable pageable
+    ) {
+        if (roleName == null || roleName.isBlank()) {
+            return ResponseEntity.badRequest().body("The 'roleName' parameter cannot be empty.");
+        }
+        UserStatus userStatusEnum;
+        try {
+            userStatusEnum = UserStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid status value. Must be one of: " + 
+                          java.util.Arrays.toString(UserStatus.values()));
+        }
+        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByRoleNameAndStatus(roleName, userStatusEnum, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 }

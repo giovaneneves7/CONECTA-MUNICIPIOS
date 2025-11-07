@@ -128,7 +128,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
                     .collect(Collectors.toList());
             entity.setDocuments(docs);
         }
-
+        entity.setStatus(RequirementStatus.PENDING);
         ConstructionLicenseRequirement saved = repository.save(entity);
 
         eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
@@ -288,7 +288,8 @@ if (dto.documents() != null) {
             entity.getConstructionAddress(),
             entity.getConstructionArea(),
             responsibleName,
-            entity.getTechnicalResponsibleStatus()
+            entity.getTechnicalResponsibleStatus(),
+            entity.getStatus().toString()
         );
     }
 
@@ -455,8 +456,9 @@ if (dto.documents() != null) {
             entity.getConstructionArea(),
             entity.getHousingUnitNumber(),
             entity.getTerrainArea(),
-            documentDTOs
-    );
+            documentDTOs,
+            entity.getStatus().toString()
+        );
     }
 
     @Override

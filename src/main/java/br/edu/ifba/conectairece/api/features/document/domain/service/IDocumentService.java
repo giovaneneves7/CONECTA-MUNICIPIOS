@@ -6,6 +6,8 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.response.Docume
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantApproveDocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantRejectDocumentRequestDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDto;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -141,8 +143,36 @@ public interface IDocumentService {
      */
     DocumentDetailResponseDTO suggestCorrection(DocumentCorrectionSuggestionDTO dto);
 
+    /**
+     * Approve a document as a Public Servant.
+     *
+     * @param dto DTO containing documentId, publicServantProfileId, and optional comment.
+     * @return DocumentDetailResponseDTO with updated document status.
+     */
     DocumentDetailResponseDTO approveDocumentByPublicServant(PublicServantApproveDocumentRequestDTO dto);
 
+    /**
+     * Reject a document as a Public Servant .
+     *
+     * @param dto DTO containing documentId, publicServantProfileId, and mandatory justification.
+     * @return DocumentDetailResponseDTO with updated document status.
+     */
     DocumentDetailResponseDTO rejectDocumentByPublicServant(PublicServantRejectDocumentRequestDTO dto);
+
+    /**
+     * Approve a document as a Technical Responsible.
+     *
+     * @param dto DTO containing documentId and registrationId of the Technical Responsible.
+     * @return DocumentDetailResponseDTO with updated document status.
+     */
+    DocumentDetailResponseDTO approveDocumentByTechnicalResponsible(TechnicalResponsibleApproveDocumentRequestDto dto);
+
+    /**
+     * Reject a document as a Technical Responsible.
+     *
+     * @param dto DTO containing documentId, registrationId, and justification.
+     * @return DocumentDetailResponseDTO with updated document status.
+     */
+    DocumentDetailResponseDTO rejectDocumentByTechnicalResponsible(TechnicalResponsibleRejectDocumentRequestDto dto);
 
 }

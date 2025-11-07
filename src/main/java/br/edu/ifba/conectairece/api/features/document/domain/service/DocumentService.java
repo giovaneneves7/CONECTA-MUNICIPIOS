@@ -14,6 +14,8 @@ import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.P
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
 import br.edu.ifba.conectairece.api.features.requirement.domain.repository.RequirementRepository;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDto;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -29,7 +31,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link IDocumentService} responsible for handling the business logic
+ * Implementation of {@link IDocumentService} responsible for handling the
+ * business logic
  * related to {@link Document} entities.
  * <p>
  * This service acts as the core of the document management domain,
@@ -38,22 +41,29 @@ import java.util.stream.Collectors;
  * consistency between documents and their related requirements.
  * </p>
  *
- * <p><b>Responsibilities:</b></p>
+ * <p>
+ * <b>Responsibilities:</b>
+ * </p>
  * <ul>
- *   <li>Coordinate the document review lifecycle (create, approve, reject).</li>
- *   <li>Delegate domain-specific state transitions to the {@link Document} entity itself.</li>
- *   <li>Ensure transactional consistency and map entities to DTOs.</li>
- *   <li>Handle {@link BusinessException} for missing or invalid entities.</li>
+ * <li>Coordinate the document review lifecycle (create, approve, reject).</li>
+ * <li>Delegate domain-specific state transitions to the {@link Document} entity
+ * itself.</li>
+ * <li>Ensure transactional consistency and map entities to DTOs.</li>
+ * <li>Handle {@link BusinessException} for missing or invalid entities.</li>
  * </ul>
  *
- * <p><b>Note:</b> This class is designed to evolve with future CRUD operations such as update,
- * delete, and list methods. When adding new features, ensure all operations remain transactional
- * and consistent with the domain model.</p>
+ * <p>
+ * <b>Note:</b> This class is designed to evolve with future CRUD operations
+ * such as update,
+ * delete, and list methods. When adding new features, ensure all operations
+ * remain transactional
+ * and consistent with the domain model.
+ * </p>
  *
  * @author
- *   Andesson Reis
+ *         Andesson Reis
  * @since
- *   1.0
+ *        1.0
  * @see IDocumentService
  * @see Document
  * @see DocumentRepository
@@ -98,7 +108,6 @@ public class DocumentService implements IDocumentService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     @Transactional
     public DocumentDetailResponseDTO updateDocument(UUID documentId, Document documentUpdateData) {
@@ -110,25 +119,23 @@ public class DocumentService implements IDocumentService {
         existingDocument.setFileExtension(documentUpdateData.getFileExtension());
         existingDocument.setFileUrl(documentUpdateData.getFileUrl());
         existingDocument.setReviewNote(documentUpdateData.getReviewNote());
-        
+
         Document savedDocument = documentRepository.save(existingDocument);
         return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
     }
 
-
-
-@Override
+    @Override
     @Transactional
     public DocumentDetailResponseDTO deleteDocument(UUID documentId) {
         Document document = findDocumentEntityById(documentId);
         if (document.getStatus() != DocumentStatus.PENDING) {
             throw new IllegalStateException("Apenas documentos com status PENDENTE podem ser excluídos.");
         }
-        DocumentDetailResponseDTO deletedDocumentDTO = objectMapperUtil.mapToRecord(document, DocumentDetailResponseDTO.class);
+        DocumentDetailResponseDTO deletedDocumentDTO = objectMapperUtil.mapToRecord(document,
+                DocumentDetailResponseDTO.class);
         documentRepository.delete(document);
         return deletedDocumentDTO;
     }
-
 
     @Override
     @Transactional
@@ -151,7 +158,8 @@ public class DocumentService implements IDocumentService {
     }
 
     /**
-     * Retrieves a {@link Document} by its unique identifier or throws a standardized exception.
+     * Retrieves a {@link Document} by its unique identifier or throws a
+     * standardized exception.
      *
      * @param documentId The UUID of the document to retrieve.
      * @return The corresponding {@link Document} entity.
@@ -164,12 +172,14 @@ public class DocumentService implements IDocumentService {
 
     /**
      * Allows a Technical Responsible to suggest corrections for a document.
-     * Sets the document status to CORRECTION_SUGGESTED and records the justification.
+     * Sets the document status to CORRECTION_SUGGESTED and records the
+     * justification.
      * Ensures only the assigned Technical Responsible can perform this action.
      *
-     * @param documentId The ID of the document to suggest corrections for.
-     * @param responsibleId The ID of the Technical Responsible making the suggestion.
-     * @param dto DTO containing the justification for the suggestion.
+     * @param documentId    The ID of the document to suggest corrections for.
+     * @param responsibleId The ID of the Technical Responsible making the
+     *                      suggestion.
+     * @param dto           DTO containing the justification for the suggestion.
      * @return The updated document details.
      * @author Caio Alves
      */
@@ -188,18 +198,20 @@ public class DocumentService implements IDocumentService {
         }
 
         TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
-            .orElseThrow(() -> new BusinessException("Technical Responsible not found with registration ID: " + registrationId));
+                .orElseThrow(() -> new BusinessException(
+                        "Technical Responsible not found with registration ID: " + registrationId));
 
         Requirement requirementBase = document.getRequirement();
 
         ConstructionLicenseRequirement clr = constructionLicenseRequirementRepository.findById(requirementBase.getId())
-        .orElseThrow(() -> 
-            new BusinessException("This operation is only supported for Construction License Requirements.")
-        );
+                .orElseThrow(() -> new BusinessException(
+                        "This operation is only supported for Construction License Requirements."));
 
-        if (clr.getTechnicalResponsible() == null || !clr.getTechnicalResponsible().getId().equals(responsible.getId())) {
-        throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement's documents.");
-    }
+        if (clr.getTechnicalResponsible() == null
+                || !clr.getTechnicalResponsible().getId().equals(responsible.getId())) {
+            throw new AccessDeniedException(
+                    "You are not the designated Technical Responsible for this requirement's documents.");
+        }
 
         document.setStatus(DocumentStatus.CORRECTION_SUGGESTED);
         document.setReviewNote(dto.justification());
@@ -208,7 +220,23 @@ public class DocumentService implements IDocumentService {
         return objectMapperUtil.mapToRecord(updatedDocument, DocumentDetailResponseDTO.class);
     }
 
-
+    /**
+     * Approves a document as a Public Servant (final approval step).
+     * <p>
+     * The document must be in status APPROVED or CORRECTION_SUGGESTED to be
+     * eligible.
+     * Optionally, a comment can be added as a review note.
+     * </p>
+     *
+     * @param dto DTO containing documentId, publicServantProfileId, and optional
+     *            comment.
+     * @return DocumentDetailResponseDTO with updated document status.
+     * @throws BusinessException     if the Public Servant profile is not found.
+     * @throws IllegalStateException if the document is not in a valid status for SP
+     *                               approval.
+     * 
+     *                               Author: Andesson Reis
+     */
     @Override
     @Transactional
     public DocumentDetailResponseDTO approveDocumentByPublicServant(PublicServantApproveDocumentRequestDTO dto) {
@@ -233,6 +261,22 @@ public class DocumentService implements IDocumentService {
         return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
     }
 
+    /**
+     * Rejects a document as a Public Servant (final approval step).
+     * <p>
+     * The document must be in status APPROVED or CORRECTION_SUGGESTED to be
+     * eligible.
+     * A justification is mandatory.
+     * </p>
+     *
+     * @param dto DTO containing documentId, publicServantProfileId, and
+     *            justification.
+     * @return DocumentDetailResponseDTO with updated document status.
+     * @throws BusinessException     if the Public Servant profile is not found.
+     * @throws IllegalStateException if the document is not in a valid status for SP
+     *                               rejection.
+     * Author: Andesson Reis
+     */
     @Override
     @Transactional
     public DocumentDetailResponseDTO rejectDocumentByPublicServant(PublicServantRejectDocumentRequestDTO dto) {
@@ -253,6 +297,98 @@ public class DocumentService implements IDocumentService {
         Document savedDocument = documentRepository.save(document);
         return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
     }
+
+    /**
+     * Approves a document as a Technical Responsible (Analysis 1).
+     * <p>
+     * Security validation ensures that the Technical Responsible is the owner of
+     * the document's requirement.
+     * Only documents in PENDING status can be approved.
+     * </p>
+     *
+     * @param dto DTO containing documentId and registrationId of the Technical
+     *            Responsible.
+     * @return DocumentDetailResponseDTO with updated document status.
+     * @throws BusinessException     if the Technical Responsible or requirement is
+     *                               not found.
+     * @throws IllegalStateException if the document is not PENDING.
+     * Author: Andesson Reis
+     */
+    @Override
+    @Transactional
+    public DocumentDetailResponseDTO approveDocumentByTechnicalResponsible(
+            TechnicalResponsibleApproveDocumentRequestDto dto) {
+        Document document = findDocumentEntityById(dto.documentId());
+
+        validateTechnicalResponsibleForCLR(document, dto.registrationId());
+
+        if (document.getStatus() != DocumentStatus.PENDING) {
+            throw new IllegalStateException("Only PENDING documents can be approved by the Technical Responsible.");
+        }
+
+        document.approve();
+        Document savedDocument = documentRepository.save(document);
+        return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
+    }
+
+    /**
+     * Rejects a document as a Technical Responsible (Analysis 1).
+     * <p>
+     * Security validation ensures that the Technical Responsible is the owner of
+     * the document's requirement.
+     * Only documents in PENDING status can be rejected.
+     * </p>
+     *
+     * @param dto DTO containing documentId, registrationId, and justification.
+     * @return DocumentDetailResponseDTO with updated document status.
+     * @throws BusinessException     if the Technical Responsible or requirement is
+     *                               not found.
+     * @throws IllegalStateException if the document is not PENDING.
+     * Author: Andesson Reis
+     */
+    @Override
+    @Transactional
+    public DocumentDetailResponseDTO rejectDocumentByTechnicalResponsible(
+            TechnicalResponsibleRejectDocumentRequestDto dto) {
+        Document document = findDocumentEntityById(dto.documentId());
+
+        validateTechnicalResponsibleForCLR(document, dto.registrationId());
+
+        if (document.getStatus() != DocumentStatus.PENDING) {
+            throw new IllegalStateException("Only PENDING documents can be rejected by the Technical Responsible.");
+        }
+
+        document.reject(dto.justification());
+        Document savedDocument = documentRepository.save(document);
+        return objectMapperUtil.mapToRecord(savedDocument, DocumentDetailResponseDTO.class);
+    }
+
+    /**
+     * Validates that the given Technical Responsible is the owner of the
+     * Construction License Requirement
+     * for the document.
+     *
+     * @param document       Document to validate.
+     * @param registrationId Registration ID of the Technical Responsible.
+     * @throws BusinessException     if Technical Responsible or CLR not found.
+     * @throws AccessDeniedException if the Technical Responsible does not own the
+     *                               CLR.
+     */
+    private void validateTechnicalResponsibleForCLR(Document document, String registrationId) {
+        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
+                .orElseThrow(() -> new BusinessException(
+                        "Technical Responsible not found with registration ID: " + registrationId));
+
+        Requirement requirementBase = document.getRequirement();
+
+        ConstructionLicenseRequirement clr = constructionLicenseRequirementRepository.findById(requirementBase.getId())
+                .orElseThrow(() -> new BusinessException(
+                        "This operation is only supported for Construction License Requirements."));
+
+        if (clr.getTechnicalResponsible() == null
+                || !clr.getTechnicalResponsible().getId().equals(responsible.getId())) {
+            throw new AccessDeniedException(
+                    "You are not the designated Technical Responsible for this requirement's documents.");
+        }
+    }
 }
-
-

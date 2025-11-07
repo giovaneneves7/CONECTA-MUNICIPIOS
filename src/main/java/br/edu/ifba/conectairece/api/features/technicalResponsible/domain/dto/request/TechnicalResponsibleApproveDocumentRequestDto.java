@@ -10,13 +10,16 @@ import jakarta.validation.constraints.NotNull;
  * It includes:
  * <ul>
  *   <li>{@code documentId} - The UUID of the document to approve (required).</li>
+ *   <li>{@code registrationId} - The registration ID of the Technical Responsible (required).</li>
  * </ul>
  * </p>
  *
- * @param documentId the unique identifier of the document to approve; must not be null
+ * @param documentId     the unique identifier of the document to approve; must not be null
+ * @param registrationId the registration ID of the Technical Responsible; must not be null
  * 
  * Author: Andesson Reis
  */
 public record TechnicalResponsibleApproveDocumentRequestDto(
-        @NotNull UUID documentId
+        @NotNull UUID documentId,
+        @NotNull String registrationId
 ) {}

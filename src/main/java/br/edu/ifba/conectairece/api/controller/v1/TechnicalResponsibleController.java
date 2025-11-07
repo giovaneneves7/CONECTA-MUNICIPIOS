@@ -272,7 +272,7 @@ public class TechnicalResponsibleController {
             @ApiResponse(responseCode = "422", description = "Validation error in DTO.")
     })
     @PostMapping("/documents/approve-review")
-    public ResponseEntity<?> approveDocument(
+    public ResponseEntity<?> approveDocumentByTechnicalResponsible(
             @RequestBody @Valid TechnicalResponsibleApproveDocumentRequestDto dto,
             BindingResult result) {
         if (result.hasErrors()) {
@@ -280,7 +280,7 @@ public class TechnicalResponsibleController {
                     .body(ResultError.getResultErrors(result));
         }
 
-        DocumentDetailResponseDTO updatedDocument = documentService.approveDocument(dto.documentId());
+        DocumentDetailResponseDTO updatedDocument = documentService.approveDocumentByTechnicalResponsible(dto);
         return ResponseEntity.ok(updatedDocument);
     }
 
@@ -307,7 +307,7 @@ public class TechnicalResponsibleController {
             @ApiResponse(responseCode = "422", description = "Validation error in DTO (e.g., missing justification).")
     })
     @PostMapping("/documents/reject-review")
-    public ResponseEntity<?> rejectDocument(
+    public ResponseEntity<?> rejectDocumentByTechnicalResponsible(
             @RequestBody @Valid TechnicalResponsibleRejectDocumentRequestDto dto,
             BindingResult result) {
         if (result.hasErrors()) {
@@ -315,10 +315,7 @@ public class TechnicalResponsibleController {
                     .body(ResultError.getResultErrors(result));
         }
 
-        DocumentRejectionDTO rejectionDto = new DocumentRejectionDTO();
-        rejectionDto.setJustification(dto.justification());
-
-        DocumentDetailResponseDTO updatedDocument = documentService.rejectDocument(dto.documentId(), rejectionDto);
+        DocumentDetailResponseDTO updatedDocument = documentService.rejectDocumentByTechnicalResponsible(dto);
         return ResponseEntity.ok(updatedDocument);
     }
 

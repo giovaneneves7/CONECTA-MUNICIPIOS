@@ -113,6 +113,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.BAD_REQUEST;
         } else if (BusinessExceptionMessage.USER_WITHOUT_PROFILES.getMessage().equals(errorMessage)) {
             status = HttpStatus.FORBIDDEN;
+        } else if (BusinessExceptionMessage.FINAL_APPROVAL_CANNOT_OCCUR.getMessage().equals(errorMessage)) {
+            status = HttpStatus.UNPROCESSABLE_ENTITY;
         }
 
         log.error(errorMessage, ex);

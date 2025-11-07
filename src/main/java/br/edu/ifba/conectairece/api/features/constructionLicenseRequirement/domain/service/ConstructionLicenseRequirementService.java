@@ -9,6 +9,7 @@ import br.edu.ifba.conectairece.api.features.comment.domain.repository.CommentRe
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizeResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
@@ -526,6 +527,13 @@ if (dto.documents() != null) {
             throw new BusinessException(BusinessExceptionMessage.INVALID_REQUEST_TO_FINALIZE.getMessage());
         }
 
+        long nonApprovedCount = license.getDocuments().stream()
+                        .filter(document -> document.getStatus() != DocumentStatus.APPROVED).count();
+
+        if (nonApprovedCount >= 3) {
+            throw new BusinessException(BusinessExceptionMessage.FINAL_APPROVAL_CANNOT_OCCUR.getMessage());
+        }
+
         license.setStatus(RequirementStatus.ACCEPTED);
 
         Comment comment = new Comment();
@@ -536,11 +544,20 @@ if (dto.documents() != null) {
 
         license.setComment(comment);
 
+        // INFO: Updates the monitoring status
+        List<Request> requests = license.getMunicipalService().getRequests();
+        if (requests.isEmpty()) {
+            throw new BusinessException("No requests found for this municipal service.");
+        }
+        Request request = requests.get(requests.size() - 1);
+        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, true);
+
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,
                 publicServant.getId(),
                 comment.getNote(),
                 license.getStatus().toString()
         );
+
     }
 }

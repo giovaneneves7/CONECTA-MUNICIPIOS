@@ -208,7 +208,7 @@ public class ConstructionLicenseRequirementController {
             @ApiResponse(responseCode = "400", description = "Invalid request body or missing required fields"),
             @ApiResponse(responseCode = "404", description = "Requirement or Public Servant profile not found"),
             @ApiResponse(responseCode = "409", description = "Workflow Conflict: Technical Responsible approval/association is still PENDING or missing."),
-            @ApiResponse(responseCode = "422", description = "Validation error in fields")
+            @ApiResponse(responseCode = "422", description = "Validation error in fields or If 3 or more documents are not approved")
     })
     @PostMapping(path = "/construction-license-requirement/{constructionLicenseRequirementId}/approve")
     public ResponseEntity<?> approveConstructionLicenseRequirement(

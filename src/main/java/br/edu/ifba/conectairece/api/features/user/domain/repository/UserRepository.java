@@ -47,4 +47,19 @@ public interface UserRepository extends JpaRepository<User, UUID> {
      * @author Caio Alves
      */
     Page<User> findByStatus(UserStatus status, Pageable pageable);
+
+    /**
+     * Finds a paginated list of users whose full name (in Person)
+     * or CPF (in Person) contains the search term. The name search
+     * is case-insensitive.
+     *
+     * @param term The search term for name or CPF.
+     * @param pageable Pagination and sorting information.
+     * @return A Page of Users matching the criteria.
+     * @author Caio Alves
+     */
+    @Query("SELECT u FROM User u JOIN u.person p " +
+           "WHERE lower(p.fullName) LIKE lower(concat('%', :term, '%')) " +
+           "OR p.cpf LIKE concat('%', :term, '%')")
+    Page<User> findByFullNameOrCpfContaining(@Param("term") String term, Pageable pageable);
 }

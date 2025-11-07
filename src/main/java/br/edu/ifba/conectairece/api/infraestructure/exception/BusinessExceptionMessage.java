@@ -22,6 +22,7 @@ public enum BusinessExceptionMessage {
     USER_ALREADY_HAS_THIS_PROFILE("The user already has this profile"),
     PROFILE_ALREADY_HAS_THIS_PERMISSION("The profile already has this permission"),
     INVALID_REQUEST_TO_FINALIZE("The request was not approved by the technical responsible."),
+    FINAL_APPROVAL_CANNOT_OCCUR ("Final approval cannot occur because 3 or more documents were not approved."),
     DOCUMENT_ALREADY_REVIEWED("The document has already been reviewed, and its status cannot be changed.");
 
     private final String message;

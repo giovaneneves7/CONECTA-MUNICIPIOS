@@ -7,6 +7,7 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record ConstructionLicenseRequirementDetailDTO(
 
@@ -29,5 +30,8 @@ public record ConstructionLicenseRequirementDetailDTO(
     Float constructionArea,
     Integer housingUnitNumber,
     Float terrainArea,
-    List<DocumentResponseDTO> documents
+    List<DocumentResponseDTO> documents,
+
+    @JsonProperty("status")
+    String status
 ) {}

@@ -61,6 +61,8 @@ public record ConstructionLicenseRequirementResponseDTO(
    // @JsonProperty("documents")
     //List<DocumentResponseDTO> documents
 
-    AssociationStatus technicalResponsibleStatus
-    
+    AssociationStatus technicalResponsibleStatus,
+
+    @JsonProperty("status")
+    String status
 ){}

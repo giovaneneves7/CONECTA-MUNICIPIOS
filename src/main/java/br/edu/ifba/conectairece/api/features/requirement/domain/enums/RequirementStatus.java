@@ -5,5 +5,6 @@ package br.edu.ifba.conectairece.api.features.requirement.domain.enums;
  */
 public enum RequirementStatus {
     ACCEPTED,
-    REJECTED
+    REJECTED,
+    PENDING
 }

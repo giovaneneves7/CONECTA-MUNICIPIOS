@@ -521,6 +521,14 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
         license.setComment(comment);
         repository.save(license);
 
+        // INFO: Updates the monitoring status
+        List<Request> requests = license.getMunicipalService().getRequests();
+        if (requests.isEmpty()) {
+            throw new BusinessException("No requests found for this municipal service.");
+        }
+        Request request = requests.get(requests.size() - 1);
+        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, false);
+
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,
                 publicServant.getId(),

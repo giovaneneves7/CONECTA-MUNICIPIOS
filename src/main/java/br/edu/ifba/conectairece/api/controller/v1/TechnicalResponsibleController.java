@@ -147,11 +147,11 @@ public class TechnicalResponsibleController {
             @ApiResponse(responseCode = "404", description = "Requirement or Responsible not found")
     })
     @PostMapping("/refuse-requirement")
-    public ResponseEntity<Void> refuseRequirement(
+    public ResponseEntity<?> refuseRequirement(
             @RequestBody @Valid RejectionRequestDTO dto) {
 
-        requirementService.rejectAssociation(dto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(requirementService.rejectAssociation(dto));
+
     }
 
     /**

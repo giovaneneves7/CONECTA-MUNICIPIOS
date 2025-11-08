@@ -7,9 +7,7 @@ import java.util.stream.Collectors;
 import br.edu.ifba.conectairece.api.features.comment.domain.model.Comment;
 import br.edu.ifba.conectairece.api.features.comment.domain.repository.CommentRepository;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizeResponseDTO;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizedDetailDTO;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.*;
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
@@ -30,8 +28,6 @@ import lombok.RequiredArgsConstructor;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementDetailDTO;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.event.ConstructionLicenseRequirementCreatedEvent;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
@@ -243,7 +239,7 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     }
 
     @Override
-    public void rejectAssociation(RejectionRequestDTO dto) {
+    public ConstructionLicenseRequirementTechnicalResponsibleRejectDTO rejectAssociation(RejectionRequestDTO dto) {
 
         Long requirementId = dto.constructionLicenseRequirementId();
         String registrationId = dto.registrationId();
@@ -266,11 +262,16 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
 
         entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
         entity.setRejectionJustification(dto.justification());
-        repository.save(entity);
+        ConstructionLicenseRequirement saved = repository.save(entity);
 
         List<Request> requests = entity.getMunicipalService().getRequests();
         Request request = requests.get(requests.size() - 1);
         this.monitoringService.completeCurrentMonitoringAndActivateNext(request, false);
+
+        return new ConstructionLicenseRequirementTechnicalResponsibleRejectDTO(
+                saved.getId(),
+                entity.getRejectionJustification()
+        );
 
     }
 
@@ -300,7 +301,8 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
                 entity.getConstructionArea(),
                 responsibleName,
                 entity.getTechnicalResponsibleStatus(),
-                entity.getStatus().toString());
+                entity.getStatus().toString()
+        );
     }
 
     /**

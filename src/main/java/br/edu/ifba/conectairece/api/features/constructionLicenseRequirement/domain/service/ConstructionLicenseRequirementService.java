@@ -8,6 +8,7 @@ import br.edu.ifba.conectairece.api.features.comment.domain.model.Comment;
 import br.edu.ifba.conectairece.api.features.comment.domain.repository.CommentRepository;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizeResponseDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizedDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
@@ -23,7 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
@@ -51,18 +52,20 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.reposit
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * Service responsible for managing {@link ConstructionLicenseRequirement} entities.
- * Implements business logic for handling construction license requests, 
+ * Service responsible for managing {@link ConstructionLicenseRequirement}
+ * entities.
+ * Implements business logic for handling construction license requests,
  * including persistence and validation of relationships.
  *
  * Main features:
  * - Save new construction license requirements with:
- *   - Linked {@link MunicipalService}.
- *   - Associated {@link RequirementType}.
- *   - Assigned {@link TechnicalResponsible}.
- *   - Attached {@link Document} list.
+ * - Linked {@link MunicipalService}.
+ * - Associated {@link RequirementType}.
+ * - Assigned {@link TechnicalResponsible}.
+ * - Attached {@link Document} list.
  * - Retrieve all construction license requirements.
  * - Find a requirement by its identifier.
  * - Delete a requirement by its identifier.
@@ -75,7 +78,7 @@ import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 
 @Service
 @RequiredArgsConstructor
-public class ConstructionLicenseRequirementService implements ConstructionLicenseRequirementIService{
+public class ConstructionLicenseRequirementService implements ConstructionLicenseRequirementIService {
 
     private final IMonitoringService monitoringService;
 
@@ -89,16 +92,16 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
     private final ProfileRepository profileRepository;
     private final RequestRepository requestRepository;
     private final PublicServantProfileRepository publicServantProfileRepository;
-    private final CommentRepository  commentRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
 
         Profile solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
-            .orElseThrow(() -> new BusinessException("Perfil do solicitante não encontrado"));
+                .orElseThrow(() -> new BusinessException("Perfil do solicitante não encontrado"));
 
         User solicitante = solicitanteProfile.getUser();
-        
+
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
 
         entity.setSolicitante(solicitante);
@@ -108,17 +111,19 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
         entity.setMunicipalService(service);
 
         RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
-            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(dto.technicalResponsibleRegistrationId())
-            .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: " + dto.technicalResponsibleRegistrationId()));
+        TechnicalResponsible responsible = technicalResponsibleRepository
+                .findByRegistrationId(dto.technicalResponsibleRegistrationId())
+                .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: "
+                        + dto.technicalResponsibleRegistrationId()));
 
         entity.setTechnicalResponsible(responsible);
 
         entity.setTechnicalResponsibleStatus(AssociationStatus.PENDING);
-        
-                if (dto.documents() != null) {
+
+        if (dto.documents() != null) {
             List<Document> docs = dto.documents().stream()
                     .map(d -> {
                         Document document = objectMapperUtil.map(d, Document.class);
@@ -134,56 +139,58 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
         eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
 
         Request createdRequest = requestRepository.findFirstByMunicipalServiceIdOrderByCreatedAtDesc(
-                saved.getMunicipalService().getId()
-        ).orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+                saved.getMunicipalService().getId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         return this.toResponseWithRequestIdDTO(saved, createdRequest.getId());
     }
 
     @Override
     public ConstructionLicenseRequirementResponseDTO update(Long id, ConstructionLicenseRequirementRequestDTO dto) {
-    ConstructionLicenseRequirement entity = repository.findById(id)
-            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        ConstructionLicenseRequirement entity = repository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-    entity.setOwner(dto.owner());
-    entity.setPhone(dto.phone());
-    entity.setCep(dto.cep());
-    entity.setCpfCnpj(dto.cpfCnpj());
-    entity.setPropertyNumber(dto.propertyNumber());
-    entity.setNeighborhood(dto.neighborhood());
-    entity.setConstructionAddress(dto.constructionAddress());
-    entity.setReferencePoint(dto.referencePoint());
-    entity.setStartDate(dto.startDate());
-    entity.setEndDate(dto.endDate());
-    entity.setFloorCount(dto.floorCount());
-    entity.setConstructionArea(dto.constructionArea());
-    entity.setHousingUnitNumber(dto.housingUnitNumber());
-    entity.setTerrainArea(dto.terrainArea());
+        entity.setOwner(dto.owner());
+        entity.setPhone(dto.phone());
+        entity.setCep(dto.cep());
+        entity.setCpfCnpj(dto.cpfCnpj());
+        entity.setPropertyNumber(dto.propertyNumber());
+        entity.setNeighborhood(dto.neighborhood());
+        entity.setConstructionAddress(dto.constructionAddress());
+        entity.setReferencePoint(dto.referencePoint());
+        entity.setStartDate(dto.startDate());
+        entity.setEndDate(dto.endDate());
+        entity.setFloorCount(dto.floorCount());
+        entity.setConstructionArea(dto.constructionArea());
+        entity.setHousingUnitNumber(dto.housingUnitNumber());
+        entity.setTerrainArea(dto.terrainArea());
 
-    MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
-            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-    entity.setMunicipalService(service);
+        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        entity.setMunicipalService(service);
 
-    RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
-            .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-    entity.setRequirementType(type);
+        RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        entity.setRequirementType(type);
 
-        TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(dto.technicalResponsibleRegistrationId())
-            .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: " + dto.technicalResponsibleRegistrationId()));
+        TechnicalResponsible responsible = technicalResponsibleRepository
+                .findByRegistrationId(dto.technicalResponsibleRegistrationId())
+                .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: "
+                        + dto.technicalResponsibleRegistrationId()));
 
         entity.setTechnicalResponsible(responsible);
 
-if (dto.documents() != null) {
-    entity.getDocuments().clear();
+        if (dto.documents() != null) {
+            entity.getDocuments().clear();
 
-    dto.documents().forEach(d -> {
-        Document document = objectMapperUtil.map(d, Document.class);
-        document.setRequirement(entity);
-        entity.getDocuments().add(document);
-    });
-}
+            dto.documents().forEach(d -> {
+                Document document = objectMapperUtil.map(d, Document.class);
+                document.setRequirement(entity);
+                entity.getDocuments().add(document);
+            });
+        }
 
-    repository.save(entity);
+        repository.save(entity);
         return objectMapperUtil.mapToRecord(entity, ConstructionLicenseRequirementResponseDTO.class);
     }
 
@@ -209,24 +216,26 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public void approveAssociation(AssociationActionRequestDTO dto){
+    public void approveAssociation(AssociationActionRequestDTO dto) {
         Long requirementId = dto.constructionLicenseRequirementId();
         String registrationId = dto.registrationId();
 
         TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
-                .orElseThrow(() -> new BusinessException("Technical Responsible not found with registration ID: " + registrationId));
-        
-        ConstructionLicenseRequirement entity = repository.findById(requirementId)
-            .orElseThrow(() -> new BusinessException("Requirement not found"));
+                .orElseThrow(() -> new BusinessException(
+                        "Technical Responsible not found with registration ID: " + registrationId));
 
-            if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
-                throw new BusinessException("This request has alrady been processed.");
-            }
-            if (entity.getTechnicalResponsible() == null || !entity.getTechnicalResponsible().getId().equals(responsible.getId())) {
-                throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement.");
-            }
-            entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
-            repository.save(entity);
+        ConstructionLicenseRequirement entity = repository.findById(requirementId)
+                .orElseThrow(() -> new BusinessException("Requirement not found"));
+
+        if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
+            throw new BusinessException("This request has alrady been processed.");
+        }
+        if (entity.getTechnicalResponsible() == null
+                || !entity.getTechnicalResponsible().getId().equals(responsible.getId())) {
+            throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement.");
+        }
+        entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
+        repository.save(entity);
 
         List<Request> requests = entity.getMunicipalService().getRequests();
         Request request = requests.get(requests.size() - 1);
@@ -234,28 +243,30 @@ if (dto.documents() != null) {
     }
 
     @Override
-    public void rejectAssociation(RejectionRequestDTO dto){
+    public void rejectAssociation(RejectionRequestDTO dto) {
 
         Long requirementId = dto.constructionLicenseRequirementId();
         String registrationId = dto.registrationId();
 
         TechnicalResponsible responsible = technicalResponsibleRepository.findByRegistrationId(registrationId)
-                .orElseThrow(() -> new BusinessException("Technical Responsible not found with registration ID: " + registrationId));
+                .orElseThrow(() -> new BusinessException(
+                        "Technical Responsible not found with registration ID: " + registrationId));
 
         ConstructionLicenseRequirement entity = repository.findById(requirementId)
-            .orElseThrow(() -> new BusinessException("Requirement not found"));
+                .orElseThrow(() -> new BusinessException("Requirement not found"));
 
-            if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
-                throw new BusinessException("This request has alrady been processed.");
-            }
+        if (entity.getTechnicalResponsibleStatus() != AssociationStatus.PENDING) {
+            throw new BusinessException("This request has alrady been processed.");
+        }
 
-            if (entity.getTechnicalResponsible() == null || !entity.getTechnicalResponsible().getId().equals(responsible.getId())) {
-                throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement.");
-            }
+        if (entity.getTechnicalResponsible() == null
+                || !entity.getTechnicalResponsible().getId().equals(responsible.getId())) {
+            throw new AccessDeniedException("You are not the designated Technical Responsible for this requirement.");
+        }
 
-            entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
-            entity.setRejectionJustification(dto.justification());
-            repository.save(entity);
+        entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
+        entity.setRejectionJustification(dto.justification());
+        repository.save(entity);
 
         List<Request> requests = entity.getMunicipalService().getRequests();
         Request request = requests.get(requests.size() - 1);
@@ -270,27 +281,26 @@ if (dto.documents() != null) {
 
         String responsibleName = null;
         TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
-        
-        if (responsibleEntity != null && 
-            responsibleEntity.getUser() != null && 
-            responsibleEntity.getUser().getPerson() != null) {
-        
+
+        if (responsibleEntity != null &&
+                responsibleEntity.getUser() != null &&
+                responsibleEntity.getUser().getPerson() != null) {
+
             responsibleName = responsibleEntity.getUser().getPerson().getFullName();
         }
-        
+
         return new ConstructionLicenseRequirementResponseDTO(
-            entity.getId(),
-            entity.getCreatedAt(), 
-            entity.getOwner(),
-            entity.getPhone(),
-            entity.getCep(),
-            entity.getCpfCnpj(),
-            entity.getConstructionAddress(),
-            entity.getConstructionArea(),
-            responsibleName,
-            entity.getTechnicalResponsibleStatus(),
-            entity.getStatus().toString()
-        );
+                entity.getId(),
+                entity.getCreatedAt(),
+                entity.getOwner(),
+                entity.getPhone(),
+                entity.getCep(),
+                entity.getCpfCnpj(),
+                entity.getConstructionAddress(),
+                entity.getConstructionArea(),
+                responsibleName,
+                entity.getTechnicalResponsibleStatus(),
+                entity.getStatus().toString());
     }
 
     /**
@@ -298,14 +308,16 @@ if (dto.documents() != null) {
      * {@link ConstructionLicenseRequirementWithRequestIDResponseDTO},
      * including the UUID of the associated {@link Request}.
      * <p>
-     * This helper method ensures that the technical responsible's full name is resolved
+     * This helper method ensures that the technical responsible's full name is
+     * resolved
      * and included in the response DTO.
      *
-     * @param entity The saved ConstructionLicenseRequirement entity.
+     * @param entity    The saved ConstructionLicenseRequirement entity.
      * @param requestId The UUID of the Request associated with this requirement.
      * @return The response DTO populated with all fields.
      */
-    private ConstructionLicenseRequirementWithRequestIDResponseDTO toResponseWithRequestIdDTO(ConstructionLicenseRequirement entity, UUID requestId) {
+    private ConstructionLicenseRequirementWithRequestIDResponseDTO toResponseWithRequestIdDTO(
+            ConstructionLicenseRequirement entity, UUID requestId) {
         if (entity == null) {
             return null;
         }
@@ -331,8 +343,7 @@ if (dto.documents() != null) {
                 entity.getConstructionAddress(),
                 entity.getConstructionArea(),
                 responsibleName,
-                entity.getTechnicalResponsibleStatus()
-        );
+                entity.getTechnicalResponsibleStatus());
     }
 
     /**
@@ -371,7 +382,7 @@ if (dto.documents() != null) {
      * Rejects a construction license request.
      *
      * @param requirementId The ID of the request to be rejected.
-     * @param dto DTO containing the rejection justification.
+     * @param dto           DTO containing the rejection justification.
      * @return DTO with the data of the updated request.
      * @author Andesson Reis
      */
@@ -394,105 +405,106 @@ if (dto.documents() != null) {
                 .toList();
     }
 
-    private ConstructionLicenseRequirementDetailDTO toDetailDTO(ConstructionLicenseRequirement entity){
-        if(entity == null){
+    private ConstructionLicenseRequirementDetailDTO toDetailDTO(ConstructionLicenseRequirement entity) {
+        if (entity == null) {
             return null;
         }
 
         TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
         User responsibleUser = responsibleEntity.getUser();
 
-            TechnicalResponsibleResponseDto responsibleDTO = new TechnicalResponsibleResponseDto(
-            responsibleEntity.getId(),
-            responsibleEntity.getRegistrationId(),
-            responsibleEntity.getResponsibleType(),
-            responsibleEntity.getImageUrl(),
-            responsibleUser.getPerson().getFullName(),
-            responsibleUser.getPerson().getCpf(),
-            responsibleUser.getEmail(),
-            responsibleUser.getPhone()
-    );
+        TechnicalResponsibleResponseDto responsibleDTO = new TechnicalResponsibleResponseDto(
+                responsibleEntity.getId(),
+                responsibleEntity.getRegistrationId(),
+                responsibleEntity.getResponsibleType(),
+                responsibleEntity.getImageUrl(),
+                responsibleUser.getPerson().getFullName(),
+                responsibleUser.getPerson().getCpf(),
+                responsibleUser.getEmail(),
+                responsibleUser.getPhone());
 
-    User applicantUser = entity.getSolicitante();
-    Person applicantPerson = applicantUser.getPerson();
+        User applicantUser = entity.getSolicitante();
+        Person applicantPerson = applicantUser.getPerson();
 
-    ProfilePublicDataResponseDTO applicantDTO = new ProfilePublicDataResponseDTO(
-        applicantUser.getActiveProfile().getId(),
-        applicantUser.getActiveProfile().getType(),
-        applicantUser.getActiveProfile().getImageUrl(),
-        applicantPerson.getFullName(),
-        applicantPerson.getCpf(),
-        applicantUser.getPhone(),
-        applicantUser.getEmail(),
-        applicantPerson.getGender().toString(),
-        applicantPerson.getBirthDate()
-    );
+        ProfilePublicDataResponseDTO applicantDTO = new ProfilePublicDataResponseDTO(
+                applicantUser.getActiveProfile().getId(),
+                applicantUser.getActiveProfile().getType(),
+                applicantUser.getActiveProfile().getImageUrl(),
+                applicantPerson.getFullName(),
+                applicantPerson.getCpf(),
+                applicantUser.getPhone(),
+                applicantUser.getEmail(),
+                applicantPerson.getGender().toString(),
+                applicantPerson.getBirthDate());
 
-    List<DocumentResponseDTO> documentDTOs = entity.getDocuments().stream()
-            .map(doc -> new DocumentResponseDTO(
-                    doc.getId(),
-                    doc.getName(),
-                    doc.getFileExtension(),
-                    doc.getFileUrl()
-            ))
-            .toList();
+        List<DocumentResponseDTO> documentDTOs = entity.getDocuments().stream()
+                .map(doc -> new DocumentResponseDTO(
+                        doc.getId(),
+                        doc.getName(),
+                        doc.getFileExtension(),
+                        doc.getFileUrl()))
+                .toList();
         return new ConstructionLicenseRequirementDetailDTO(
-            entity.getId(),
-            entity.getCreatedAt(),
-            entity.getTechnicalResponsibleStatus(),
-            applicantDTO,
-            responsibleDTO,
-            entity.getOwner(),
-            entity.getPhone(),
-            entity.getCpfCnpj(),
-            entity.getCep(),
-            entity.getNeighborhood(),
-            entity.getConstructionAddress(),
-            entity.getPropertyNumber(),
-            entity.getReferencePoint(),
-            entity.getStartDate(),
-            entity.getEndDate(),
-            entity.getFloorCount(),
-            entity.getConstructionArea(),
-            entity.getHousingUnitNumber(),
-            entity.getTerrainArea(),
-            documentDTOs,
-            entity.getStatus().toString()
-        );
+                entity.getId(),
+                entity.getCreatedAt(),
+                entity.getTechnicalResponsibleStatus(),
+                applicantDTO,
+                responsibleDTO,
+                entity.getOwner(),
+                entity.getPhone(),
+                entity.getCpfCnpj(),
+                entity.getCep(),
+                entity.getNeighborhood(),
+                entity.getConstructionAddress(),
+                entity.getPropertyNumber(),
+                entity.getReferencePoint(),
+                entity.getStartDate(),
+                entity.getEndDate(),
+                entity.getFloorCount(),
+                entity.getConstructionArea(),
+                entity.getHousingUnitNumber(),
+                entity.getTerrainArea(),
+                documentDTOs,
+                entity.getStatus().toString());
     }
 
     @Override
-    public List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsibleRegistrationId(String registrationId) {
-        List<ConstructionLicenseRequirement> requirements = repository.findByTechnicalResponsibleRegistrationId(registrationId);
+    public List<ConstructionLicenseRequirementResponseDTO> findAllByTechnicalResponsibleRegistrationId(
+            String registrationId) {
+        List<ConstructionLicenseRequirement> requirements = repository
+                .findByTechnicalResponsibleRegistrationId(registrationId);
         return requirements.stream()
                 .map(this::toResponseDTO)
                 .toList();
     }
 
     /**
-     * Finds and retrieves a paginated list of construction license requirements filtered by the specified RequirementType name.
-     * It uses the repository to fetch the data and maps the entities to DTOs using the existing toResponseDTO method.
+     * Finds and retrieves a paginated list of construction license requirements
+     * filtered by the specified RequirementType name.
+     * It uses the repository to fetch the data and maps the entities to DTOs using
+     * the existing toResponseDTO method.
      *
      * @param typeName The RequirementType name used to filter the requirements.
      * @param pageable The pagination and sorting parameters.
-     * @return A Page object containing the filtered and paginated ConstructionLicenseRequirementResponseDTO list.
+     * @return A Page object containing the filtered and paginated
+     *         ConstructionLicenseRequirementResponseDTO list.
      * @author Caio Alves
      */
     @Override
-    public Page<ConstructionLicenseRequirementResponseDTO> findByRequirementTypeName(String typeName, Pageable pageable) {
+    public Page<ConstructionLicenseRequirementResponseDTO> findByRequirementTypeName(String typeName,
+            Pageable pageable) {
         Page<ConstructionLicenseRequirement> requirementPage = repository.findByRequirementTypeName(typeName, pageable);
 
         return requirementPage.map(this::toResponseDTO);
     }
 
-    public ConstructionLicenseRequirementFinalizeResponseDTO rejectConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
+    public ConstructionLicenseRequirementFinalizeResponseDTO rejectConstructionLicenseRequirement(
+            Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
         ConstructionLicenseRequirement license = repository.findById(constructionLicenseRequirementId).orElseThrow(
-                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
-        );
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        PublicServantProfile publicServant =  publicServantProfileRepository.findById(dto.publicServantId()).orElseThrow(
-                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
-        );
+        PublicServantProfile publicServant = publicServantProfileRepository.findById(dto.publicServantId()).orElseThrow(
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         if (license.getTechnicalResponsibleStatus() != AssociationStatus.APPROVED) {
             throw new BusinessException(BusinessExceptionMessage.INVALID_REQUEST_TO_FINALIZE.getMessage());
@@ -507,30 +519,29 @@ if (dto.documents() != null) {
         comment = commentRepository.save(comment);
 
         license.setComment(comment);
+        repository.save(license);
 
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,
                 publicServant.getId(),
                 comment.getNote(),
-                license.getStatus().toString()
-        );
+                license.getStatus().toString());
     }
 
-    public ConstructionLicenseRequirementFinalizeResponseDTO approveConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
+    public ConstructionLicenseRequirementFinalizeResponseDTO approveConstructionLicenseRequirement(
+            Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto) {
         ConstructionLicenseRequirement license = repository.findById(constructionLicenseRequirementId).orElseThrow(
-                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
-        );
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        PublicServantProfile publicServant =  publicServantProfileRepository.findById(dto.publicServantId()).orElseThrow(
-                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
-        );
+        PublicServantProfile publicServant = publicServantProfileRepository.findById(dto.publicServantId()).orElseThrow(
+                () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         if (license.getTechnicalResponsibleStatus() != AssociationStatus.APPROVED) {
             throw new BusinessException(BusinessExceptionMessage.INVALID_REQUEST_TO_FINALIZE.getMessage());
         }
 
         long nonApprovedCount = license.getDocuments().stream()
-                        .filter(document -> document.getStatus() != DocumentStatus.APPROVED).count();
+                .filter(document -> document.getStatus() != DocumentStatus.APPROVED).count();
 
         if (nonApprovedCount >= 3) {
             throw new BusinessException(BusinessExceptionMessage.FINAL_APPROVAL_CANNOT_OCCUR.getMessage());
@@ -545,6 +556,7 @@ if (dto.documents() != null) {
         comment = commentRepository.save(comment);
 
         license.setComment(comment);
+        repository.save(license);
 
         // INFO: Updates the monitoring status
         List<Request> requests = license.getMunicipalService().getRequests();
@@ -558,8 +570,82 @@ if (dto.documents() != null) {
                 constructionLicenseRequirementId,
                 publicServant.getId(),
                 comment.getNote(),
-                license.getStatus().toString()
-        );
+                license.getStatus().toString());
 
     }
+
+    /**
+     * Retrieves the finalized details of a Construction License Requirement
+     * (Approved or Rejected),
+     * including the final justification provided by the Public Servant during the
+     * last review.
+     *
+     * <p>
+     * This method is used when displaying or exporting the final outcome of a
+     * construction license
+     * process, containing both applicant information and administrative decision
+     * metadata.
+     * </p>
+     *
+     * <p>
+     * <b>Workflow:</b>
+     * </p>
+     * <ol>
+     * <li>Fetch the requirement entity by its unique ID.</li>
+     * <li>Retrieve the most recent comment (if any) registered by the Public
+     * Servant.</li>
+     * <li>Map the entity to a standard detail DTO using {@code toDetailDTO()}.</li>
+     * <li>Return an enriched finalized DTO, including the final justification.</li>
+     * </ol>
+     *
+     * @param id the unique identifier of the finalized construction license
+     *           requirement; must not be null
+     * @return {@link ConstructionLicenseRequirementFinalizedDetailDTO} containing
+     *         the full requirement data and justification
+     * @throws BusinessException if the requirement is not found
+     *
+     * @author Andesson Reis
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ConstructionLicenseRequirementFinalizedDetailDTO findFinalizedById(@NotNull Long id) {
+        // 1. Retrieve base requirement
+        ConstructionLicenseRequirement entity = repository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        // 2. Retrieve latest review note (final justification)
+        Comment finalComment = commentRepository.findFirstByRequirementIdOrderByIdDesc(entity.getId()).orElse(null);
+        final String finalJustification = (finalComment != null && finalComment.getNote() != null)
+                ? finalComment.getNote().trim()
+                : null;
+
+        // 3. Map base entity to detail DTO
+        ConstructionLicenseRequirementDetailDTO detailDTO = toDetailDTO(entity);
+
+        // 4. Build finalized DTO (enriched with final justification)
+        return new ConstructionLicenseRequirementFinalizedDetailDTO(
+                detailDTO.id(),
+                detailDTO.createdAt(),
+                detailDTO.technicalResponsibleStatus(),
+                detailDTO.solicitante(),
+                detailDTO.technicalResponsible(),
+                detailDTO.owner(),
+                detailDTO.phone(),
+                detailDTO.cpfCnpj(),
+                detailDTO.cep(),
+                detailDTO.neighborhood(),
+                detailDTO.constructionAddress(),
+                detailDTO.propertyNumber(),
+                detailDTO.referencePoint(),
+                detailDTO.startDate(),
+                detailDTO.endDate(),
+                detailDTO.floorCount(),
+                detailDTO.constructionArea(),
+                detailDTO.housingUnitNumber(),
+                detailDTO.terrainArea(),
+                detailDTO.documents(),
+                detailDTO.status(),
+                finalJustification);
+    }
+
 }

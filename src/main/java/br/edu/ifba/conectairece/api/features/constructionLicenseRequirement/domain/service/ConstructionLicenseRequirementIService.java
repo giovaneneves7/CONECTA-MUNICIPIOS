@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizeResponseDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementFinalizedDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementWithRequestIDResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -117,4 +118,8 @@ public interface ConstructionLicenseRequirementIService {
      * @throws BusinessException if Technical Responsible approval/association is still PENDING or REJECTED.
      */
     ConstructionLicenseRequirementFinalizeResponseDTO rejectConstructionLicenseRequirement(Long constructionLicenseRequirementId, ConstructionLicenseRequirementFinalizeRequestDTO dto);
+
+
+    ConstructionLicenseRequirementFinalizedDetailDTO findFinalizedById(Long id);
+
 }

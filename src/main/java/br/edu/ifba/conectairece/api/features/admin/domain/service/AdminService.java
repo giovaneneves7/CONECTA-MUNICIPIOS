@@ -67,6 +67,10 @@ public class AdminService implements IAdminService{
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
         );
 
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new BusinessException("User must be ACTIVE to be assigned an Admin profile.");
+        }
+
         boolean alreadyHasAdminProfile = user.getProfiles().stream().anyMatch(p -> p instanceof AdminProfile);
 
         if (alreadyHasAdminProfile) {
@@ -171,7 +175,7 @@ public class AdminService implements IAdminService{
         PublicServantProfile profile = new PublicServantProfile();
         profile.setEmployeeId(dto.employeeId());
         profile.setImageUrl(dto.imageUrl());
-        profile.setType("PUBLIC_SERVANT");
+        profile.setType(dto.type());
 
         return publicServantProfileService.createPublicServantProfile(dto.userId(), profile);
     }

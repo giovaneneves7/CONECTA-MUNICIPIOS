@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
@@ -46,7 +47,11 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
         }
 
         User user = userRepository.findById(dto.userId())
-            .orElseThrow(() -> new BusinessException("Usuário não encontrado com o ID fornecido." + dto.userId()));
+            .orElseThrow(() -> new BusinessException("User not found ." + dto.userId()));
+
+        if(user.getStatus() != UserStatus.ACTIVE){
+            throw new BusinessException("User must be ACTIVE to be assigned a Technical Responsible profile.");
+        }
 
         TechnicalResponsible entity = new TechnicalResponsible();
         
@@ -68,7 +73,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
 
         TechnicalResponsible savedEntity = repository.save(entity);
 
-            return convertToDto(savedEntity);
+        return convertToDto(savedEntity);
     }
 
     

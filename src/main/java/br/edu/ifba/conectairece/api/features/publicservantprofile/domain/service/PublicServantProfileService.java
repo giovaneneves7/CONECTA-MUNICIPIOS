@@ -1,5 +1,6 @@
 package br.edu.ifba.conectairece.api.features.publicservantprofile.domain.service;
 
+import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
@@ -33,6 +34,10 @@ public class PublicServantProfileService implements IPublicServantProfileService
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
         );
+
+        if (user.getStatus() != UserStatus.ACTIVE){
+            throw new BusinessException("User must be ACTIVE to be assigned a Public Servant profile.");
+        }
 
         boolean alreadyHasPublicServantProfile = user.getProfiles().stream().anyMatch(p -> p instanceof PublicServantProfile);
 

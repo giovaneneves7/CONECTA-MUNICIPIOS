@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.features.request.domain.service;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.ConstructionLicenseRequirementRepository;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
@@ -61,18 +62,19 @@ public class RequestService implements RequestIService {
   /**
    * Saves a new request for a given municipal service.
    *
-   * @param dto request data containing protocol number, type, and related service ID
+   * @param dto request data containing protocol number, type, and related service
+   *            ID
    * @return DTO with saved request information
    */
   @Override
   public RequestResponseDto save(final RequestPostRequestDto dto) {
     MunicipalService service = municipalServiceRepository
-      .findById(dto.municipalServiceId())
-      .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        .findById(dto.municipalServiceId())
+        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
     Profile profile = profileRepository
-      .findById(dto.profileId())
-      .orElseThrow(() -> new BusinessException("Profile not found"));
+        .findById(dto.profileId())
+        .orElseThrow(() -> new BusinessException("Profile not found"));
     Request request = new Request();
     request.setProtocolNumber(dto.protocolNumber());
     request.setEstimatedCompletionDate(dto.estimatedCompletionDate());
@@ -91,15 +93,15 @@ public class RequestService implements RequestIService {
   /**
    * Updates an existing request in the database.
    *
-   * @param id identifier of the request to update
+   * @param id  identifier of the request to update
    * @param dto data containing updated request details
    * @return DTO with updated request information
    */
   @Override
   public RequestResponseDto update(UUID id, RequestPostRequestDto dto) {
     Request request = requestRepository
-      .findById(id)
-      .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        .findById(id)
+        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
     request.setProtocolNumber(dto.protocolNumber());
     request.setEstimatedCompletionDate(dto.estimatedCompletionDate());
@@ -107,8 +109,8 @@ public class RequestService implements RequestIService {
     request.setNote(dto.note());
 
     MunicipalService service = municipalServiceRepository
-      .findById(dto.municipalServiceId())
-      .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        .findById(dto.municipalServiceId())
+        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     request.setMunicipalService(service);
 
     requestRepository.save(request);
@@ -126,9 +128,9 @@ public class RequestService implements RequestIService {
     List<Request> requests = requestRepository.findAll();
 
     return requests
-      .stream()
-      .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
-      .toList();
+        .stream()
+        .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
+        .toList();
   }
 
   /**
@@ -141,9 +143,9 @@ public class RequestService implements RequestIService {
   @Override
   public RequestResponseDto findById(final UUID id) {
     return requestRepository
-      .findById(id)
-      .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
-      .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+        .findById(id)
+        .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class))
+        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
   }
 
   /**
@@ -154,33 +156,32 @@ public class RequestService implements RequestIService {
 
   @Override
   public void delete(UUID id) {
-    Request request = this.requestRepository.findById(id).orElseThrow(() ->
-      new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
-    );
+    Request request = this.requestRepository.findById(id)
+        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     requestRepository.delete(request);
   }
 
   @Override
   public Page<MonitoringResponseDTO> getMonitoringListByRequestId(UUID id, Pageable pageable) {
-    return this.monitoringRepository.findAllByRequestId(id, pageable).map(monitoring ->
-      this.objectMapperUtil.mapToRecord(monitoring, MonitoringResponseDTO.class)
-    );
+    return this.monitoringRepository.findAllByRequestId(id, pageable)
+        .map(monitoring -> this.objectMapperUtil.mapToRecord(monitoring, MonitoringResponseDTO.class));
   }
 
   @Override
   public Page<UpdateResponseDTO> getUpdateListByRequestId(UUID id, Pageable pageable) {
-    return this.updateRepository.findAllByRequestId(id, pageable).map(update ->
-      this.objectMapperUtil.mapToRecord(update, UpdateResponseDTO.class)
-    );
+    return this.updateRepository.findAllByRequestId(id, pageable)
+        .map(update -> this.objectMapperUtil.mapToRecord(update, UpdateResponseDTO.class));
   }
 
   /**
-   * Finds and retrieves a paginated list of requests filtered by the specified type.
+   * Finds and retrieves a paginated list of requests filtered by the specified
+   * type.
    * It uses the repository to fetch the data and maps the entities to DTOs.
    *
-   * @param type The type used to filter the requests.
+   * @param type     The type used to filter the requests.
    * @param pageable The pagination and sorting parameters.
-   * @return A Page object containing the filtered and paginated RequestResponseDto list.
+   * @return A Page object containing the filtered and paginated
+   *         RequestResponseDto list.
    * @author Caio Alves
    */
   @Override
@@ -200,9 +201,8 @@ public class RequestService implements RequestIService {
   @Transactional(readOnly = true)
   public Page<RequestResponseWithDetailsDTO> findAllFinalizedRequests(Pageable pageable) {
     Page<Request> requestsPage = requestRepository.findAllByStatusHistory_NewStatusIn(
-      List.of("COMPLETE", "REJECTED"),
-      pageable
-    );
+        List.of("COMPLETE", "REJECTED"),
+        pageable);
 
     return requestsPage.map(request -> {
       String statusValue = null;
@@ -211,32 +211,30 @@ public class RequestService implements RequestIService {
       }
 
       RequestResponseWithDetailsDTO baseDto = objectMapperUtil.mapToRecord(
-        request,
-        RequestResponseWithDetailsDTO.class
-      );
+          request,
+          RequestResponseWithDetailsDTO.class);
 
       return new RequestResponseWithDetailsDTO(
-        baseDto.id(),
-        baseDto.protocolNumber(),
-        baseDto.createdAt(),
-        baseDto.estimatedCompletionDate(),
-        baseDto.updatedAt(),
-        baseDto.type(),
-        baseDto.note(),
-        baseDto.municipalServiceId(),
-        statusValue,
-        request.getProfile().getUser().getPerson().getFullName(),
-        request.getProfile().getUser().getPerson().getCpf()
-      );
+          baseDto.id(),
+          baseDto.protocolNumber(),
+          baseDto.createdAt(),
+          baseDto.estimatedCompletionDate(),
+          baseDto.updatedAt(),
+          baseDto.type(),
+          baseDto.note(),
+          baseDto.municipalServiceId(),
+          statusValue,
+          request.getProfile().getUser().getPerson().getFullName(),
+          request.getProfile().getUser().getPerson().getCpf());
     });
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<DocumentResponseDTO> findApprovedDocumentsByRequestId(UUID requestId) {
+  public List<DocumentWithStatusResponseDTO> findApprovedDocumentsByRequestId(UUID requestId) {
     Request request = requestRepository
-      .findById(requestId)
-      .orElseThrow(() -> new BusinessException("Request not found with ID: " + requestId));
+        .findById(requestId)
+        .orElseThrow(() -> new BusinessException("Request not found with ID: " + requestId));
 
     MunicipalService municipalService = request.getMunicipalService();
     if (municipalService == null) {
@@ -244,28 +242,26 @@ public class RequestService implements RequestIService {
     }
 
     ConstructionLicenseRequirement requirement = requirementRepository
-      .findFirstByMunicipalServiceIdOrderByIdDesc(municipalService.getId())
-      .orElseThrow(() ->
-        new BusinessException("Nenhum Requirement encontrado para o Serviço Municipal ID: " + municipalService.getId())
-      );
+        .findFirstByMunicipalServiceIdOrderByIdDesc(municipalService.getId())
+        .orElseThrow(() -> new BusinessException(
+            "Nenhum Requirement encontrado para o Serviço Municipal ID: " + municipalService.getId()));
 
     return requirement
-      .getDocuments()
-      .stream()
-      .filter(document -> document.getStatus() == DocumentStatus.APPROVED)
-      .map(
-        doc -> new DocumentResponseDTO(doc.getId(), doc.getName(), doc.getFileExtension(), doc.getFileUrl())
-      )
-      .collect(Collectors.toList());
+        .getDocuments()
+        .stream()
+        .filter(document -> document.getStatus() == DocumentStatus.APPROVED)
+        .map(
+            doc -> new DocumentWithStatusResponseDTO(doc.getId(), doc.getName(), doc.getFileExtension(), doc.getFileUrl(), doc.getStatus()))
+        .collect(Collectors.toList());
   }
 
-@Override
-@Transactional(readOnly = true)
-public List<DocumentResponseDTO> findAllDocumentsByRequestId(UUID requestId) {
-    
+  @Override
+  @Transactional(readOnly = true)
+  public List<DocumentWithStatusResponseDTO> findAllDocumentsByRequestId(UUID requestId) {
+
     Request request = requestRepository
-      .findById(requestId)
-      .orElseThrow(() -> new BusinessException("Request not found with ID: " + requestId));
+        .findById(requestId)
+        .orElseThrow(() -> new BusinessException("Request not found with ID: " + requestId));
 
     MunicipalService municipalService = request.getMunicipalService();
     if (municipalService == null) {
@@ -273,18 +269,16 @@ public List<DocumentResponseDTO> findAllDocumentsByRequestId(UUID requestId) {
     }
 
     ConstructionLicenseRequirement requirement = requirementRepository
-      .findFirstByMunicipalServiceIdOrderByIdDesc(municipalService.getId())
-      .orElseThrow(() ->
-        new BusinessException("Nenhum Requirement encontrado para o Serviço Municipal ID: " + municipalService.getId())
-      );
+        .findFirstByMunicipalServiceIdOrderByIdDesc(municipalService.getId())
+        .orElseThrow(() -> new BusinessException(
+            "Nenhum Requirement encontrado para o Serviço Municipal ID: " + municipalService.getId()));
 
     return requirement
-      .getDocuments()
-      .stream()
-      .map(doc ->
-        new DocumentResponseDTO(doc.getId(), doc.getName(), doc.getFileExtension(), doc.getFileUrl()) 
-      )
-      .collect(Collectors.toList());
-}
+        .getDocuments()
+        .stream()
+        .map(doc -> new DocumentWithStatusResponseDTO(doc.getId(), doc.getName(), doc.getFileExtension(),
+            doc.getFileUrl(), doc.getStatus()))
+        .collect(Collectors.toList());
+  }
 
 }

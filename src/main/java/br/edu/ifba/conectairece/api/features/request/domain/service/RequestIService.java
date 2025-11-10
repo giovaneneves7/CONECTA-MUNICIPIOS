@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.features.request.domain.service;
 
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
@@ -65,7 +66,7 @@ public interface RequestIService {
    */
   public Page<RequestResponseWithDetailsDTO> findAllFinalizedRequests(Pageable pageable);
 
-  List<DocumentResponseDTO> findApprovedDocumentsByRequestId(UUID requestId);
-  List<DocumentResponseDTO> findAllDocumentsByRequestId(UUID requestId);
+  List<DocumentWithStatusResponseDTO> findApprovedDocumentsByRequestId(UUID requestId);
+  List<DocumentWithStatusResponseDTO> findAllDocumentsByRequestId(UUID requestId);
 
 }

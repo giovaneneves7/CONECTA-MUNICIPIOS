@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementService;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
@@ -365,8 +366,8 @@ public class RequestController {
     }
   )
   @GetMapping(value = "/request/{requestId}/approved-documents", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<DocumentResponseDTO>> getApprovedDocuments(@PathVariable UUID requestId) {
-    List<DocumentResponseDTO> documents = requestService.findApprovedDocumentsByRequestId(requestId);
+  public ResponseEntity<List<DocumentWithStatusResponseDTO>> getApprovedDocuments(@PathVariable UUID requestId) {
+    List<DocumentWithStatusResponseDTO> documents = requestService.findApprovedDocumentsByRequestId(requestId);
     return ResponseEntity.ok(documents);
   }
 
@@ -385,10 +386,10 @@ public class RequestController {
     @ApiResponse(responseCode = "404", description = "Request or Requirement not found.")
 })
 @GetMapping(value = "/request/{requestId}/all-documents", produces = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<List<DocumentResponseDTO>> getAllDocumentsByRequestId(
+public ResponseEntity<List<DocumentWithStatusResponseDTO>> getAllDocumentsByRequestId(
         @PathVariable UUID requestId
 ) {
-    List<DocumentResponseDTO> documents = requestService.findAllDocumentsByRequestId(requestId);
+    List<DocumentWithStatusResponseDTO> documents = requestService.findAllDocumentsByRequestId(requestId);
     return ResponseEntity.ok(documents);
 }
 

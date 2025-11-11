@@ -48,6 +48,8 @@ public class EvaluationItemService implements IEvaluationItemService {
 
         newObj.setNote(obj.getNote());
         newObj.setStatus(obj.getStatus());
+        newObj.setName(obj.getName());
+        newObj.setBlueprintType(obj.getBlueprintType());
         this.evaluationItemRepository.save(newObj);
     }
 

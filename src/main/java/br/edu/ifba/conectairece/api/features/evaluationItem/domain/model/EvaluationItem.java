@@ -4,7 +4,6 @@ import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.evaluationItem.domain.enums.EvaluationItemStatus;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,8 +19,14 @@ import lombok.Setter;
 @Entity
 @Table(name = "evaluation_items")
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 public class EvaluationItem extends PersistenceEntity {
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "blueprintType", nullable = true)
+    private String blueprintType;
 
     @Column(name = "note",  nullable = false)
     private String note;

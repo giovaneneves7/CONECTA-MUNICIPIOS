@@ -17,12 +17,19 @@ public record EvaluationItemRequestDTO(
         @NotNull(message = "Document ID is mandatory")
         UUID documentId,
 
+        @JsonProperty(value = "name")
+        @NotBlank(message = "Name is mandatory")
+        String name,
+
+        @JsonProperty(value = "status")
+        @NotNull(message = "Status is mandatory")
+        EvaluationItemStatus status,
+
         @JsonProperty(value = "note")
         @NotBlank(message = "Note is mandatory")
         String note,
 
-        @JsonProperty(value = "status")
-        @NotNull(message = "Status is mandatory")
-        EvaluationItemStatus status
+        @JsonProperty(value = "blueprintType")
+        String blueprintType
 ) {
 }

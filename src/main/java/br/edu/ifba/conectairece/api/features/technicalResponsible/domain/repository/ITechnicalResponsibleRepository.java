@@ -15,7 +15,7 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.T
  * @author Caio Alves
  */
 @Repository
-public interface TechnicalResponsibleRepository extends JpaRepository<TechnicalResponsible, UUID> {
+public interface ITechnicalResponsibleRepository extends JpaRepository<TechnicalResponsible, UUID> {
     Optional<TechnicalResponsible> findByRegistrationId(String registrationId);
 
 }

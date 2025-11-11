@@ -10,7 +10,7 @@ import br.edu.ifba.conectairece.api.features.flow.domain.model.FlowStep;
 import br.edu.ifba.conectairece.api.features.flow.domain.repository.IFlowRepository;
 import br.edu.ifba.conectairece.api.features.flow.domain.repository.IFlowStepRepository;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepFullDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.features.step.domain.repository.IStepRepository;
@@ -36,7 +36,7 @@ public class FlowService implements IFlowService {
     private final IFlowRepository flowRepository;
     private final IFlowStepRepository flowStepRepository;
     private final IStepRepository stepRepository;
-    private final MunicipalServiceRepository municipalServiceRepository;
+    private final IMunicipalServiceRepository municipalServiceRepository;
 
     @Override
     public FlowResponseDTO createFlow(FlowRequestDTO dto) {

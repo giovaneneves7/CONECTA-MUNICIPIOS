@@ -10,5 +10,5 @@ import java.util.UUID;
  *
  * @author Jorge Roberto
  */
-public interface PersonRepository extends JpaRepository<Person, UUID> {
+public interface IPersonRepository extends JpaRepository<Person, UUID> {
 }

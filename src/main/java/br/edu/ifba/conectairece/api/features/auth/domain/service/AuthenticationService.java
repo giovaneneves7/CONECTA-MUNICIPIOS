@@ -7,12 +7,12 @@ import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.citizen.domain.model.Citizen;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
-import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.auth.domain.repository.IRoleRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
-import br.edu.ifba.conectairece.api.features.person.domain.repository.PersonRepository;
+import br.edu.ifba.conectairece.api.features.person.domain.repository.IPersonRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -39,12 +39,12 @@ public class AuthenticationService {
 
     @Autowired
     private final ObjectMapperUtil objectMapperUtil;
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
-    private final PersonRepository personRepository;
-    private final ProfileRepository profileRepository;
-    private final RoleRepository roleRepository;
+    private final IPersonRepository personRepository;
+    private final IProfileRepository profileRepository;
+    private final IRoleRepository roleRepository;
 
     /**
      * Logs in a user based on provided email and password.

@@ -9,7 +9,7 @@ import br.edu.ifba.conectairece.api.features.monitoring.domain.enums.MonitoringS
 import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
-import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.features.step.domain.repository.IStepRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -42,7 +42,7 @@ import java.util.UUID;
 public class MonitoringService implements IMonitoringService{
 
     private final ObjectMapperUtil objectMapperUtil;
-    private final RequestRepository requestRepository;
+    private final IRequestRepository requestRepository;
     private final IMonitoringRepository monitoringRepository;
     private final IStepRepository stepRepository;
     private final IFlowStepRepository flowStepRepository;

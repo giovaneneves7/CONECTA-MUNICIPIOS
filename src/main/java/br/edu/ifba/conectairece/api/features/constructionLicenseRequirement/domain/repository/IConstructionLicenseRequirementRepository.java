@@ -8,22 +8,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 /**
  * Data access repository for the {@link ConstructionLicenseRequirement} entity.
- * Provides CRUD operations and database interaction methods
+ * Provides CRUD operations and database interaction methods 
  * for construction license requirements.
  *
- * This repository is responsible for persisting and retrieving
- * construction-related requirement records,
+ * This repository is responsible for persisting and retrieving 
+ * construction-related requirement records, 
  * including their associations with documents and technical responsibles.
  *
  * Author: Caio Alves
  */
 
 @Repository
-public interface ConstructionLicenseRequirementRepository extends JpaRepository<ConstructionLicenseRequirement, Long> {
-  List<ConstructionLicenseRequirement> findByTechnicalResponsibleId(UUID technicalResponsibleId);
+public interface IConstructionLicenseRequirementRepository extends JpaRepository<ConstructionLicenseRequirement, Long>{
+
+    List<ConstructionLicenseRequirement> findByTechnicalResponsibleId(UUID technicalResponsibleId);
 
   List<ConstructionLicenseRequirement> findByTechnicalResponsibleRegistrationId(String registrationId);
 

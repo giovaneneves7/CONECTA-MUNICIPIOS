@@ -17,6 +17,6 @@ import br.edu.ifba.conectairece.api.features.requirementType.domain.model.Requir
  */
 
 @Repository
-public interface RequirementTypeRepository extends JpaRepository<RequirementType, Long>{
+public interface IRequirementTypeRepository extends JpaRepository<RequirementType, Long>{
 
 }

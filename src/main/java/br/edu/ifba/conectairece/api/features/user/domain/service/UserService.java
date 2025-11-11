@@ -5,10 +5,10 @@ import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.dto.response.UserResponseDTO;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
-import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 
@@ -25,8 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements IUserService {
 
     private final ObjectMapperUtil objectMapperUtil;
-    private final ProfileRepository profileRepository;
-    private final UserRepository userRepository;
+    private final IProfileRepository profileRepository;
+    private final IUserRepository userRepository;
 
     /**
      * Searches for a user by the ID passed as a parameter

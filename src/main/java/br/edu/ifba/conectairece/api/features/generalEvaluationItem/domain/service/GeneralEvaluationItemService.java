@@ -2,9 +2,9 @@ package br.edu.ifba.conectairece.api.features.generalEvaluationItem.domain.servi
 
 import br.edu.ifba.conectairece.api.features.generalEvaluationItem.domain.dto.response.GeneralEvaluationItemResponseDTO;
 import br.edu.ifba.conectairece.api.features.generalEvaluationItem.domain.model.GeneralEvaluationItem;
-import br.edu.ifba.conectairece.api.features.generalEvaluationItem.domain.repository.GeneralEvaluationItemRepository;
+import br.edu.ifba.conectairece.api.features.generalEvaluationItem.domain.repository.IGeneralEvaluationItemRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
-import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -21,8 +21,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GeneralEvaluationItemService implements IGeneralEvaluationItemService {
 
-    private final GeneralEvaluationItemRepository generalEvaluationItemRepository;
-    private final RequestRepository requestRepository;
+    private final IGeneralEvaluationItemRepository generalEvaluationItemRepository;
+    private final IRequestRepository requestRepository;
     private final ObjectMapperUtil objectMapperUtil;
 
     @Override @Transactional

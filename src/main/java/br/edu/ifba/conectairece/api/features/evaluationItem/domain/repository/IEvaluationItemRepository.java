@@ -12,7 +12,7 @@ import java.util.UUID;
  *
  * @author Jorge Roberto
  */
-public interface EvaluationItemRepository extends JpaRepository<EvaluationItem, UUID> {
+public interface IEvaluationItemRepository extends JpaRepository<EvaluationItem, UUID> {
     /**
      * Retrieves a paginated list of evaluation items associated with a specific Document ID.
      * <p>

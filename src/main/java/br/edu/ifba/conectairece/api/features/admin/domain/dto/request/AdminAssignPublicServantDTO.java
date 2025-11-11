@@ -2,6 +2,8 @@ package br.edu.ifba.conectairece.api.features.admin.domain.dto.request;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,6 +14,11 @@ import jakarta.validation.constraints.NotNull;
  * @author Caio Alves
  */
 public record AdminAssignPublicServantDTO(
+    
+    @JsonProperty(value = "type")
+    @NotNull(message = "Type is mandatory.")
+    @NotBlank(message = "Type cannot be blank.")
+    String type,
     
     @NotNull(message = "O ID do usuário é obrigatório.")
     UUID userId,

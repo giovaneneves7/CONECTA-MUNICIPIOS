@@ -1,7 +1,7 @@
 package br.edu.ifba.conectairece.api.config.security;
 
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
-import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.features.auth.domain.service.TokenAuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,11 +46,11 @@ public class JWTLoginFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final TokenAuthenticationService tokenAuthenticationService;
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
 
     public JWTLoginFilter(TokenAuthenticationService tokenAuthenticationService,
-                          UserRepository userRepository) {
+                          IUserRepository userRepository) {
         this.tokenAuthenticationService = tokenAuthenticationService;
         this.userRepository = userRepository;
     }

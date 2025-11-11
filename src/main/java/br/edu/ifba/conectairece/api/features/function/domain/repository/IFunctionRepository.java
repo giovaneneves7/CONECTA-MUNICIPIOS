@@ -13,7 +13,7 @@ import java.util.Optional;
  *
  * @author Jorge Roberto
  */
-public interface FunctionRepository extends JpaRepository<Function, Long> {
+public interface IFunctionRepository extends JpaRepository<Function, Long> {
     /**
      * Retrieves a paginated list of {@link FunctionProjection},
      * returning only the required fields (name and description).

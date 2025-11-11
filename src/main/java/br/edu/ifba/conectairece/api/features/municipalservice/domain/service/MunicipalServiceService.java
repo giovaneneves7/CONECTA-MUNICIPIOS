@@ -8,11 +8,11 @@ import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionM
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
-import br.edu.ifba.conectairece.api.features.category.domain.repository.CategoryRepository;
+import br.edu.ifba.conectairece.api.features.category.domain.repository.ICategoryRepository;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -35,8 +35,8 @@ public class MunicipalServiceService implements MunicipalServiceIService{
 
     private final ObjectMapperUtil objectMapperUtil;
 
-    private final MunicipalServiceRepository municipalServiceRepository;
-    private final CategoryRepository categoryRepository;
+    private final IMunicipalServiceRepository municipalServiceRepository;
+    private final ICategoryRepository categoryRepository;
 
      /**
      * Saves a new municipal service in the database.

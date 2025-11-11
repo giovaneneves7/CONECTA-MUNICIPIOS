@@ -1,7 +1,7 @@
 package br.edu.ifba.conectairece.api.features.update.domain.service;
 
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
-import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.request.UpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import br.edu.ifba.conectairece.api.features.update.domain.model.Update;
@@ -26,7 +26,7 @@ import java.util.List;
 public class UpdateService implements IUpdateService {
 
     private final IUpdateRepository updateRepository;
-    private final RequestRepository requestRepository;
+    private final IRequestRepository requestRepository;
     private final ObjectMapperUtil objectMapperUtil;
 
     @Override

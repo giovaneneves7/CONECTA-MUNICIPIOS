@@ -7,6 +7,7 @@ import java.util.UUID;
 
 /**
  * Data access repository for the {@link PublicServantProfile} entity.
+ * @author Jorge Roberto
  */
-public interface PublicServantProfileRepository extends JpaRepository<PublicServantProfile, UUID> {
+public interface IPublicServantProfileRepository extends JpaRepository<PublicServantProfile, UUID> {
 }

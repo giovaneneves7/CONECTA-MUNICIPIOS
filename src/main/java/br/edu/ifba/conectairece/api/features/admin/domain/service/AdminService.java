@@ -7,27 +7,27 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResp
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserContentResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
-import br.edu.ifba.conectairece.api.features.admin.domain.repository.AdminProfileRepository;
+import br.edu.ifba.conectairece.api.features.admin.domain.repository.IAdminProfileRepository;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
+import br.edu.ifba.conectairece.api.features.auth.domain.repository.IRoleRepository;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
-import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.IPublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.service.IPublicServantProfileService;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
-import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -45,15 +45,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminService implements IAdminService{
 
-    private final UserRepository userRepository;
-    private final AdminProfileRepository adminProfileRepository;
-    private final RoleRepository roleRepository;
+    private final IUserRepository userRepository;
+    private final IAdminProfileRepository adminProfileRepository;
+    private final IRoleRepository roleRepository;
     private final ObjectMapperUtil objectMapperUtil;
     private final ITechnicalResponsibleService technicalResponsibleService;
     private final IPublicServantProfileService publicServantProfileService;
-    private final TechnicalResponsibleRepository technicalResponsibleRepository;
-    private final PublicServantProfileRepository publicServantProfileRepository;
-    private final ProfileRepository profileRepository;
+    private final ITechnicalResponsibleRepository technicalResponsibleRepository;
+    private final IPublicServantProfileRepository publicServantProfileRepository;
+    private final IProfileRepository profileRepository;
 
 
 
@@ -66,6 +66,10 @@ public class AdminService implements IAdminService{
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
         );
+
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new BusinessException("User must be ACTIVE to be assigned an Admin profile.");
+        }
 
         boolean alreadyHasAdminProfile = user.getProfiles().stream().anyMatch(p -> p instanceof AdminProfile);
 
@@ -171,7 +175,7 @@ public class AdminService implements IAdminService{
         PublicServantProfile profile = new PublicServantProfile();
         profile.setEmployeeId(dto.employeeId());
         profile.setImageUrl(dto.imageUrl());
-        profile.setType("PUBLIC_SERVANT");
+        profile.setType(dto.type());
 
         return publicServantProfileService.createPublicServantProfile(dto.userId(), profile);
     }

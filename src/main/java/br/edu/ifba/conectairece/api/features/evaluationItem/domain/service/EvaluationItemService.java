@@ -1,10 +1,10 @@
 package br.edu.ifba.conectairece.api.features.evaluationItem.domain.service;
 
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
-import br.edu.ifba.conectairece.api.features.document.domain.repository.DocumentRepository;
+import br.edu.ifba.conectairece.api.features.document.domain.repository.IDocumentRepository;
 import br.edu.ifba.conectairece.api.features.evaluationItem.domain.dto.response.EvaluationItemResponseDTO;
 import br.edu.ifba.conectairece.api.features.evaluationItem.domain.model.EvaluationItem;
-import br.edu.ifba.conectairece.api.features.evaluationItem.domain.repository.EvaluationItemRepository;
+import br.edu.ifba.conectairece.api.features.evaluationItem.domain.repository.IEvaluationItemRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -21,9 +21,9 @@ import java.util.UUID;
 @Service
 public class EvaluationItemService implements IEvaluationItemService {
 
-    private final EvaluationItemRepository evaluationItemRepository;
+    private final IEvaluationItemRepository evaluationItemRepository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final DocumentRepository documentRepository;
+    private final IDocumentRepository documentRepository;
 
     @Override @Transactional
     public EvaluationItemResponseDTO save(UUID documentId, EvaluationItem obj) {

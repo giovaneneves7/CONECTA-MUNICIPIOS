@@ -5,15 +5,15 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import br.edu.ifba.conectairece.api.features.comment.domain.model.Comment;
-import br.edu.ifba.conectairece.api.features.comment.domain.repository.CommentRepository;
+import br.edu.ifba.conectairece.api.features.comment.domain.repository.ICommentRepository;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.*;
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.service.IMonitoringService;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
-import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.IPublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
-import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.features.requirement.domain.enums.RequirementStatus;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
@@ -31,22 +31,22 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.event.ConstructionLicenseRequirementCreatedEvent;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.ConstructionLicenseRequirementRepository;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.IConstructionLicenseRequirementRepository;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.features.person.domain.model.Person;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
-import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.RequirementTypeRepository;
+import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.IRequirementTypeRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
-import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import jakarta.validation.constraints.NotNull;
 
@@ -78,17 +78,17 @@ public class ConstructionLicenseRequirementService implements ConstructionLicens
 
     private final IMonitoringService monitoringService;
 
-    private final ConstructionLicenseRequirementRepository repository;
-    private final MunicipalServiceRepository municipalServiceRepository;
-    private final RequirementTypeRepository requirementTypeRepository;
+    private final IConstructionLicenseRequirementRepository repository;
+    private final IMunicipalServiceRepository municipalServiceRepository;
+    private final IRequirementTypeRepository requirementTypeRepository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final TechnicalResponsibleRepository technicalResponsibleRepository;
+    private final ITechnicalResponsibleRepository technicalResponsibleRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final UserRepository userRepository;
-    private final ProfileRepository profileRepository;
-    private final RequestRepository requestRepository;
-    private final PublicServantProfileRepository publicServantProfileRepository;
-    private final CommentRepository commentRepository;
+    private final IUserRepository userRepository;
+    private final IProfileRepository profileRepository;
+    private final IRequestRepository requestRepository;
+    private final IPublicServantProfileRepository publicServantProfileRepository;
+    private final ICommentRepository commentRepository;
 
     @Override
     public ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {

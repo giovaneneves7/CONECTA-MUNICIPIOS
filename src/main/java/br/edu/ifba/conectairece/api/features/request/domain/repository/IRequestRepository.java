@@ -21,7 +21,7 @@ import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
  */
 
 @Repository
-public interface RequestRepository extends JpaRepository<Request, UUID>{
+public interface IRequestRepository extends JpaRepository<Request, UUID>{
 
     @Query("SELECT r FROM Request r WHERE r.profile.id = :profileId")
     Page<Request> findAllByProfileId(@Param("profileId") UUID profileId, Pageable pageable);

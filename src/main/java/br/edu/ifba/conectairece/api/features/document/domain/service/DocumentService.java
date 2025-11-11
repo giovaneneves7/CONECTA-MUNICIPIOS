@@ -1,23 +1,23 @@
 package br.edu.ifba.conectairece.api.features.document.domain.service;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.ConstructionLicenseRequirementRepository;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.IConstructionLicenseRequirementRepository;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentCorrectionSuggestionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRejectionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
-import br.edu.ifba.conectairece.api.features.document.domain.repository.DocumentRepository;
+import br.edu.ifba.conectairece.api.features.document.domain.repository.IDocumentRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantApproveDocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantRejectDocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
-import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.IPublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
-import br.edu.ifba.conectairece.api.features.requirement.domain.repository.RequirementRepository;
+import br.edu.ifba.conectairece.api.features.requirement.domain.repository.IRequirementRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDto;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.TechnicalResponsibleRepository;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
@@ -66,19 +66,19 @@ import java.util.stream.Collectors;
  *        1.0
  * @see IDocumentService
  * @see Document
- * @see DocumentRepository
- * @see RequirementRepository
+ * @see IDocumentRepository
+ * @see IRequirementRepository
  */
 @Service
 @RequiredArgsConstructor
 public class DocumentService implements IDocumentService {
 
-    private final DocumentRepository documentRepository;
+    private final IDocumentRepository documentRepository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final RequirementRepository requirementRepository;
-    private final TechnicalResponsibleRepository technicalResponsibleRepository;
-    private final ConstructionLicenseRequirementRepository constructionLicenseRequirementRepository;
-    private final PublicServantProfileRepository publicServantProfileRepository;
+    private final IRequirementRepository requirementRepository;
+    private final ITechnicalResponsibleRepository technicalResponsibleRepository;
+    private final IConstructionLicenseRequirementRepository constructionLicenseRequirementRepository;
+    private final IPublicServantProfileRepository publicServantProfileRepository;
 
     @Override
     @Transactional

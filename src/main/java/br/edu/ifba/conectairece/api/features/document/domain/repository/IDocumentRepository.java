@@ -21,4 +21,4 @@ import java.util.UUID;
  * @author Andesson Reis
  */
 @Repository
-public interface DocumentRepository extends JpaRepository<Document, UUID> {}
+public interface IDocumentRepository extends JpaRepository<Document, UUID> {}

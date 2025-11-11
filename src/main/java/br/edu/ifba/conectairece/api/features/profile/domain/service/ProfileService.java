@@ -4,15 +4,15 @@ import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
-import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.auth.domain.repository.IRoleRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
-import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -36,11 +36,11 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileService implements ProfileIService {
 
-    private final ProfileRepository repository;
+    private final IProfileRepository repository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final RoleRepository roleRepository;
-    private final RequestRepository requestRepository;
-    private  final UserRepository userRepository;
+    private final IRoleRepository roleRepository;
+    private final IRequestRepository requestRepository;
+    private  final IUserRepository userRepository;
 
     @Override @Transactional
     public ProfileWithRoleResponseDTO update(Profile profile) {

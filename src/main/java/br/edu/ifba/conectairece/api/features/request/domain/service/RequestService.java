@@ -6,7 +6,7 @@ import java.util.UUID;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.repository.ProfileRepository;
+import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.event.RequestCreatedEvent;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
@@ -18,11 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.MunicipalServiceRepository;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
-import br.edu.ifba.conectairece.api.features.request.domain.repository.RequestRepository;
+import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,10 +44,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class RequestService implements RequestIService {
 
-    private final RequestRepository requestRepository;
-    private final MunicipalServiceRepository municipalServiceRepository;
+    private final IRequestRepository requestRepository;
+    private final IMunicipalServiceRepository municipalServiceRepository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final ProfileRepository profileRepository;
+    private final IProfileRepository profileRepository;
     private final IMonitoringRepository monitoringRepository;
     private final IUpdateRepository updateRepository;
     private final ApplicationEventPublisher eventPublisher;

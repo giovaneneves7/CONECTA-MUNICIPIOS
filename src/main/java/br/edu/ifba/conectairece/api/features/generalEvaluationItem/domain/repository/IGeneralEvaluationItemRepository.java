@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface GeneralEvaluationItemRepository extends JpaRepository<GeneralEvaluationItem, Long> {
+public interface IGeneralEvaluationItemRepository extends JpaRepository<GeneralEvaluationItem, Long> {
     Page<GeneralEvaluationItem> findAllByRequestId(UUID requestId, Pageable pageable);
 }

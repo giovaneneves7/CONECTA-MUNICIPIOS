@@ -2,7 +2,7 @@ package br.edu.ifba.conectairece.api.features.function.domain.service;
 
 import br.edu.ifba.conectairece.api.features.function.domain.dto.response.FunctionResponseDTO;
 import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
-import br.edu.ifba.conectairece.api.features.function.domain.repository.FunctionRepository;
+import br.edu.ifba.conectairece.api.features.function.domain.repository.IFunctionRepository;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.projection.FunctionProjection;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Service
 public class FunctionService implements FunctionIService{
 
-    private final FunctionRepository functionRepository;
+    private final IFunctionRepository functionRepository;
 
     private final ObjectMapperUtil objectMapperUtil;
 

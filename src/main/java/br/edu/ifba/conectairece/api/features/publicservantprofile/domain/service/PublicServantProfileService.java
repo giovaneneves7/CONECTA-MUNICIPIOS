@@ -2,12 +2,12 @@ package br.edu.ifba.conectairece.api.features.publicservantprofile.domain.servic
 
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
+import br.edu.ifba.conectairece.api.features.auth.domain.repository.IRoleRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
-import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.PublicServantProfileRepository;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.IPublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
-import br.edu.ifba.conectairece.api.features.user.domain.repository.UserRepository;
+import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +21,9 @@ import java.util.UUID;
 @Service
 public class PublicServantProfileService implements IPublicServantProfileService{
 
-    private final UserRepository userRepository;
-    private final PublicServantProfileRepository publicServantRepository;
-    private final RoleRepository roleRepository;
+    private final IUserRepository userRepository;
+    private final IPublicServantProfileRepository publicServantRepository;
+    private final IRoleRepository roleRepository;
 
     @Override @Transactional
     public PublicServantRegisterResponseDTO createPublicServantProfile(UUID userId, PublicServantProfile employee) {

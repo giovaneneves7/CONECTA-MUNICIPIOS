@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDto;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
-import br.edu.ifba.conectairece.api.features.category.domain.repository.CategoryRepository;
+import br.edu.ifba.conectairece.api.features.category.domain.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CategoryService implements CategoryIService{
 
-    private final CategoryRepository categoryRepository;
+    private final ICategoryRepository categoryRepository;
     private final ObjectMapperUtil objectMapperUtil;
 
     /**

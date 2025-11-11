@@ -1,7 +1,7 @@
 package br.edu.ifba.conectairece.api.config.tests;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Permission;
-import br.edu.ifba.conectairece.api.features.permission.domain.repository.PermissionRepository;
+import br.edu.ifba.conectairece.api.features.permission.domain.repository.IPermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
-    private final PermissionRepository permissionRepository;
+    private final IPermissionRepository permissionRepository;
 
     @Override
     public void run(String... args) throws Exception {

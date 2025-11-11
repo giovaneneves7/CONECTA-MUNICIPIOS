@@ -16,7 +16,7 @@ import java.util.UUID;
  *
  * @author Jorge Roberto, Giovane Neves
  */
-public interface ProfileRepository extends JpaRepository<Profile, UUID> {
+public interface IProfileRepository extends JpaRepository<Profile, UUID> {
 
     /**
      * Get all profiles linked to a user by the user's id passed as a parameter

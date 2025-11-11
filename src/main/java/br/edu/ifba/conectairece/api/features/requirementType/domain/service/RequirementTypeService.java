@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.request.RequirementTypeRequestDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
-import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.RequirementTypeRepository;
+import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.IRequirementTypeRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RequirementTypeService implements RequirementTypeIService{
 
-    private final RequirementTypeRepository repository;
+    private final IRequirementTypeRepository repository;
     private final ObjectMapperUtil objectMapperUtil;
 
         /**

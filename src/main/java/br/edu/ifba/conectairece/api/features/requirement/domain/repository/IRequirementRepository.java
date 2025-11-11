@@ -18,5 +18,5 @@ import org.springframework.stereotype.Repository;
  * @see br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement
  */
 @Repository
-public interface RequirementRepository extends JpaRepository<Requirement, Long> {
+public interface IRequirementRepository extends JpaRepository<Requirement, Long> {
 }

@@ -13,6 +13,6 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.Munic
  */
 
 @Repository
-public interface MunicipalServiceRepository extends JpaRepository<MunicipalService, Long>{
+public interface IMunicipalServiceRepository extends JpaRepository<MunicipalService, Long>{
 
 }

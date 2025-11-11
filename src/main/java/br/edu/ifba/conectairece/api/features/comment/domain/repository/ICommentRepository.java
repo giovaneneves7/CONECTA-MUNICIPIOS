@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface ICommentRepository extends JpaRepository<Comment, Long> {
 /**
      * Encontra o primeiro (mais recente) comentário associado a um 'requirementId',
      * ordenando pelo ID de forma decrescente.

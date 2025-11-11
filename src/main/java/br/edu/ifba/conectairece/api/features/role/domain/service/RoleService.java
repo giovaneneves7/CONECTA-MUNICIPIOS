@@ -2,8 +2,8 @@ package br.edu.ifba.conectairece.api.features.role.domain.service;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Permission;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.auth.domain.repository.RoleRepository;
-import br.edu.ifba.conectairece.api.features.permission.domain.repository.PermissionRepository;
+import br.edu.ifba.conectairece.api.features.auth.domain.repository.IRoleRepository;
+import br.edu.ifba.conectairece.api.features.permission.domain.repository.IPermissionRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +16,8 @@ import java.util.Set;
 @Service
 public class RoleService implements IRoleService{
 
-    private final PermissionRepository permissionRepository;
-    private final RoleRepository roleRepository;
+    private final IPermissionRepository permissionRepository;
+    private final IRoleRepository roleRepository;
 
     @Override @Transactional
     public void addPermission(String permissionName, Long roleId) {

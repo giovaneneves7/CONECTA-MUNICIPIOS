@@ -11,5 +11,5 @@ import java.util.UUID;
  *
  * @author Jorge Roberto
  */
-public interface AdminProfileRepository extends JpaRepository<AdminProfile, UUID> {
+public interface IAdminProfileRepository extends JpaRepository<AdminProfile, UUID> {
 }

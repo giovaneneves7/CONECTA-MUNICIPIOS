@@ -74,7 +74,7 @@ public class AdminService implements IAdminService{
         }
 
         Role role = new Role();
-        role.setName("ADMIN");
+        role.setName("ROLE_ADMIN");
         role.setDescription("Role for administrator");
         roleRepository.save(role);
 

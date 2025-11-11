@@ -41,7 +41,7 @@ public class PublicServantProfileService implements IPublicServantProfileService
         }
 
         Role role = new Role();
-        role.setName("PUBLIC_SERVANT");
+        role.setName("ROLE_PUBLIC_SERVANT");
         role.setDescription("Role for public servant");
         roleRepository.save(role);
 

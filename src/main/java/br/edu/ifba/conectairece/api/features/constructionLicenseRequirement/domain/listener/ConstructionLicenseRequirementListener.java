@@ -1,21 +1,19 @@
 package br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.listener;
 
-import java.time.LocalDateTime;
-
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.event.ConstructionLicenseRequirementCreatedEvent;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
-import br.edu.ifba.conectairece.api.features.request.domain.service.RequestIService;
+import br.edu.ifba.conectairece.api.features.request.domain.service.IRequestService;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class ConstructionLicenseRequirementListener {
 
-    private final RequestIService requestService;
+    private final IRequestService requestService;
 
     @EventListener
         public void handleConstructionLicenseRequirementCreated(ConstructionLicenseRequirementCreatedEvent event) {

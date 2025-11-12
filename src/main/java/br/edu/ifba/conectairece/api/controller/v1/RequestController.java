@@ -7,7 +7,7 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.response.Docume
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
-import br.edu.ifba.conectairece.api.features.request.domain.service.RequestIService;
+import br.edu.ifba.conectairece.api.features.request.domain.service.IRequestService;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
@@ -53,7 +53,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RequestController {
 
   private final ObjectMapperUtil objectMapperUtil;
-  private final RequestIService requestService;
+  private final IRequestService requestService;
   private final ConstructionLicenseRequirementService constructionLicenseRequirementService;
 
   /**

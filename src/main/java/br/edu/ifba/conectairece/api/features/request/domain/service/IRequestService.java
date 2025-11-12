@@ -1,6 +1,5 @@
 package br.edu.ifba.conectairece.api.features.request.domain.service;
 
-import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
@@ -20,7 +19,7 @@ import org.springframework.data.domain.Pageable;
  * @author Caio, Giovane Neves
  */
 
-public interface RequestIService {
+public interface IRequestService {
   RequestResponseDto save(RequestPostRequestDto dto);
 
   RequestResponseDto update(UUID id, RequestPostRequestDto dto);

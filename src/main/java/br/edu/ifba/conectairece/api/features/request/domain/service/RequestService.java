@@ -1,10 +1,6 @@
 package br.edu.ifba.conectairece.api.features.request.domain.service;
 
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.repository.IConstructionLicenseRequirementRepository;
-import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
-import br.edu.ifba.conectairece.api.features.document.domain.enums.DocumentStatus;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.repository.IMonitoringRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
@@ -47,7 +43,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class RequestService implements RequestIService {
+public class RequestService implements IRequestService {
 
     private final IRequestRepository requestRepository;
     private final IMunicipalServiceRepository municipalServiceRepository;

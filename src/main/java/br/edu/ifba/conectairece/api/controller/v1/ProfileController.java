@@ -6,7 +6,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileR
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
-import br.edu.ifba.conectairece.api.features.profile.domain.service.ProfileIService;
+import br.edu.ifba.conectairece.api.features.profile.domain.service.IProfileService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
@@ -40,7 +40,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
 public class ProfileController {
-    private final ProfileIService profileService;
+    private final IProfileService profileService;
     private final ObjectMapperUtil objectMapperUtil;
 
     @Operation(summary = "Update an existing Profile",

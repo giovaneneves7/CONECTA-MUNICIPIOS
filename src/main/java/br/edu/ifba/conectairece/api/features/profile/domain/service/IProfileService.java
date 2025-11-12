@@ -3,7 +3,6 @@ package br.edu.ifba.conectairece.api.features.profile.domain.service;
 import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
-import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
@@ -20,7 +19,7 @@ import java.util.UUID;
  *
  * @author Jorge Roberto
  */
-public interface ProfileIService {
+public interface IProfileService {
 
     /**
      * Updates an existing profile in the database.

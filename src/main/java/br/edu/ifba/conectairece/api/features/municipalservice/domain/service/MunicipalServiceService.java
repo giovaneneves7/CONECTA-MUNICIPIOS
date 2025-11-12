@@ -31,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MunicipalServiceService implements MunicipalServiceIService{
+public class MunicipalServiceService implements IMunicipalServiceService {
 
     private final ObjectMapperUtil objectMapperUtil;
 

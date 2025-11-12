@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.MunicipalServiceIService;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.IMunicipalServiceService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MunicipalServiceController {
 
-    private final MunicipalServiceIService municipalServiceService;
+    private final IMunicipalServiceService municipalServiceService;
     private final IFlowService flowService;
 
     /**

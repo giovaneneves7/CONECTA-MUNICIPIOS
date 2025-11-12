@@ -12,7 +12,7 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.Munic
  *
  * @author Caio
  */
-public interface MunicipalServiceIService {
+public interface IMunicipalServiceService {
  /**
      * Saves a new municipal service.
      *

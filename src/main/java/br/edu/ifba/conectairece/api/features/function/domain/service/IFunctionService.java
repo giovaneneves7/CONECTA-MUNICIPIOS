@@ -15,7 +15,7 @@ import org.springframework.data.domain.Pageable;
  *
  * @author Jorge Roberto
  */
-public interface FunctionIService {
+public interface IFunctionService {
 
     /**
      * Saves a new function in the database.

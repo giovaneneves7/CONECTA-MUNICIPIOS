@@ -23,7 +23,7 @@ import java.util.Optional;
  */
 @RequiredArgsConstructor
 @Service
-public class FunctionService implements FunctionIService{
+public class FunctionService implements IFunctionService {
 
     private final IFunctionRepository functionRepository;
 

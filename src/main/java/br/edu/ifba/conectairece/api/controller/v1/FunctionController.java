@@ -5,7 +5,7 @@ import br.edu.ifba.conectairece.api.features.function.domain.dto.request.Functio
 import br.edu.ifba.conectairece.api.features.function.domain.dto.response.FunctionResponseDTO;
 import br.edu.ifba.conectairece.api.features.function.domain.model.Function;
 import br.edu.ifba.conectairece.api.features.function.domain.repository.projection.FunctionProjection;
-import br.edu.ifba.conectairece.api.features.function.domain.service.FunctionService;
+import br.edu.ifba.conectairece.api.features.function.domain.service.IFunctionService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/functions")
 @RequiredArgsConstructor
 public class FunctionController {
-    private final FunctionService functionService;
+    private final IFunctionService functionService;
     private final ObjectMapperUtil objectMapperUtil;
 
     @Operation(summary = "Create a new Function",

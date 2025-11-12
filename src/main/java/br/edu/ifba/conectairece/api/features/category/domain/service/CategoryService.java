@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService implements CategoryIService{
+public class CategoryService implements ICategoryService {
 
     private final ICategoryRepository categoryRepository;
     private final ObjectMapperUtil objectMapperUtil;

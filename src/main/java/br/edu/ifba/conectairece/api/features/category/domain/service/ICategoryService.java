@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @author Jorge Roberto
  */
-public interface CategoryIService {
+public interface ICategoryService {
 
     /**
      * Saves a new category in the database.

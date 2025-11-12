@@ -2,7 +2,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
-import br.edu.ifba.conectairece.api.features.category.domain.service.CategoryIService;
+import br.edu.ifba.conectairece.api.features.category.domain.service.ICategoryService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final CategoryIService categoryService;
+    private final ICategoryService categoryService;
 
     @Operation(summary = "create new Category",
         description = "Creates and persists a new category in the system.")

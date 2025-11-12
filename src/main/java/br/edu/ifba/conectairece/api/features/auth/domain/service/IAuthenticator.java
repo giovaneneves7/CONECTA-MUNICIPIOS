@@ -4,7 +4,7 @@ package br.edu.ifba.conectairece.api.features.auth.domain.service;
  * Interface with user authentication operation
  * @author Giovane Neves
  */
-public interface Authenticator {
+public interface IAuthenticator {
 
     /**
      * Authenticate a user with

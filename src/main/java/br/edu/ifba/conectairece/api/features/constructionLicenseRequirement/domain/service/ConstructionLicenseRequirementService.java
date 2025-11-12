@@ -74,7 +74,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Service
 @RequiredArgsConstructor
-public class ConstructionLicenseRequirementService implements ConstructionLicenseRequirementIService {
+public class ConstructionLicenseRequirementService implements IConstructionLicenseRequirementService {
 
     private final IMonitoringService monitoringService;
 

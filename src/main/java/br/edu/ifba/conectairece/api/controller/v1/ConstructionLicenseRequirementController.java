@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.IConstructionLicenseRequirementService;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -67,7 +67,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConstructionLicenseRequirementController {
 
-        private final ConstructionLicenseRequirementIService service;
+        private final IConstructionLicenseRequirementService service;
 
         /**
          * Endpoint to create a new construction license requirement.

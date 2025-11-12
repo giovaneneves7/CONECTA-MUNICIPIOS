@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.RejectionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
-import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementIService;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.IConstructionLicenseRequirementService;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentCorrectionSuggestionDTO;
-import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRejectionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.service.IDocumentService;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDto;
@@ -51,7 +49,7 @@ import lombok.RequiredArgsConstructor;
 public class TechnicalResponsibleController {
 
     private final ITechnicalResponsibleService service;
-    private final ConstructionLicenseRequirementIService requirementService;
+    private final IConstructionLicenseRequirementService requirementService;
     private final IDocumentService documentService;
 
     /**

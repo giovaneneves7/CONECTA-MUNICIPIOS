@@ -9,7 +9,6 @@ import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.AssociationActionRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
@@ -31,7 +30,7 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
  * Author: Caio Alves
  */
 
-public interface ConstructionLicenseRequirementIService {
+public interface IConstructionLicenseRequirementService {
 
     /**
      * Saves a new Construction License Requirement, processes associated documents,

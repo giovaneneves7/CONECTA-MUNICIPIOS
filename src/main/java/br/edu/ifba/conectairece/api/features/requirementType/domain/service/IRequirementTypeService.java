@@ -19,7 +19,7 @@ import br.edu.ifba.conectairece.api.features.requirementType.domain.model.Requir
  * Author: Caio Alves
  */
 
-public interface RequirementTypeIService {
+public interface IRequirementTypeService {
 
         /**
      * Saves a new requirement type.

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.request.RequirementTypeRequestDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
-import br.edu.ifba.conectairece.api.features.requirementType.domain.service.RequirementTypeIService;
+import br.edu.ifba.conectairece.api.features.requirementType.domain.service.IRequirementTypeService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -48,7 +48,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RequirementTypeController {
 
-    private final RequirementTypeIService requirementTypeService;
+    private final IRequirementTypeService requirementTypeService;
 
     /**
      * Endpoint to create a new requirement type.

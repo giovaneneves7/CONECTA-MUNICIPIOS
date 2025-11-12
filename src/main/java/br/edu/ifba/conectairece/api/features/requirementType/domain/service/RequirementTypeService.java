@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class RequirementTypeService implements RequirementTypeIService{
+public class RequirementTypeService implements IRequirementTypeService {
 
     private final IRequirementTypeRepository repository;
     private final ObjectMapperUtil objectMapperUtil;

@@ -10,8 +10,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDto;
-import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.features.category.domain.repository.ICategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,12 +46,12 @@ public class CategoryService implements ICategoryService {
      @Override
      @Transactional
      @CacheEvict(value = "categories", allEntries = true)
-     public CategoryResponseDto save(CategoryRequestDto dto) {
+     public CategoryResponseDTO save(CategoryRequestDTO dto) {
         if (categoryRepository.findByName(dto.name()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
 
-        return objectMapperUtil.mapToRecord(this.categoryRepository.save(this.objectMapperUtil.map(dto, Category.class)), CategoryResponseDto.class);
+        return objectMapperUtil.mapToRecord(this.categoryRepository.save(this.objectMapperUtil.map(dto, Category.class)), CategoryResponseDTO.class);
 
     }
 
@@ -63,7 +63,7 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "categories")
-    public List<CategoryResponseDto> findAll() {
+    public List<CategoryResponseDTO> findAll() {
         return categoryRepository.findAll().stream().map(this::toDto).toList();
     }
 
@@ -76,9 +76,9 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "category", key = "#id")
-    public Optional<CategoryResponseDto> findById(Integer id) {
+    public Optional<CategoryResponseDTO> findById(Integer id) {
         return Optional.ofNullable(categoryRepository.findById(id)
-                .map(category -> objectMapperUtil.mapToRecord(category, CategoryResponseDto.class))
+                .map(category -> objectMapperUtil.mapToRecord(category, CategoryResponseDTO.class))
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())));
     }
 
@@ -102,8 +102,8 @@ public class CategoryService implements ICategoryService {
         categoryRepository.deleteById(id);
     }
 
-    private CategoryResponseDto toDto(Category entity) {
-        return new CategoryResponseDto(
+    private CategoryResponseDTO toDto(Category entity) {
+        return new CategoryResponseDTO(
                 entity.getId(),
                 entity.getName(),
                 entity.getDescription(),

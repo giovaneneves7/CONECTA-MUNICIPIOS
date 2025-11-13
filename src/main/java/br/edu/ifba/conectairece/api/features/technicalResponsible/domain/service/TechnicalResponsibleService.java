@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.IRoleRepository;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDto;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
@@ -40,7 +40,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     
     @Override
     @Transactional
-    public TechnicalResponsibleResponseDto save(TechnicalResponsibleRequestDto dto) {
+    public TechnicalResponsibleResponseDTO save(TechnicalResponsibleRequestDTO dto) {
 
          if (repository.findByRegistrationId(dto.registrationId()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
@@ -79,7 +79,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     
     @Override
     @Transactional
-    public List<TechnicalResponsibleResponseDto> findAll() {
+    public List<TechnicalResponsibleResponseDTO> findAll() {
         return repository.findAll().stream()
                 .map(this::convertToDto)
                 .toList();
@@ -87,7 +87,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
 
     @Override
     @Transactional
-    public Optional<TechnicalResponsibleResponseDto> findById(UUID id) {
+    public Optional<TechnicalResponsibleResponseDTO> findById(UUID id) {
         return repository.findById(id)
                 .map(this::convertToDto);
     }
@@ -103,12 +103,12 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     }
 
     @Override
-    public Optional<TechnicalResponsibleResponseDto> findByRegistrationId(String registrationId){
+    public Optional<TechnicalResponsibleResponseDTO> findByRegistrationId(String registrationId){
         return repository.findByRegistrationId(registrationId)
             .map(this::convertToDto);
     }
 
-    private TechnicalResponsibleResponseDto convertToDto (TechnicalResponsible entity){
+    private TechnicalResponsibleResponseDTO convertToDto (TechnicalResponsible entity){
         User user = entity.getUser();
         String responsibleName = null;
         String email = null;
@@ -120,7 +120,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
         phone = user.getPhone();
         cpf = user.getPerson().getCpf();
     }
-        return new TechnicalResponsibleResponseDto(
+        return new TechnicalResponsibleResponseDTO(
             entity.getId(),
             entity.getRegistrationId(),
             entity.getResponsibleType(),

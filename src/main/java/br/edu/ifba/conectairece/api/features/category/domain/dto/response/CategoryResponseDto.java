@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author Caio Alves, Jorge Roberto, Giovane Neves
  */
-public record CategoryResponseDto (
+public record CategoryResponseDTO (
 
     @JsonProperty("id")
     Integer id,

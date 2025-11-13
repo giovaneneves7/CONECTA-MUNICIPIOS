@@ -2,15 +2,15 @@ package br.edu.ifba.conectairece.api.features.municipalservice.domain.service;
 
 import java.util.List;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.features.category.domain.repository.ICategoryRepository;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDto;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -46,7 +46,7 @@ public class MunicipalServiceService implements IMunicipalServiceService {
      */
 
     @Override
-    public MunicipalServiceResponseDto save(MunicipalServiceRequestDto dto) {
+    public MunicipalServiceResponseDTO save(MunicipalServiceRequestDTO dto) {
         MunicipalService service = new MunicipalService();
         service.setName(dto.name());
         service.setDescription(dto.description());
@@ -62,11 +62,11 @@ public class MunicipalServiceService implements IMunicipalServiceService {
                 .orElseThrow(() -> new BusinessException("Service not found"));
 
         // map manual para record
-        List<CategoryResponseDto> categoriesDto = saved.getCategories().stream()
-                .map(cat -> new CategoryResponseDto(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
+        List<CategoryResponseDTO> categoriesDto = saved.getCategories().stream()
+                .map(cat -> new CategoryResponseDTO(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
                 .toList();
 
-        return new MunicipalServiceResponseDto(
+        return new MunicipalServiceResponseDTO(
                 saved.getId(),
                 saved.getName(),
                 saved.getDescription(),
@@ -81,13 +81,13 @@ public class MunicipalServiceService implements IMunicipalServiceService {
      */
 
     @Override
-    public List<MunicipalServiceResponseDto> findAll() {
+    public List<MunicipalServiceResponseDTO> findAll() {
         List<MunicipalService> services = municipalServiceRepository.findAll();
         return services.stream().map(service -> {
-            List<CategoryResponseDto> categoriesDto = service.getCategories().stream()
-                    .map(cat -> new CategoryResponseDto(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
+            List<CategoryResponseDTO> categoriesDto = service.getCategories().stream()
+                    .map(cat -> new CategoryResponseDTO(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
                     .toList();
-            return new MunicipalServiceResponseDto(
+            return new MunicipalServiceResponseDTO(
                     service.getId(),
                     service.getName(),
                     service.getDescription(),
@@ -103,11 +103,11 @@ public class MunicipalServiceService implements IMunicipalServiceService {
      * @return optional containing municipal service DTO if found
      */
     @Override
-    public MunicipalServiceResponseDto findById(Long id) {
+    public MunicipalServiceResponseDTO findById(Long id) {
        MunicipalService entity = municipalServiceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        return objectMapperUtil.mapToRecord(entity, MunicipalServiceResponseDto.class);
+        return objectMapperUtil.mapToRecord(entity, MunicipalServiceResponseDTO.class);
         
     }
 

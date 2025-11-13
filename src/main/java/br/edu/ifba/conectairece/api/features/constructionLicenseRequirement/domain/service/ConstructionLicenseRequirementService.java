@@ -43,7 +43,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.repository.IRequirementTypeRepository;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.model.User;
@@ -416,7 +416,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
         User responsibleUser = responsibleEntity.getUser();
 
-        TechnicalResponsibleResponseDto responsibleDTO = new TechnicalResponsibleResponseDto(
+        TechnicalResponsibleResponseDTO responsibleDTO = new TechnicalResponsibleResponseDTO(
                 responsibleEntity.getId(),
                 responsibleEntity.getRegistrationId(),
                 responsibleEntity.getResponsibleType(),

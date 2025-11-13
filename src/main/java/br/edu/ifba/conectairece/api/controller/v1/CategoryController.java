@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDto;
-import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -45,7 +45,7 @@ public class CategoryController {
         description = "Creates and persists a new category in the system.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Category sucessfuly created",
-            content = @Content (schema = @Schema(implementation = CategoryResponseDto.class))),
+            content = @Content (schema = @Schema(implementation = CategoryResponseDTO.class))),
         @ApiResponse(responseCode = "400", description = "Invalid request body"),
         @ApiResponse(responseCode = "422", description = "One or some fields are invalid")           
     })
@@ -56,7 +56,7 @@ public class CategoryController {
      * @return Response with created category data.
      */
     @PostMapping(path ="/category")
-    public ResponseEntity<?> create(@RequestBody @Valid CategoryRequestDto dto, BindingResult result) {
+    public ResponseEntity<?> create(@RequestBody @Valid CategoryRequestDTO dto, BindingResult result) {
         return result.hasErrors()
             ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
             : ResponseEntity.ok(categoryService.save(dto));
@@ -71,10 +71,10 @@ public class CategoryController {
             description = "Retrieves a list of all registered categories.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of categories retrieved",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoryResponseDto.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoryResponseDTO.class))))
     })
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDto>> getAll() {
+    public ResponseEntity<List<CategoryResponseDTO>> getAll() {
         return ResponseEntity.ok(categoryService.findAll());
     }
 
@@ -88,11 +88,11 @@ public class CategoryController {
             description = "Fetches details of a category by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category found",
-                    content = @Content(schema = @Schema(implementation = CategoryResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = CategoryResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Category not found")
     })
     @GetMapping("/category/{id}")
-    public ResponseEntity<CategoryResponseDto> getById(@PathVariable Integer id) {
+    public ResponseEntity<CategoryResponseDTO> getById(@PathVariable Integer id) {
         return categoryService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

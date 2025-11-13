@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 
 /**
  * Data Transfer Object for representing MunicipalService data in API responses.
@@ -14,7 +14,7 @@ import br.edu.ifba.conectairece.api.features.category.domain.dto.response.Catego
  * @author Caio Alves, Giovane Neves
  */
 
-public record MunicipalServiceResponseDto(
+public record MunicipalServiceResponseDTO(
     @JsonProperty("id")
     Long id,
 
@@ -24,5 +24,5 @@ public record MunicipalServiceResponseDto(
     @JsonProperty("description")
     String description,
 
-    List<CategoryResponseDto> categories
+    List<CategoryResponseDTO> categories
 ){}

@@ -7,10 +7,10 @@ import br.edu.ifba.conectairece.api.features.user.domain.model.User;
 import br.edu.ifba.conectairece.api.features.auth.domain.repository.IRoleRepository;
 import br.edu.ifba.conectairece.api.features.user.domain.repository.IUserRepository;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
-import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentTypeDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
@@ -113,15 +113,15 @@ public class ProfileService implements IProfileService {
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
     @Override
-    public Page<RequestResponseDto> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
+    public Page<RequestResponseDTO> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
 
         return this.requestRepository.findAllByProfileId(userId, pageable)
-                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDto.class));
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO.class));
 
     }
 
     @Override @Transactional
-    public ProfileResponseCurrentType changeActiveProfile(UUID userId, String newActiveType) {
+    public ProfileResponseCurrentTypeDTO changeActiveProfile(UUID userId, String newActiveType) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -133,7 +133,7 @@ public class ProfileService implements IProfileService {
         user.setActiveProfile(newActiveProfile);
         userRepository.save(user);
 
-        return new ProfileResponseCurrentType(newActiveType, newActiveProfile.getRole().getName());
+        return new ProfileResponseCurrentTypeDTO(newActiveType, newActiveProfile.getRole().getName());
     }
 
     @Override @Transactional(readOnly = true)

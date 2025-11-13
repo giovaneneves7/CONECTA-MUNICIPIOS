@@ -11,7 +11,7 @@ import java.util.UUID;
  *
  * @author Jorge Roberto
  */
-public record ProfileRequestChangeProfileType(
+public record ProfileRequestChangeProfileTypeDTO(
         @JsonProperty("activeType")
         @NotBlank(message = "Active type cannot be blank.")
         String activeType,

@@ -19,7 +19,7 @@ import jakarta.validation.constraints.NotNull;
  * 
  * Author: Andesson Reis
  */
-public record TechnicalResponsibleApproveDocumentRequestDto(
+public record TechnicalResponsibleApproveDocumentRequestDTO(
         @NotNull UUID documentId,
         @NotNull String registrationId
 ) {}

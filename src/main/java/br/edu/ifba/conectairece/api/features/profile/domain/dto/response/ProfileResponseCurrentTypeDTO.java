@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  * @author Jorge Roberto
  */
-public record ProfileResponseCurrentType (
+public record ProfileResponseCurrentTypeDTO (
         @JsonProperty("active_type")
         String activeType,
 

@@ -2,7 +2,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.document.domain.service.IDocumentService;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantApproveDocumentRequestDTO;
-import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequest;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantRejectDocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
@@ -42,14 +42,14 @@ public class PublicServantProfileController {
 
         @Operation(summary = "Create a new Public Servant Profile, if your user has a admin profile", description = "Creates and persists a new Public Servant Profile in the system.")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Profile successfully created", content = @Content(schema = @Schema(implementation = PublicServantCreationRequest.class))),
+                        @ApiResponse(responseCode = "200", description = "Profile successfully created", content = @Content(schema = @Schema(implementation = PublicServantCreationRequestDTO.class))),
                         @ApiResponse(responseCode = "400", description = "Invalid request body", content = @Content),
                         @ApiResponse(responseCode = "409", description = "This user already has a public servant profile", content = @Content),
                         @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
         })
         @PostMapping(value = "/public-servant-profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<?> createPublicServantProfile(
-                        @RequestBody @Valid PublicServantCreationRequest dto,
+                        @RequestBody @Valid PublicServantCreationRequestDTO dto,
                         BindingResult result) {
                 if (result.hasErrors()) {
                         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)

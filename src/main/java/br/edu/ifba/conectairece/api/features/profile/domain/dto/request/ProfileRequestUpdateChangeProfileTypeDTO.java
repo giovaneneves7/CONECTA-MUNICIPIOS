@@ -11,7 +11,7 @@ import java.util.UUID;
  * <p>
  * Used in PATCH/PUT operations, specifically for changing the active profile type.
  * <p>
- * This DTO mirrors the {@link ProfileRequestChangeProfileType} to ensure
+ * This DTO mirrors the {@link ProfileRequestChangeProfileTypeDTO} to ensure
  * compatibility with the service layer and validation.
  *
  * @author Andesson Reis 

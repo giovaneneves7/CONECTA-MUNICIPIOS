@@ -4,7 +4,7 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementService;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
@@ -69,7 +69,7 @@ public class RequestController {
       @ApiResponse(
         responseCode = "200",
         description = "Request successfully created",
-        content = @Content(schema = @Schema(implementation = RequestResponseDto.class))
+        content = @Content(schema = @Schema(implementation = RequestResponseDTO.class))
       ),
       @ApiResponse(responseCode = "400", description = "Invalid request body"),
       @ApiResponse(responseCode = "422", description = "One or some fields are invalid"),
@@ -93,12 +93,12 @@ public class RequestController {
       @ApiResponse(
         responseCode = "200",
         description = "List of requests retrieved",
-        content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDto.class)))
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDTO.class)))
       ),
     }
   )
   @GetMapping
-  public ResponseEntity<List<RequestResponseDto>> getAll() {
+  public ResponseEntity<List<RequestResponseDTO>> getAll() {
     return ResponseEntity.ok(requestService.findAll());
   }
 
@@ -114,13 +114,13 @@ public class RequestController {
       @ApiResponse(
         responseCode = "200",
         description = "Request found",
-        content = @Content(schema = @Schema(implementation = RequestResponseDto.class))
+        content = @Content(schema = @Schema(implementation = RequestResponseDTO.class))
       ),
       @ApiResponse(responseCode = "404", description = "Request not found"),
     }
   )
   @GetMapping("/request/{id}")
-  public ResponseEntity<RequestResponseDto> getById(@Valid @PathVariable UUID id) {
+  public ResponseEntity<RequestResponseDTO> getById(@Valid @PathVariable UUID id) {
     return ResponseEntity.status(HttpStatus.OK).body(requestService.findById(id));
   }
 
@@ -140,7 +140,7 @@ public class RequestController {
       @ApiResponse(
         responseCode = "200",
         description = "Request successfully updated",
-        content = @Content(schema = @Schema(implementation = RequestResponseDto.class))
+        content = @Content(schema = @Schema(implementation = RequestResponseDTO.class))
       ),
       @ApiResponse(responseCode = "404", description = "Request not found"),
       @ApiResponse(responseCode = "422", description = "One or some fields are invalid"),
@@ -191,7 +191,7 @@ public class RequestController {
       @ApiResponse(
         responseCode = "200",
         description = "Monitoring list found",
-        content = @Content(schema = @Schema(implementation = RequestResponseDto.class))
+        content = @Content(schema = @Schema(implementation = RequestResponseDTO.class))
       ),
       @ApiResponse(responseCode = "404", description = "Request not found"),
       @ApiResponse(responseCode = "422", description = "One or some fields are invalid"),
@@ -292,7 +292,7 @@ public class RequestController {
       @ApiResponse(
         responseCode = "200",
         description = "Paginated list of requests retrieved successfully",
-        content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDto.class)))
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDTO.class)))
       ),
       @ApiResponse(responseCode = "404", description = "No requests found matching the criteria."),
     }
@@ -306,12 +306,12 @@ public class RequestController {
     @ParameterObject @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
   ) {
     if (status != null && !status.isEmpty()) {
-      Page<RequestResponseDto> requests = requestService.findAllByStatusHistory_NewStatus(status, pageable);
+      Page<RequestResponseDTO> requests = requestService.findAllByStatusHistory_NewStatus(status, pageable);
       return ResponseEntity.ok(requests);
     }
 
     if (type != null && !type.isEmpty()) {
-      Page<RequestResponseDto> requests = requestService.findByType(type, pageable);
+      Page<RequestResponseDTO> requests = requestService.findByType(type, pageable);
       return ResponseEntity.ok(requests);
     }
 
@@ -333,7 +333,7 @@ public class RequestController {
       @ApiResponse(
         responseCode = "200",
         description = "Paginated list of finalized requests retrieved successfully",
-        content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDto.class)))
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequestResponseDTO.class)))
       ),
       @ApiResponse(responseCode = "404", description = "No finalized requests found."),
     }

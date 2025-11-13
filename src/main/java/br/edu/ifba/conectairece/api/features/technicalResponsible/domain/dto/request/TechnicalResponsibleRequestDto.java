@@ -14,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
  * @author Caio Alves
  */
 
-public record TechnicalResponsibleRequestDto(
+public record TechnicalResponsibleRequestDTO(
 
     @JsonProperty(value = "registrationId")
     @NotNull(message = "Registration ID is mandatory.")

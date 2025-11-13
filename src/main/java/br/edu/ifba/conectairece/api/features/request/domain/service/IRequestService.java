@@ -2,7 +2,7 @@ package br.edu.ifba.conectairece.api.features.request.domain.service;
 
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
@@ -21,13 +21,13 @@ import org.springframework.data.domain.Pageable;
  */
 
 public interface IRequestService {
-  RequestResponseDto save(RequestPostRequestDto dto);
+  RequestResponseDTO save(RequestPostRequestDto dto);
 
-  RequestResponseDto update(UUID id, RequestUpdateRequestDTO dto);
+  RequestResponseDTO update(UUID id, RequestUpdateRequestDTO dto);
 
-  List<RequestResponseDto> findAll();
+  List<RequestResponseDTO> findAll();
 
-  RequestResponseDto findById(UUID id);
+  RequestResponseDTO findById(UUID id);
 
   void delete(UUID id);
 
@@ -43,7 +43,7 @@ public interface IRequestService {
    * @return A Page containing RequestResponseDto objects matching the specified type.
    * @author Caio Alves
    */
-  Page<RequestResponseDto> findByType(String type, Pageable pageable);
+  Page<RequestResponseDTO> findByType(String type, Pageable pageable);
 
   /**
    * Retrieves a paginated list of Requests filtered by the latest recorded status (newStatus)
@@ -54,9 +54,9 @@ public interface IRequestService {
    *
    * @param statusHistoryNewStatus The target status (e.g., "APPROVED", "PENDING") to filter the requests by.
    * @param pageable Pagination and sorting criteria.
-   * @return A {@link Page} of {@link RequestResponseDto} containing the filtered and paginated results.
+   * @return A {@link Page} of {@link RequestResponseDTO} containing the filtered and paginated results.
    */
-  Page<RequestResponseDto> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable);
+  Page<RequestResponseDTO> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable);
 
   /**
    * Retrieves a paginated list of Requests that have reached a final status (COMPLETE or REJECTED).

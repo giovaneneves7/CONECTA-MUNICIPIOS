@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record PublicServantCreationRequest(
+public record PublicServantCreationRequestDTO(
         @JsonProperty(value = "type")
         @NotNull(message = "Type is mandatory.")
         @NotBlank(message = "Type cannot be blank.")

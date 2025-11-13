@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
  *
  * @author Caio Alves, Jorge Roberto
  */
-public record CategoryRequestDto (
+public record CategoryRequestDTO (
     @JsonProperty("name")
     @NotNull(message = "Name is mandatory.")
     @NotBlank(message = "Name cannot be blank.")

@@ -10,9 +10,9 @@ import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.service.IAdminService;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
-import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequest;
+import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDto;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
@@ -56,7 +56,7 @@ public class AdminController {
             description = "Creates and persists a new Admin Profile in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Profile successfully created",
-                    content = @Content(schema = @Schema(implementation = PublicServantCreationRequest.class))),
+                    content = @Content(schema = @Schema(implementation = PublicServantCreationRequestDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "409", description = "This user already has a admin profile",
@@ -145,7 +145,7 @@ public class AdminController {
                description = "Allows an administrator to create and assign a Technical Responsible profile to a specific user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Technical Responsible profile assigned successfully",
-                         content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDto.class))),
+                         content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "409", description = "User already has this profile or registration ID already exists")
     })
@@ -157,7 +157,7 @@ public class AdminController {
         if (result.hasErrors()) { 
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        TechnicalResponsibleResponseDto response = adminService.assignTechnicalResponsibleProfile(dto);
+        TechnicalResponsibleResponseDTO response = adminService.assignTechnicalResponsibleProfile(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }  
     

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Caio Alves, Giovane Neves
  */
 
-public record RequestResponseDto (
+public record RequestResponseDTO (
     @JsonProperty("id")
     UUID id,
 

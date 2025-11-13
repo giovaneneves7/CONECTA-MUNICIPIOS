@@ -2,6 +2,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRejectionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRequestDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.document.domain.service.IDocumentService;
@@ -159,7 +160,7 @@ public class DocumentController {
     @PutMapping("/document/{documentId}")
     public ResponseEntity<?> updateDocument(
             @PathVariable UUID documentId,
-            @RequestBody @Valid DocumentRequestDTO documentDto,
+            @RequestBody @Valid DocumentUpdateRequestDTO documentDto,
             BindingResult result) {
 
         if (result.hasErrors()) {

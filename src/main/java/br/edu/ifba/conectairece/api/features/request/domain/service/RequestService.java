@@ -19,6 +19,7 @@ import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.Munic
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -91,7 +92,7 @@ public class RequestService implements IRequestService {
      * @return DTO with updated request information
      */
     @Override
-     public RequestResponseDto update(UUID id, RequestPostRequestDto dto) {
+     public RequestResponseDto update(UUID id, RequestUpdateRequestDTO dto) {
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 

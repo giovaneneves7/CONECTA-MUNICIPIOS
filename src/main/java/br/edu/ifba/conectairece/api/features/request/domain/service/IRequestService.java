@@ -5,6 +5,7 @@ import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.Moni
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import java.util.List;
@@ -22,7 +23,7 @@ import org.springframework.data.domain.Pageable;
 public interface IRequestService {
   RequestResponseDto save(RequestPostRequestDto dto);
 
-  RequestResponseDto update(UUID id, RequestPostRequestDto dto);
+  RequestResponseDto update(UUID id, RequestUpdateRequestDTO dto);
 
   List<RequestResponseDto> findAll();
 

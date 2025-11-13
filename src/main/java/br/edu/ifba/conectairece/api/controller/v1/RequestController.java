@@ -7,6 +7,7 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.response.Docume
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDto;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.service.IRequestService;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -148,7 +149,7 @@ public class RequestController {
   @PutMapping("request/{id}")
   public ResponseEntity<?> update(
     @Valid @PathVariable UUID id,
-    @RequestBody RequestPostRequestDto dto,
+    @RequestBody RequestUpdateRequestDTO dto,
     BindingResult result
   ) {
     return result.hasErrors()

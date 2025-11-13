@@ -3,7 +3,6 @@ package br.edu.ifba.conectairece.api.features.monitoring.domain.service;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringRequestDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.request.MonitoringUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
-import br.edu.ifba.conectairece.api.features.monitoring.domain.model.Monitoring;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import org.springframework.data.domain.Pageable;
 

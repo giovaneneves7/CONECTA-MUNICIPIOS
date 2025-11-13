@@ -2,7 +2,6 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.step.domain.dto.request.StepRequestDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepFullDataResponseDTO;
-import br.edu.ifba.conectairece.api.features.step.domain.dto.response.StepResponseDTO;
 import br.edu.ifba.conectairece.api.features.step.domain.model.Step;
 import br.edu.ifba.conectairece.api.features.step.domain.service.IStepService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -21,7 +20,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Giovane Neves

@@ -1,12 +1,8 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDto;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.request.FlowStepRequestDTO;
 import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowFullDataResponseDTO;
-import br.edu.ifba.conectairece.api.features.flow.domain.dto.response.FlowResponseDTO;
-import br.edu.ifba.conectairece.api.features.flow.domain.model.Flow;
-import br.edu.ifba.conectairece.api.features.flow.domain.model.FlowStep;
 import br.edu.ifba.conectairece.api.features.flow.domain.service.IFlowService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
@@ -26,7 +22,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 

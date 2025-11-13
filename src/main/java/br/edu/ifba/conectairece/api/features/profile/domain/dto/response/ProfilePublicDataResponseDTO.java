@@ -2,7 +2,6 @@ package br.edu.ifba.conectairece.api.features.profile.domain.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.UUID;
 

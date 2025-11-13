@@ -2,8 +2,16 @@ package br.edu.ifba.conectairece.api.features.comment.domain.model;
 
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Represents an official comment, note, or justification associated with a Requirement.

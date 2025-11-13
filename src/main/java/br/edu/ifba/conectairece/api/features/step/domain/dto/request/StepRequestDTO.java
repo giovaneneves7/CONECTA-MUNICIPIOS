@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * @author Giovane Neevs
+ * @author Giovane Neves
  *
  */
 public record StepRequestDTO(

@@ -6,7 +6,6 @@ import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

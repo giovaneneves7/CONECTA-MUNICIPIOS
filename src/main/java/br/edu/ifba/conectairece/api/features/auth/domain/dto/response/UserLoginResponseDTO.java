@@ -1,8 +1,6 @@
 package br.edu.ifba.conectairece.api.features.auth.domain.dto.response;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
-import br.edu.ifba.conectairece.api.features.auth.domain.model.Role;
-import br.edu.ifba.conectairece.api.features.person.domain.dto.response.PersonResponseDTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

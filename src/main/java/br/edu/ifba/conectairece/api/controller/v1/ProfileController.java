@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDto;
 import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestChangeProfileType;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestUpdateChangeProfileTypeDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentType;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
@@ -138,7 +139,7 @@ public class ProfileController {
     })
     @PatchMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateActiveTypeProfile(
-            @RequestBody @Valid ProfileRequestChangeProfileType dto,
+            @RequestBody @Valid ProfileRequestUpdateChangeProfileTypeDTO dto,
             BindingResult result
     ) {
         return result.hasErrors()

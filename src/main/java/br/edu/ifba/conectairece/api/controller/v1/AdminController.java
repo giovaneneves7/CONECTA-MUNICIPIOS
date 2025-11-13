@@ -3,6 +3,7 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileRequestDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
@@ -78,7 +79,7 @@ public class AdminController {
     })
     @PutMapping(path = "/admin-profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<?> update (
-            @RequestBody @Valid AdminProfileRequestDTO dto,
+            @RequestBody @Valid AdminProfileUpdateRequestDTO dto,
             BindingResult result
     ) {
         if (result.hasErrors()) {

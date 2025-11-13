@@ -1,6 +1,7 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
 import br.edu.ifba.conectairece.api.features.evaluationItem.domain.dto.request.EvaluationItemRequestDTO;
+import br.edu.ifba.conectairece.api.features.evaluationItem.domain.dto.request.EvaluationItemUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.evaluationItem.domain.dto.response.EvaluationItemResponseDTO;
 import br.edu.ifba.conectairece.api.features.evaluationItem.domain.model.EvaluationItem;
 import br.edu.ifba.conectairece.api.features.evaluationItem.domain.service.IEvaluationItemService;
@@ -113,7 +114,7 @@ public class EvaluationItemController {
     @PutMapping(value = "/evaluation-item/{evaluationItemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update (
             @PathVariable("evaluationItemId") UUID id,
-            @Valid @RequestBody EvaluationItemRequestDTO dto,
+            @Valid @RequestBody EvaluationItemUpdateRequestDTO dto,
             BindingResult result
     ) {
         if (result.hasErrors()) {

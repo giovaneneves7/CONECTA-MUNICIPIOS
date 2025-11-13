@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementRequestDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.IConstructionLicenseRequirementService;
@@ -109,7 +110,7 @@ public class ConstructionLicenseRequirementController {
         @PutMapping(value = "/construction-license-requirement/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<?> update(
                         @PathVariable @NotNull Long id,
-                        @RequestBody @Valid ConstructionLicenseRequirementRequestDTO dto, BindingResult result) {
+                        @RequestBody @Valid ConstructionLicenseRequirementUpdateRequestDTO dto, BindingResult result) {
                 return result.hasErrors()
                                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                                 .body(ResultError.getResultErrors(result))

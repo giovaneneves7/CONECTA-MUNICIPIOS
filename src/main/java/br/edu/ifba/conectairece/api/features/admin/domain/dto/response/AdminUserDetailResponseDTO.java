@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * including core details and a list of all associated profiles.
  * @author Caio Alves
  */
-public record AdminUserDetailResponseDTO_TEMP(
+public record AdminUserDetailResponseDTO(
     @JsonProperty("content") 
     AdminUserContentResponseDTO content,
     @JsonProperty("profiles") 

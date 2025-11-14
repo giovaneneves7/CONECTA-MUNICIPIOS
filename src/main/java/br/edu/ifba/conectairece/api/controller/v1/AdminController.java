@@ -5,14 +5,14 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssin
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
-import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.service.IAdminService;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
@@ -145,7 +145,7 @@ public class AdminController {
                description = "Allows an administrator to create and assign a Technical Responsible profile to a specific user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Technical Responsible profile assigned successfully",
-                         content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO_TEMP.class))),
+                         content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "409", description = "User already has this profile or registration ID already exists")
     })
@@ -157,7 +157,7 @@ public class AdminController {
         if (result.hasErrors()) { 
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        TechnicalResponsibleResponseDTO_TEMP response = adminService.assignTechnicalResponsibleProfile(dto);
+        TechnicalResponsibleResponseDTO response = adminService.assignTechnicalResponsibleProfile(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }  
     
@@ -280,12 +280,12 @@ public class AdminController {
                  content = @Content(schema = @Schema(implementation = Page.class))),
         })
      @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<AdminUserDetailResponseDTO_TEMP>> getAllUserDetails(
+    public ResponseEntity<Page<AdminUserDetailResponseDTO>> getAllUserDetails(
             @ParameterObject 
             @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
-        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findAllUserDetails(pageable);
+        Page<AdminUserDetailResponseDTO> userDetailsPage = adminService.findAllUserDetails(pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -305,7 +305,7 @@ public class AdminController {
             @ApiResponse(responseCode = "400", description = "Missing or invalid 'roleName' parameter") 
         })
         @GetMapping(value = "/users/role-name", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<AdminUserDetailResponseDTO_TEMP>> getUserDetailsByRole(
+    public ResponseEntity<Page<AdminUserDetailResponseDTO>> getUserDetailsByRole(
             @RequestParam String roleName, 
             @ParameterObject
             @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
@@ -314,7 +314,7 @@ public class AdminController {
         if (roleName == null || roleName.isBlank()) {
              return ResponseEntity.badRequest().build();
         }
-        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByRoleName(roleName, pageable);
+        Page<AdminUserDetailResponseDTO> userDetailsPage = adminService.findUserDetailsByRoleName(roleName, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -351,7 +351,7 @@ public class AdminController {
                           java.util.Arrays.toString(UserStatus.values()));
         }
 
-        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByStatus(userStatusEnum, pageable);
+        Page<AdminUserDetailResponseDTO> userDetailsPage = adminService.findUserDetailsByStatus(userStatusEnum, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -380,7 +380,7 @@ public class AdminController {
             return ResponseEntity.badRequest().body("The 'query' parameter cannot be empty.");
         }
         
-        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByNameOrCpf(query, pageable);
+        Page<AdminUserDetailResponseDTO> userDetailsPage = adminService.findUserDetailsByNameOrCpf(query, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -420,7 +420,7 @@ public class AdminController {
                     .body("Invalid status value. Must be one of: " + 
                           java.util.Arrays.toString(UserStatus.values()));
         }
-        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByRoleNameAndStatus(roleName, userStatusEnum, pageable);
+        Page<AdminUserDetailResponseDTO> userDetailsPage = adminService.findUserDetailsByRoleNameAndStatus(roleName, userStatusEnum, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 }

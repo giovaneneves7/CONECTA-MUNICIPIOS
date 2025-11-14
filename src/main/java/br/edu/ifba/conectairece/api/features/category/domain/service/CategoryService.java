@@ -10,7 +10,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.features.category.domain.repository.ICategoryRepository;
@@ -46,7 +46,7 @@ public class CategoryService implements ICategoryService {
      @Override
      @Transactional
      @CacheEvict(value = "categories", allEntries = true)
-     public CategoryResponseDTO save(CategoryRequestDTO_TEMP dto) {
+     public CategoryResponseDTO save(CategoryRequestDTO dto) {
         if (categoryRepository.findByName(dto.name()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }

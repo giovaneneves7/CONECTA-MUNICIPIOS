@@ -12,7 +12,7 @@ import java.util.UUID;
  * Used when updating an existing request via PUT/PATCH, providing protocol number,
  * estimated completion date, type, notes, and the ID of the related municipal service.
  * <p>
- * This DTO mirrors the {@link RequestPostRequestDTO_TEMP} to ensure
+ * This DTO mirrors the {@link RequestPostRequestDTO} to ensure
  * compatibility with the service layer and validation.
  *
  * @author Andesson Reis 

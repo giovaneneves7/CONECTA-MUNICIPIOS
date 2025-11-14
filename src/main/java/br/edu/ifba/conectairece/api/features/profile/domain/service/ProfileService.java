@@ -10,7 +10,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.Profile
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentTypeDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
@@ -113,10 +113,10 @@ public class ProfileService implements IProfileService {
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
     @Override
-    public Page<RequestResponseDTO_TEMP> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
+    public Page<RequestResponseDTO> findAllRequestsByProfileId(UUID userId, Pageable pageable) {
 
         return this.requestRepository.findAllByProfileId(userId, pageable)
-                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO_TEMP.class));
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO.class));
 
     }
 

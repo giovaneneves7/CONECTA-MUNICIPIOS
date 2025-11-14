@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
  * @author Caio Alves
  */
 
-public record RequestPostRequestDTO_TEMP (
+public record RequestPostRequestDTO (
     @JsonProperty("protocolNumber")
     String protocolNumber,
 

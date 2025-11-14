@@ -14,8 +14,8 @@ import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.P
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.IPublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.requirement.domain.model.Requirement;
 import br.edu.ifba.conectairece.api.features.requirement.domain.repository.IRequirementRepository;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDTO_TEMP;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -317,7 +317,7 @@ public class DocumentService implements IDocumentService {
     @Override
     @Transactional
     public DocumentDetailResponseDTO approveDocumentByTechnicalResponsible(
-            TechnicalResponsibleApproveDocumentRequestDTO_TEMP dto) {
+            TechnicalResponsibleApproveDocumentRequestDTO dto) {
         Document document = findDocumentEntityById(dto.documentId());
 
         validateTechnicalResponsibleForCLR(document, dto.registrationId());
@@ -349,7 +349,7 @@ public class DocumentService implements IDocumentService {
     @Override
     @Transactional
     public DocumentDetailResponseDTO rejectDocumentByTechnicalResponsible(
-            TechnicalResponsibleRejectDocumentRequestDTO_TEMP dto) {
+            TechnicalResponsibleRejectDocumentRequestDTO dto) {
         Document document = findDocumentEntityById(dto.documentId());
 
         validateTechnicalResponsibleForCLR(document, dto.registrationId());

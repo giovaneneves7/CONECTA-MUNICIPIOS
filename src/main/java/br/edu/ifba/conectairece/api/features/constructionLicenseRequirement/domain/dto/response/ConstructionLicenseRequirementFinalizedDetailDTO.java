@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 
 /**
  * DTO representing finalized construction license requirement details,
@@ -43,7 +43,7 @@ public record ConstructionLicenseRequirementFinalizedDetailDTO(
         LocalDateTime createdAt,
         AssociationStatus technicalResponsibleStatus,
         ProfilePublicDataResponseDTO solicitante,
-        TechnicalResponsibleResponseDTO_TEMP technicalResponsible,
+        TechnicalResponsibleResponseDTO technicalResponsible,
         String owner,
         String phone,
         String cpfCnpj,

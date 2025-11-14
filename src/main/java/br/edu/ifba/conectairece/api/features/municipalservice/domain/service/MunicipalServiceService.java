@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.features.category.domain.repository.ICategoryRepository;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO_TEMP;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -46,7 +46,7 @@ public class MunicipalServiceService implements IMunicipalServiceService {
      */
 
     @Override
-    public MunicipalServiceResponseDTO_TEMP save(MunicipalServiceRequestDTO_TEMP dto) {
+    public MunicipalServiceResponseDTO save(MunicipalServiceRequestDTO dto) {
         MunicipalService service = new MunicipalService();
         service.setName(dto.name());
         service.setDescription(dto.description());
@@ -66,7 +66,7 @@ public class MunicipalServiceService implements IMunicipalServiceService {
                 .map(cat -> new CategoryResponseDTO(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
                 .toList();
 
-        return new MunicipalServiceResponseDTO_TEMP(
+        return new MunicipalServiceResponseDTO(
                 saved.getId(),
                 saved.getName(),
                 saved.getDescription(),
@@ -81,13 +81,13 @@ public class MunicipalServiceService implements IMunicipalServiceService {
      */
 
     @Override
-    public List<MunicipalServiceResponseDTO_TEMP> findAll() {
+    public List<MunicipalServiceResponseDTO> findAll() {
         List<MunicipalService> services = municipalServiceRepository.findAll();
         return services.stream().map(service -> {
             List<CategoryResponseDTO> categoriesDto = service.getCategories().stream()
                     .map(cat -> new CategoryResponseDTO(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))
                     .toList();
-            return new MunicipalServiceResponseDTO_TEMP(
+            return new MunicipalServiceResponseDTO(
                     service.getId(),
                     service.getName(),
                     service.getDescription(),
@@ -103,11 +103,11 @@ public class MunicipalServiceService implements IMunicipalServiceService {
      * @return optional containing municipal service DTO if found
      */
     @Override
-    public MunicipalServiceResponseDTO_TEMP findById(Long id) {
+    public MunicipalServiceResponseDTO findById(Long id) {
        MunicipalService entity = municipalServiceRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        return objectMapperUtil.mapToRecord(entity, MunicipalServiceResponseDTO_TEMP.class);
+        return objectMapperUtil.mapToRecord(entity, MunicipalServiceResponseDTO.class);
         
     }
 

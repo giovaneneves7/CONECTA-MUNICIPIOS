@@ -14,7 +14,7 @@ import br.edu.ifba.conectairece.api.features.category.domain.dto.response.Catego
  * @author Caio Alves, Giovane Neves
  */
 
-public record MunicipalServiceResponseDTO_TEMP(
+public record MunicipalServiceResponseDTO(
     @JsonProperty("id")
     Long id,
 

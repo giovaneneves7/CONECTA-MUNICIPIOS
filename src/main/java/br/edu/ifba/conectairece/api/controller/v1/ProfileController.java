@@ -1,6 +1,6 @@
 package br.edu.ifba.conectairece.api.controller.v1;
 
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO;
 import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.PermissionResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestUpdateChangeProfileTypeDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
@@ -104,7 +104,7 @@ public class ProfileController {
      * @return
      */
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO_TEMP.class))),
+            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping(path = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -121,7 +121,7 @@ public class ProfileController {
      * @return
      */
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Request list found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO_TEMP.class))),
+            @ApiResponse(responseCode = "200", description = "Request list found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Request list not found")
     })
     @GetMapping(path = "/profile/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -17,8 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.repository.IMunicipalServiceRepository;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO_TEMP;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
@@ -62,7 +62,7 @@ public class RequestService implements IRequestService {
      * @return DTO with saved request information
      */
     @Override
-    public RequestResponseDTO_TEMP save(final RequestPostRequestDTO_TEMP dto){
+    public RequestResponseDTO save(final RequestPostRequestDTO dto){
 
         MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
         .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
@@ -81,7 +81,7 @@ public class RequestService implements IRequestService {
 
         eventPublisher.publishEvent(new RequestCreatedEvent(saved));
 
-        return objectMapperUtil.mapToRecord(request, RequestResponseDTO_TEMP.class);
+        return objectMapperUtil.mapToRecord(request, RequestResponseDTO.class);
     }
 
     /**
@@ -92,7 +92,7 @@ public class RequestService implements IRequestService {
      * @return DTO with updated request information
      */
     @Override
-     public RequestResponseDTO_TEMP update(UUID id, RequestUpdateRequestDTO dto) {
+     public RequestResponseDTO update(UUID id, RequestUpdateRequestDTO dto) {
         Request request = requestRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -106,7 +106,7 @@ public class RequestService implements IRequestService {
         request.setMunicipalService(service);
 
         requestRepository.save(request);
-        return objectMapperUtil.map(request, RequestResponseDTO_TEMP.class);
+        return objectMapperUtil.map(request, RequestResponseDTO.class);
     }
 
      /**
@@ -116,12 +116,12 @@ public class RequestService implements IRequestService {
      */
 
      @Override
-    public List<RequestResponseDTO_TEMP> findAll(){
+    public List<RequestResponseDTO> findAll(){
 
         List<Request> requests = requestRepository.findAll();
 
         return requests.stream()
-                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO_TEMP.class))
+                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO.class))
                 .toList();
 
     }
@@ -134,10 +134,10 @@ public class RequestService implements IRequestService {
      */
 
      @Override
-     public RequestResponseDTO_TEMP findById(final UUID id) {
+     public RequestResponseDTO findById(final UUID id) {
 
          return requestRepository.findById(id)
-                 .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO_TEMP.class))
+                 .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO.class))
                  .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
      }
@@ -181,17 +181,17 @@ public class RequestService implements IRequestService {
      * @author Caio Alves
      */
     @Override
-    public Page<RequestResponseDTO_TEMP> findByType(String type, Pageable pageable) {
+    public Page<RequestResponseDTO> findByType(String type, Pageable pageable) {
         Page<Request> requestPage = requestRepository.findByType(type, pageable);
-        return requestPage.map(request -> objectMapperUtil.mapToRecord(request, RequestResponseDTO_TEMP.class));
+        return requestPage.map(request -> objectMapperUtil.mapToRecord(request, RequestResponseDTO.class));
     }
 
     @Override @Transactional(readOnly = true)
-    public Page<RequestResponseDTO_TEMP> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable) {
+    public Page<RequestResponseDTO> findAllByStatusHistory_NewStatus(String statusHistoryNewStatus, Pageable pageable) {
         Page<Request> requestsPage = requestRepository.findAllByStatusHistory_NewStatus(statusHistoryNewStatus, pageable);
         return requestsPage.map(
                 request -> this.objectMapperUtil.mapToRecord(
-                        request, RequestResponseDTO_TEMP.class
+                        request, RequestResponseDTO.class
                 )
         );
     }

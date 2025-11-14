@@ -5,7 +5,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssin
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminProfileListResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserContentResponseDTO;
-import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.repository.IAdminProfileRepository;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
@@ -19,8 +19,8 @@ import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.res
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.IPublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.service.IPublicServantProfileService;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO_TEMP;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
@@ -150,8 +150,8 @@ public class AdminService implements IAdminService{
      * @author Caio Alves
      */
     @Override
-    public TechnicalResponsibleResponseDTO_TEMP assignTechnicalResponsibleProfile(AdminAssingnTechnicalResponsibleDTO dto) {
-        TechnicalResponsibleRequestDTO_TEMP requestDto = new TechnicalResponsibleRequestDTO_TEMP(
+    public TechnicalResponsibleResponseDTO assignTechnicalResponsibleProfile(AdminAssingnTechnicalResponsibleDTO dto) {
+        TechnicalResponsibleRequestDTO requestDto = new TechnicalResponsibleRequestDTO(
             dto.registrationId(),
             dto.responsibleType(),
             dto.imageUrl(),
@@ -278,7 +278,7 @@ public class AdminService implements IAdminService{
      * @author Caio Alves
      */
     @Override @Transactional
-    public Page<AdminUserDetailResponseDTO_TEMP> findAllUserDetails(Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO> findAllUserDetails(Pageable pageable) {
 
         Page<User> userPage = userRepository.findAll(pageable);
 
@@ -296,7 +296,7 @@ public class AdminService implements IAdminService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByRoleName(String roleName, Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleName(String roleName, Pageable pageable) {
 
         Page<User> userPage = userRepository.findByProfileRoleName(roleName, pageable);
 
@@ -313,7 +313,7 @@ public class AdminService implements IAdminService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByStatus(UserStatus status, Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO> findUserDetailsByStatus(UserStatus status, Pageable pageable) {
         Page<User> userPage = userRepository.findByStatus(status, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -328,7 +328,7 @@ public class AdminService implements IAdminService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByNameOrCpf(String term, Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO> findUserDetailsByNameOrCpf(String term, Pageable pageable) {
         Page<User> userPage = userRepository.findByFullNameOrCpfContaining(term, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -343,7 +343,7 @@ public class AdminService implements IAdminService{
      * @author Caio Alves 
      */
     @Override @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable){
+    public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable){
         Page<User> userPage = userRepository.findByProfileRoleNameAndStatus(roleName, status, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -354,7 +354,7 @@ public class AdminService implements IAdminService{
      * @return The corresponding AdminUserDetailResponseDto.
      * @Author Caio Alves
      */
-    private AdminUserDetailResponseDTO_TEMP mapUserToAdminDetailDto(User user) {
+    private AdminUserDetailResponseDTO mapUserToAdminDetailDto(User user) {
         Person person = user.getPerson();
         Profile activeProfile = user.getActiveProfile();
 
@@ -406,6 +406,6 @@ public class AdminService implements IAdminService{
                 })
                 .collect(Collectors.toList());
 
-        return new AdminUserDetailResponseDTO_TEMP(contentDto, profileListDto);
+        return new AdminUserDetailResponseDTO(contentDto, profileListDto);
     }
 }

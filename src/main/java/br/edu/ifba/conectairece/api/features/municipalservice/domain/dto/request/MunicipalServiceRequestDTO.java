@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
  *
  * @author Caio Alves
  */
-public record MunicipalServiceRequestDTO_TEMP (
+public record MunicipalServiceRequestDTO (
     @JsonProperty("name")
     @NotNull(message = "Name is mandatory.")
     @NotBlank(message = "Name is cannot be blank.")

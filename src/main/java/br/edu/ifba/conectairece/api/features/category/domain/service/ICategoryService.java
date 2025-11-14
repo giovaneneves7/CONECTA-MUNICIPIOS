@@ -1,6 +1,6 @@
 package br.edu.ifba.conectairece.api.features.category.domain.service;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
@@ -21,11 +21,11 @@ public interface ICategoryService {
     /**
      * Saves a new category in the database.
      *
-     * @param dto the {@link CategoryRequestDTO_TEMP} containing category data
+     * @param dto the {@link CategoryRequestDTO} containing category data
      * @return the {@link CategoryResponseDTO} representing the saved category
      * @throws BusinessException if a category with the same name already exists
      */
-    CategoryResponseDTO save(CategoryRequestDTO_TEMP dto);
+    CategoryResponseDTO save(CategoryRequestDTO dto);
 
     /**
      * Retrieves all categories from the database.

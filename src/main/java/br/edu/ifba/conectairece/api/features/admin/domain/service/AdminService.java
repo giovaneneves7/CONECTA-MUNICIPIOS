@@ -5,7 +5,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssin
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminProfileListResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserContentResponseDTO;
-import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.repository.IAdminProfileRepository;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
@@ -278,7 +278,7 @@ public class AdminService implements IAdminService{
      * @author Caio Alves
      */
     @Override @Transactional
-    public Page<AdminUserDetailResponseDTO> findAllUserDetails(Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO_TEMP> findAllUserDetails(Pageable pageable) {
 
         Page<User> userPage = userRepository.findAll(pageable);
 
@@ -296,7 +296,7 @@ public class AdminService implements IAdminService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleName(String roleName, Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByRoleName(String roleName, Pageable pageable) {
 
         Page<User> userPage = userRepository.findByProfileRoleName(roleName, pageable);
 
@@ -313,7 +313,7 @@ public class AdminService implements IAdminService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO> findUserDetailsByStatus(UserStatus status, Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByStatus(UserStatus status, Pageable pageable) {
         Page<User> userPage = userRepository.findByStatus(status, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -328,7 +328,7 @@ public class AdminService implements IAdminService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO> findUserDetailsByNameOrCpf(String term, Pageable pageable) {
+    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByNameOrCpf(String term, Pageable pageable) {
         Page<User> userPage = userRepository.findByFullNameOrCpfContaining(term, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -343,7 +343,7 @@ public class AdminService implements IAdminService{
      * @author Caio Alves 
      */
     @Override @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable){
+    public Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable){
         Page<User> userPage = userRepository.findByProfileRoleNameAndStatus(roleName, status, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -354,7 +354,7 @@ public class AdminService implements IAdminService{
      * @return The corresponding AdminUserDetailResponseDto.
      * @Author Caio Alves
      */
-    private AdminUserDetailResponseDTO mapUserToAdminDetailDto(User user) {
+    private AdminUserDetailResponseDTO_TEMP mapUserToAdminDetailDto(User user) {
         Person person = user.getPerson();
         Profile activeProfile = user.getActiveProfile();
 
@@ -406,6 +406,6 @@ public class AdminService implements IAdminService{
                 })
                 .collect(Collectors.toList());
 
-        return new AdminUserDetailResponseDTO(contentDto, profileListDto);
+        return new AdminUserDetailResponseDTO_TEMP(contentDto, profileListDto);
     }
 }

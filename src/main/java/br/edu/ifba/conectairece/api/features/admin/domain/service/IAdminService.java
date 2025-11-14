@@ -8,7 +8,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +31,7 @@ public interface IAdminService {
      * @return A DTO with the details of the newly created Technical Responsible profile.
      * @author Caio Alves
      */
-    TechnicalResponsibleResponseDTO assignTechnicalResponsibleProfile(AdminAssingnTechnicalResponsibleDTO dto);
+    TechnicalResponsibleResponseDTO_TEMP assignTechnicalResponsibleProfile(AdminAssingnTechnicalResponsibleDTO dto);
 
     /**
      * Assigns a Public Servant profile to a specified user.

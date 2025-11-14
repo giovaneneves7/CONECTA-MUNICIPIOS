@@ -6,7 +6,7 @@ import java.util.List;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.enums.AssociationStatus;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfilePublicDataResponseDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record ConstructionLicenseRequirementDetailDTO(
@@ -15,7 +15,7 @@ public record ConstructionLicenseRequirementDetailDTO(
     LocalDateTime createdAt,
     AssociationStatus technicalResponsibleStatus,
     ProfilePublicDataResponseDTO solicitante,
-    TechnicalResponsibleResponseDTO technicalResponsible,
+    TechnicalResponsibleResponseDTO_TEMP technicalResponsible,
     String owner,
     String phone,
     String cpfCnpj,

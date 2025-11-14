@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import lombok.RequiredArgsConstructor;
 
@@ -56,7 +56,7 @@ public class CategoryController {
      * @return Response with created category data.
      */
     @PostMapping(path ="/category")
-    public ResponseEntity<?> create(@RequestBody @Valid CategoryRequestDTO dto, BindingResult result) {
+    public ResponseEntity<?> create(@RequestBody @Valid CategoryRequestDTO_TEMP dto, BindingResult result) {
         return result.hasErrors()
             ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
             : ResponseEntity.ok(categoryService.save(dto));

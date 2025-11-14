@@ -6,8 +6,8 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.response.Docume
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantApproveDocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantRejectDocumentRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDTO_TEMP;
 
 import java.util.List;
 import java.util.UUID;
@@ -165,7 +165,7 @@ public interface IDocumentService {
      * @param dto DTO containing documentId and registrationId of the Technical Responsible.
      * @return DocumentDetailResponseDTO with updated document status.
      */
-    DocumentDetailResponseDTO approveDocumentByTechnicalResponsible(TechnicalResponsibleApproveDocumentRequestDTO dto);
+    DocumentDetailResponseDTO approveDocumentByTechnicalResponsible(TechnicalResponsibleApproveDocumentRequestDTO_TEMP dto);
 
     /**
      * Reject a document as a Technical Responsible.
@@ -173,6 +173,6 @@ public interface IDocumentService {
      * @param dto DTO containing documentId, registrationId, and justification.
      * @return DocumentDetailResponseDTO with updated document status.
      */
-    DocumentDetailResponseDTO rejectDocumentByTechnicalResponsible(TechnicalResponsibleRejectDocumentRequestDTO dto);
+    DocumentDetailResponseDTO rejectDocumentByTechnicalResponsible(TechnicalResponsibleRejectDocumentRequestDTO_TEMP dto);
 
 }

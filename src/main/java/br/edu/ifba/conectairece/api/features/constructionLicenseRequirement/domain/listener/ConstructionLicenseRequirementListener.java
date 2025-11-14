@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.event.ConstructionLicenseRequirementCreatedEvent;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.model.ConstructionLicenseRequirement;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDto;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.request.domain.service.IRequestService;
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ public class ConstructionLicenseRequirementListener {
         public void handleConstructionLicenseRequirementCreated(ConstructionLicenseRequirementCreatedEvent event) {
         ConstructionLicenseRequirement requirement = event.getRequirement();
 
-        RequestPostRequestDto requestDto = new RequestPostRequestDto(
+        RequestPostRequestDTO_TEMP requestDto = new RequestPostRequestDTO_TEMP(
             requirement.getId().toString(),    
                             //    Check logic for estimating work completion
             requirement.getEndDate(),  

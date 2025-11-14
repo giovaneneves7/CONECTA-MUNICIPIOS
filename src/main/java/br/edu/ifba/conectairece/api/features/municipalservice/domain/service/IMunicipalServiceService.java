@@ -2,8 +2,8 @@ package br.edu.ifba.conectairece.api.features.municipalservice.domain.service;
 
 import java.util.List;
 
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
 
 /**
@@ -19,14 +19,14 @@ public interface IMunicipalServiceService {
      * @param dto request data containing service details and category IDs
      * @return DTO with saved municipal service information
      */
-    MunicipalServiceResponseDTO save(MunicipalServiceRequestDTO dto);
+    MunicipalServiceResponseDTO_TEMP save(MunicipalServiceRequestDTO_TEMP dto);
 
     /**
      * Retrieves all municipal services.
      *
      * @return list of municipal service DTOs
      */
-    List<MunicipalServiceResponseDTO> findAll();
+    List<MunicipalServiceResponseDTO_TEMP> findAll();
 
     /**
      * Finds a municipal service by its identifier.
@@ -34,7 +34,7 @@ public interface IMunicipalServiceService {
      * @param id service ID
      * @return the found municipal service entity
      */
-    MunicipalServiceResponseDTO findById(Long id);
+    MunicipalServiceResponseDTO_TEMP findById(Long id);
 
     /**
      * Deletes a municipal service by its identifier.

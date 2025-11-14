@@ -6,7 +6,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.Profile
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO_TEMP;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +49,7 @@ public interface IProfileService {
      * @return A pageable list of requests linked to the user id passed as a parameter
      */
     // No seu arquivo de interface de serviço
-    Page<RequestResponseDTO> findAllRequestsByProfileId(UUID profileId, Pageable pageable);
+    Page<RequestResponseDTO_TEMP> findAllRequestsByProfileId(UUID profileId, Pageable pageable);
 
     /**
      * Changes the active profile type for a specific user.

@@ -25,7 +25,7 @@ import jakarta.validation.constraints.NotNull;
  *
  * Validation:
  * - Mandatory fields are annotated with {@link NotNull} and {@link NotBlank}.
- * - Nested validation is applied to {@link TechnicalResponsibleRequestDTO} and {@link DocumentRequestDTO}.
+ * - Nested validation is applied to {@link TechnicalResponsibleRequestDTO_TEMP} and {@link DocumentRequestDTO}.
  *
  * Relationships:
  * - Linked to a {@link MunicipalService} through its identifier.

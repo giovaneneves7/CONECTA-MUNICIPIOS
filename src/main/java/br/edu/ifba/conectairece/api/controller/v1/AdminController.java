@@ -12,7 +12,7 @@ import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataRe
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.request.PublicServantCreationRequestDTO;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.response.PublicServantRegisterResponseDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import br.edu.ifba.conectairece.api.infraestructure.util.dto.PageableDTO;
@@ -145,7 +145,7 @@ public class AdminController {
                description = "Allows an administrator to create and assign a Technical Responsible profile to a specific user.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Technical Responsible profile assigned successfully",
-                         content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO.class))),
+                         content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO_TEMP.class))),
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "409", description = "User already has this profile or registration ID already exists")
     })
@@ -157,7 +157,7 @@ public class AdminController {
         if (result.hasErrors()) { 
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        TechnicalResponsibleResponseDTO response = adminService.assignTechnicalResponsibleProfile(dto);
+        TechnicalResponsibleResponseDTO_TEMP response = adminService.assignTechnicalResponsibleProfile(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }  
     

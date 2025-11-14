@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Caio Alves
  */
 
-public record TechnicalResponsibleResponseDTO(
+public record TechnicalResponsibleResponseDTO_TEMP(
     @JsonProperty(value = "id")
     UUID id,
 

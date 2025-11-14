@@ -19,8 +19,8 @@ import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.dto.res
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.model.PublicServantProfile;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.repository.IPublicServantProfileRepository;
 import br.edu.ifba.conectairece.api.features.publicservantprofile.domain.service.IPublicServantProfileService;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.repository.ITechnicalResponsibleRepository;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
@@ -150,8 +150,8 @@ public class AdminService implements IAdminService{
      * @author Caio Alves
      */
     @Override
-    public TechnicalResponsibleResponseDTO assignTechnicalResponsibleProfile(AdminAssingnTechnicalResponsibleDTO dto) {
-        TechnicalResponsibleRequestDTO requestDto = new TechnicalResponsibleRequestDTO(
+    public TechnicalResponsibleResponseDTO_TEMP assignTechnicalResponsibleProfile(AdminAssingnTechnicalResponsibleDTO dto) {
+        TechnicalResponsibleRequestDTO_TEMP requestDto = new TechnicalResponsibleRequestDTO_TEMP(
             dto.registrationId(),
             dto.responsibleType(),
             dto.imageUrl(),

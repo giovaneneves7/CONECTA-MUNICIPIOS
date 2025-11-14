@@ -22,7 +22,7 @@ import jakarta.validation.constraints.NotNull;
  * 
  * Author: Andesson Reis
  */
-public record TechnicalResponsibleRejectDocumentRequestDTO(
+public record TechnicalResponsibleRejectDocumentRequestDTO_TEMP(
         @NotNull UUID documentId,
         @NotNull String registrationId,
         @NotBlank String justification

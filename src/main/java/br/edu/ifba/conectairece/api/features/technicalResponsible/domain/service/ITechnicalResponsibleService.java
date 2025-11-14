@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
 
 /**
@@ -16,13 +16,13 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.T
  */
 public interface ITechnicalResponsibleService {
 
-    TechnicalResponsibleResponseDTO save(TechnicalResponsibleRequestDTO dto);
+    TechnicalResponsibleResponseDTO_TEMP save(TechnicalResponsibleRequestDTO_TEMP dto);
 
-    List<TechnicalResponsibleResponseDTO> findAll();
+    List<TechnicalResponsibleResponseDTO_TEMP> findAll();
 
-    Optional<TechnicalResponsibleResponseDTO> findById(UUID id);
+    Optional<TechnicalResponsibleResponseDTO_TEMP> findById(UUID id);
 
     void delete(UUID id);
 
-    Optional<TechnicalResponsibleResponseDTO> findByRegistrationId(String registrationId);
+    Optional<TechnicalResponsibleResponseDTO_TEMP> findByRegistrationId(String registrationId);
 }

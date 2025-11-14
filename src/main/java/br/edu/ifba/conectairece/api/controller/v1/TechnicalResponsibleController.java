@@ -21,10 +21,10 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentCorrectionSuggestionDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.service.IDocumentService;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
-import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleApproveDocumentRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,19 +65,19 @@ public class TechnicalResponsibleController {
      */
     @Operation(summary = "Create new Technical Responsible", description = "Creates and persists a new technical responsible in the system.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Technical Responsible successfully created", content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Technical Responsible successfully created", content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO_TEMP.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body"),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
 
     @PostMapping(path = "/technical-responsible")
-    public ResponseEntity<?> create(@RequestBody @Valid TechnicalResponsibleRequestDTO dto, BindingResult result) {
+    public ResponseEntity<?> create(@RequestBody @Valid TechnicalResponsibleRequestDTO_TEMP dto, BindingResult result) {
 
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result));
         }
 
-        TechnicalResponsibleResponseDTO responseDto = service.save(dto);
+        TechnicalResponsibleResponseDTO_TEMP responseDto = service.save(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
@@ -90,7 +90,7 @@ public class TechnicalResponsibleController {
      */
     @Operation(summary = "List all Technical Responsibles", description = "Retrieves a list of all registered technical responsibles.")
     @GetMapping
-    public ResponseEntity<List<TechnicalResponsibleResponseDTO>> getAll() {
+    public ResponseEntity<List<TechnicalResponsibleResponseDTO_TEMP>> getAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
@@ -163,7 +163,7 @@ public class TechnicalResponsibleController {
      */
     @Operation(summary = "Retrieve a Technical Responsible by Registration ID", description = "Fetches details of a technical responsible by its unique registration ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Technical Responsible found", content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "Technical Responsible found", content = @Content(schema = @Schema(implementation = TechnicalResponsibleResponseDTO_TEMP.class))),
             @ApiResponse(responseCode = "404", description = "Technical Responsible not found with the given registration ID")
     })
     @GetMapping("technical-responsible/{registrationId}")
@@ -271,7 +271,7 @@ public class TechnicalResponsibleController {
     })
     @PostMapping("/documents/approve-review")
     public ResponseEntity<?> approveDocumentByTechnicalResponsible(
-            @RequestBody @Valid TechnicalResponsibleApproveDocumentRequestDTO dto,
+            @RequestBody @Valid TechnicalResponsibleApproveDocumentRequestDTO_TEMP dto,
             BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -306,7 +306,7 @@ public class TechnicalResponsibleController {
     })
     @PostMapping("/documents/reject-review")
     public ResponseEntity<?> rejectDocumentByTechnicalResponsible(
-            @RequestBody @Valid TechnicalResponsibleRejectDocumentRequestDTO dto,
+            @RequestBody @Valid TechnicalResponsibleRejectDocumentRequestDTO_TEMP dto,
             BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)

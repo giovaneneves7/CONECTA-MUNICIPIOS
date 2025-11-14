@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO;
-import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.IMunicipalServiceService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,12 +53,12 @@ public class MunicipalServiceController {
             description = "Creates and persists a new municipal service in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Municipal service successfully created",
-                    content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO_TEMP.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body"),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid")
     })
     @PostMapping(path = "/municipal-service", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@RequestBody MunicipalServiceRequestDTO dto, BindingResult result){
+    public ResponseEntity<?> create(@RequestBody MunicipalServiceRequestDTO_TEMP dto, BindingResult result){
     
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResultError.getResultErrors(result))
@@ -75,10 +75,10 @@ public class MunicipalServiceController {
             description = "Retrieves a list of all registered municipal services.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of municipal services retrieved",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))))
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = MunicipalServiceResponseDTO_TEMP.class))))
     })
     @GetMapping
-    public ResponseEntity<List<MunicipalServiceResponseDTO>> getAll() {
+    public ResponseEntity<List<MunicipalServiceResponseDTO_TEMP>> getAll() {
         return ResponseEntity.ok(municipalServiceService.findAll());
     }
 
@@ -92,11 +92,11 @@ public class MunicipalServiceController {
             description = "Fetches details of a municipal service by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Municipal service found",
-                    content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO_TEMP.class))),
             @ApiResponse(responseCode = "404", description = "Municipal service not found")
     })
     @GetMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MunicipalServiceResponseDTO> getById(@Valid @PathVariable Long id) {
+    public ResponseEntity<MunicipalServiceResponseDTO_TEMP> getById(@Valid @PathVariable Long id) {
         return ResponseEntity.ok(municipalServiceService.findById(id));
                 
     }

@@ -5,7 +5,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssin
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
-import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDto;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO_TEMP;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.service.IAdminService;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
@@ -280,12 +280,12 @@ public class AdminController {
                  content = @Content(schema = @Schema(implementation = Page.class))),
         })
      @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<AdminUserDetailResponseDto>> getAllUserDetails(
+    public ResponseEntity<Page<AdminUserDetailResponseDTO_TEMP>> getAllUserDetails(
             @ParameterObject 
             @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
-        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findAllUserDetails(pageable);
+        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findAllUserDetails(pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -305,7 +305,7 @@ public class AdminController {
             @ApiResponse(responseCode = "400", description = "Missing or invalid 'roleName' parameter") 
         })
         @GetMapping(value = "/users/role-name", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<AdminUserDetailResponseDto>> getUserDetailsByRole(
+    public ResponseEntity<Page<AdminUserDetailResponseDTO_TEMP>> getUserDetailsByRole(
             @RequestParam String roleName, 
             @ParameterObject
             @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
@@ -314,7 +314,7 @@ public class AdminController {
         if (roleName == null || roleName.isBlank()) {
              return ResponseEntity.badRequest().build();
         }
-        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByRoleName(roleName, pageable);
+        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByRoleName(roleName, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -351,7 +351,7 @@ public class AdminController {
                           java.util.Arrays.toString(UserStatus.values()));
         }
 
-        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByStatus(userStatusEnum, pageable);
+        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByStatus(userStatusEnum, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -380,7 +380,7 @@ public class AdminController {
             return ResponseEntity.badRequest().body("The 'query' parameter cannot be empty.");
         }
         
-        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByNameOrCpf(query, pageable);
+        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByNameOrCpf(query, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 
@@ -420,7 +420,7 @@ public class AdminController {
                     .body("Invalid status value. Must be one of: " + 
                           java.util.Arrays.toString(UserStatus.values()));
         }
-        Page<AdminUserDetailResponseDto> userDetailsPage = adminService.findUserDetailsByRoleNameAndStatus(roleName, userStatusEnum, pageable);
+        Page<AdminUserDetailResponseDTO_TEMP> userDetailsPage = adminService.findUserDetailsByRoleNameAndStatus(roleName, userStatusEnum, pageable);
         return ResponseEntity.ok(userDetailsPage);
     }
 }

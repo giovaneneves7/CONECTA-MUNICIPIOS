@@ -3,7 +3,7 @@ package br.edu.ifba.conectairece.api.features.admin.domain.service;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssignPublicServantDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssingnTechnicalResponsibleDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
-import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO_TEMP;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataResponseDTO;
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
@@ -87,7 +87,7 @@ public interface IAdminService {
      * @return A Page containing AdminUserDetailResponseDTO objects for all users.
      * @author Caio Alves
      */
-    Page<AdminUserDetailResponseDTO_TEMP> findAllUserDetails(Pageable pageable);
+    Page<AdminUserDetailResponseDTO> findAllUserDetails(Pageable pageable);
 
     /**
      * Retrieves a paginated list of detailed information for users filtered by a specific role name
@@ -98,7 +98,7 @@ public interface IAdminService {
      * @return A Page containing AdminUserDetailResponseDTO objects for the filtered users.
      * @author Caio Alves
      */
-    Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByRoleName(String roleName, Pageable pageable);
+    Page<AdminUserDetailResponseDTO> findUserDetailsByRoleName(String roleName, Pageable pageable);
 
     /**
      * Retrieves a paginated list of detailed information for users filtered by a specific status.
@@ -108,7 +108,7 @@ public interface IAdminService {
      * @return A Page containing AdminUserDetailResponseDTO objects for the filtered users.
      * @author Caio Alves
      */
-    Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByStatus(UserStatus status, Pageable pageable);
+    Page<AdminUserDetailResponseDTO> findUserDetailsByStatus(UserStatus status, Pageable pageable);
 
    /**
      * Searches for users (with admin details) by name or CPF.
@@ -118,7 +118,7 @@ public interface IAdminService {
      * @return A Page of DTOs with the details of the found users.
      * @author Caio Alves
      */ 
-    Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByNameOrCpf(String term, Pageable pageable);
+    Page<AdminUserDetailResponseDTO> findUserDetailsByNameOrCpf(String term, Pageable pageable);
 
     /**
      * Searches for users (with admin details) by both role name and user status.
@@ -129,5 +129,5 @@ public interface IAdminService {
      * @return A Page of DTOs with the details of the found users.
      * @author Caio Alves 
      */
-    Page<AdminUserDetailResponseDTO_TEMP> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable);
+    Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable);
 }

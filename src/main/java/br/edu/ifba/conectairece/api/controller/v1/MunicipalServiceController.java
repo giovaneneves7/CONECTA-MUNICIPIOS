@@ -3,6 +3,9 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import java.util.List;
 
 import br.edu.ifba.conectairece.api.features.flow.domain.service.IFlowService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -78,8 +81,8 @@ public class MunicipalServiceController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))))
     })
     @GetMapping
-    public ResponseEntity<List<MunicipalServiceResponseDTO>> getAll() {
-        return ResponseEntity.ok(municipalServiceService.findAll());
+    public ResponseEntity<List<MunicipalServiceResponseDTO>> getAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(municipalServiceService.findAll(pageable));
     }
 
      /**

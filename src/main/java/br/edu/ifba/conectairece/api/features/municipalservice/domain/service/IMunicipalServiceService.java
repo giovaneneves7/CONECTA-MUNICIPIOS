@@ -5,6 +5,7 @@ import java.util.List;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.model.MunicipalService;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Interface defining the contract for managing {@link MunicipalService} entities.
@@ -26,7 +27,7 @@ public interface IMunicipalServiceService {
      *
      * @return list of municipal service DTOs
      */
-    List<MunicipalServiceResponseDTO> findAll();
+    List<MunicipalServiceResponseDTO> findAll(final Pageable pageable);
 
     /**
      * Finds a municipal service by its identifier.

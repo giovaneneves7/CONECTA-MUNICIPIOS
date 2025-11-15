@@ -5,6 +5,8 @@ import java.util.List;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
@@ -81,8 +83,9 @@ public class MunicipalServiceService implements IMunicipalServiceService {
      */
 
     @Override
-    public List<MunicipalServiceResponseDTO> findAll() {
-        List<MunicipalService> services = municipalServiceRepository.findAll();
+    public List<MunicipalServiceResponseDTO> findAll(final Pageable pageable) {
+        Page<MunicipalService> services = municipalServiceRepository.findAll(pageable);
+
         return services.stream().map(service -> {
             List<CategoryResponseDTO> categoriesDto = service.getCategories().stream()
                     .map(cat -> new CategoryResponseDTO(cat.getId(), cat.getName(), cat.getDescription(), cat.getImageUrl()))

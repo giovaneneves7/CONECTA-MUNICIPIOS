@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import jakarta.validation.Valid;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -74,8 +77,8 @@ public class CategoryController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoryResponseDTO.class))))
     })
     @GetMapping
-    public ResponseEntity<List<CategoryResponseDTO>> getAll() {
-        return ResponseEntity.ok(categoryService.findAll());
+    public ResponseEntity<List<CategoryResponseDTO>> getAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)Pageable pageable) {
+        return ResponseEntity.ok(categoryService.findAll(pageable));
     }
 
     /**

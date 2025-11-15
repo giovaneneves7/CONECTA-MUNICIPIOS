@@ -4,6 +4,7 @@ import br.edu.ifba.conectairece.api.features.category.domain.dto.request.Categor
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
 import br.edu.ifba.conectairece.api.features.category.domain.model.Category;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public interface ICategoryService {
      *
      * @return list of {@link CategoryResponseDTO}
      */
-    List<CategoryResponseDTO> findAll();
+    List<CategoryResponseDTO> findAll(final Pageable pageable);
 
     /**
      * Finds a category by its identifier.

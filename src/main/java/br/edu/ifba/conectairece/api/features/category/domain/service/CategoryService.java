@@ -8,6 +8,7 @@ import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionM
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO;
@@ -63,8 +64,11 @@ public class CategoryService implements ICategoryService {
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "categories")
-    public List<CategoryResponseDTO> findAll() {
-        return categoryRepository.findAll().stream().map(this::toDto).toList();
+    public List<CategoryResponseDTO> findAll(final Pageable pageable) {
+        return categoryRepository.findAll(pageable)
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
     /**

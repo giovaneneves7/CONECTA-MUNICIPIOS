@@ -192,8 +192,8 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
     }
 
     @Override
-    public List<ConstructionLicenseRequirementResponseDTO> findAll() {
-        return repository.findAll().stream()
+    public List<ConstructionLicenseRequirementResponseDTO> findAll(final Pageable pageable) {
+        return repository.findAll(pageable).stream()
                 .map(this::toResponseDTO)
                 .toList();
     }

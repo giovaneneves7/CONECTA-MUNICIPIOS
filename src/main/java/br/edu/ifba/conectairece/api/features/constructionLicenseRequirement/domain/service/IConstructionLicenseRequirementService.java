@@ -51,7 +51,7 @@ public interface IConstructionLicenseRequirementService {
      *
      * @return list of response DTOs
      */
-    List<ConstructionLicenseRequirementResponseDTO> findAll();
+    List<ConstructionLicenseRequirementResponseDTO> findAll(final Pageable pageable);
 
     /**
      * Finds a construction license requirement by its identifier.

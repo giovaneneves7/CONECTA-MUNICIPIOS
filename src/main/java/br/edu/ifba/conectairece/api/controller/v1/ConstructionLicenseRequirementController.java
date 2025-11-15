@@ -9,6 +9,8 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -128,8 +130,8 @@ public class ConstructionLicenseRequirementController {
                         @ApiResponse(responseCode = "200", description = "List of requirements retrieved", content = @Content(array = @ArraySchema(schema = @Schema(implementation = ConstructionLicenseRequirementResponseDTO.class))))
         })
         @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<List<ConstructionLicenseRequirementResponseDTO>> getAll() {
-                return ResponseEntity.ok(service.findAll());
+        public ResponseEntity<List<ConstructionLicenseRequirementResponseDTO>> getAll(@PageableDefault(size =  5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable ) {
+                return ResponseEntity.ok(service.findAll(pageable));
         }
 
         /**

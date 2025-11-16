@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.category.domain.dto.request.CategoryRequestDTO;
 import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategoryResponseDTO;
+import br.edu.ifba.conectairece.api.features.category.domain.dto.response.CategorySimpleResponseDTO;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -114,8 +115,8 @@ public class CategoryController {
         @ApiResponse(responseCode = "404", description = "Category not found")
     })
     @DeleteMapping("/category/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Integer id) {
+    public ResponseEntity<CategorySimpleResponseDTO> delete(@PathVariable("id") Integer id) {
         categoryService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new CategorySimpleResponseDTO(id));
     }
 }

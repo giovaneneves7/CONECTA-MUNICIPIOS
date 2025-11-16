@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse;
+package br.edu.ifba.conectairece.api.features.request.domain.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

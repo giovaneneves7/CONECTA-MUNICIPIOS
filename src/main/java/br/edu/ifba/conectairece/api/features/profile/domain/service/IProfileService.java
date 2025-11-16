@@ -6,7 +6,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.Profile
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.projection.ProfileProjection;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.response.RequestResponseDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

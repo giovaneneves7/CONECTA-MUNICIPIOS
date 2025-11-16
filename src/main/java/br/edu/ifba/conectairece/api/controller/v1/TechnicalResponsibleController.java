@@ -25,6 +25,7 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.req
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRejectDocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
+import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.service.ITechnicalResponsibleService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -103,9 +104,9 @@ public class TechnicalResponsibleController {
      */
     @Operation(summary = "Delete a Technical Responsible by ID", description = "Deletes a technical responsible from the system by its ID.")
     @DeleteMapping("/technical-responsible/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<TechnicalResponsibleSimpleResponseDTO> delete(@PathVariable UUID id) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new TechnicalResponsibleSimpleResponseDTO(id));
     }
 
     /**

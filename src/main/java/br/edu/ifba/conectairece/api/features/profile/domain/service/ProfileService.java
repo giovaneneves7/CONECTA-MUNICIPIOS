@@ -10,7 +10,7 @@ import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.Profile
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentTypeDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.repository.IProfileRepository;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.response.RequestResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.repository.IRequestRepository;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;

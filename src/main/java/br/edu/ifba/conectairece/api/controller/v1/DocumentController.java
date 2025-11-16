@@ -4,6 +4,7 @@ import br.edu.ifba.conectairece.api.features.document.domain.dto.request.Documen
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentRequestDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.request.DocumentUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentDetailResponseDTO;
+import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.model.Document;
 import br.edu.ifba.conectairece.api.features.document.domain.service.IDocumentService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -193,9 +194,9 @@ public class DocumentController {
         @ApiResponse(responseCode = "404", description = "Document not found")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id) {
+    public ResponseEntity<DocumentSimpleResponseDTO> deleteDocument(@PathVariable UUID id) {
         documentService.deleteDocument(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new DocumentSimpleResponseDTO(id));
     }
     
     /**

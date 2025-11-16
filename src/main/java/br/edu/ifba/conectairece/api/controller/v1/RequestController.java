@@ -366,9 +366,9 @@ public class RequestController {
       @ApiResponse(responseCode = "404", description = "No approved documents found for the request."),
     }
   )
-  @GetMapping(value = "/request/{requestId}/approved-documents", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<DocumentWithStatusResponseDTO>> getApprovedDocuments(@PathVariable UUID requestId) {
-    List<DocumentWithStatusResponseDTO> documents = requestService.findApprovedDocumentsByRequestId(requestId);
+  @GetMapping(value = "/request/{id}/approved-documents", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<DocumentWithStatusResponseDTO>> getApprovedDocuments(@PathVariable UUID id) {
+    List<DocumentWithStatusResponseDTO> documents = requestService.findApprovedDocumentsByRequestId(id);
     return ResponseEntity.ok(documents);
   }
 
@@ -386,11 +386,11 @@ public class RequestController {
     @ApiResponse(responseCode = "200", description = "Documents found."),
     @ApiResponse(responseCode = "404", description = "Request or Requirement not found.")
 })
-@GetMapping(value = "/request/{requestId}/all-documents", produces = MediaType.APPLICATION_JSON_VALUE)
+@GetMapping(value = "/request/{id}/all-documents", produces = MediaType.APPLICATION_JSON_VALUE)
 public ResponseEntity<List<DocumentWithStatusResponseDTO>> getAllDocumentsByRequestId(
-        @PathVariable UUID requestId
+        @PathVariable UUID id
 ) {
-    List<DocumentWithStatusResponseDTO> documents = requestService.findAllDocumentsByRequestId(requestId);
+    List<DocumentWithStatusResponseDTO> documents = requestService.findAllDocumentsByRequestId(id);
     return ResponseEntity.ok(documents);
 }
 

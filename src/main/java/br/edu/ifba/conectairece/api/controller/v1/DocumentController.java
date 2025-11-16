@@ -82,12 +82,12 @@ public class DocumentController {
         @ApiResponse(responseCode = "422", description = "Validation error: One or more fields in the request body are invalid.")
     })
     @PostMapping(
-        path = "/requirement/{requirementId}/document",
+        path = "/requirement/{id}/document",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> createDocument(
-            @PathVariable Long requirementId,
+            @PathVariable Long id,
             @RequestBody @Valid DocumentRequestDTO documentDto,
             BindingResult result) {
 
@@ -98,7 +98,7 @@ public class DocumentController {
 
         Document newDocument = objectMapperUtil.map(documentDto, Document.class);
         return ResponseEntity.status(HttpStatus.CREATED)
-                             .body(documentService.createDocument(requirementId, newDocument));
+                             .body(documentService.createDocument(id, newDocument));
     }
 
     /**
@@ -137,9 +137,9 @@ public class DocumentController {
                      content = @Content(schema = @Schema(implementation = DocumentDetailResponseDTO.class))),
         @ApiResponse(responseCode = "404", description = "Document not found with the given ID.")
     })
-    @GetMapping("/document/{documentId}")
-    public ResponseEntity<DocumentDetailResponseDTO> findDocumentById(@PathVariable UUID documentId) {
-        return ResponseEntity.ok(documentService.findDocumentById(documentId));
+    @GetMapping("/document/{id}")
+    public ResponseEntity<DocumentDetailResponseDTO> findDocumentById(@PathVariable UUID id) {
+        return ResponseEntity.ok(documentService.findDocumentById(id));
     }
 
     /**
@@ -162,9 +162,9 @@ public class DocumentController {
         @ApiResponse(responseCode = "404", description = "Document not found"),
         @ApiResponse(responseCode = "422", description = "Validation error")
     })
-    @PutMapping("/document/{documentId}")
+    @PutMapping("/document/{id}")
     public ResponseEntity<?> updateDocument(
-            @PathVariable UUID documentId,
+            @PathVariable UUID id,
             @RequestBody @Valid DocumentUpdateRequestDTO documentDto,
             BindingResult result) {
 
@@ -173,7 +173,7 @@ public class DocumentController {
                     .body(ResultError.getResultErrors(result));
         }
 
-        return ResponseEntity.ok(this.documentService.updateDocument(documentId, objectMapperUtil.map(documentDto, Document.class)));
+        return ResponseEntity.ok(this.documentService.updateDocument(id, objectMapperUtil.map(documentDto, Document.class)));
     }
 
     /**
@@ -192,9 +192,9 @@ public class DocumentController {
         @ApiResponse(responseCode = "204", description = "Document deleted successfully"),
         @ApiResponse(responseCode = "404", description = "Document not found")
     })
-    @DeleteMapping("/{documentId}")
-    public ResponseEntity<Void> deleteDocument(@PathVariable UUID documentId) {
-        documentService.deleteDocument(documentId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable UUID id) {
+        documentService.deleteDocument(id);
         return ResponseEntity.noContent().build();
     }
     
@@ -216,9 +216,9 @@ public class DocumentController {
         @ApiResponse(responseCode = "404", description = "Document not found with the given ID."),
         @ApiResponse(responseCode = "400", description = "The document is not in a PENDING state and cannot be approved.")
     })
-    @PostMapping("/{documentId}/review/accept")
-    public ResponseEntity<DocumentDetailResponseDTO> approveDocument(@PathVariable UUID documentId) {
-        return ResponseEntity.ok(documentService.approveDocument(documentId));
+    @PostMapping("/{id}/review/accept")
+    public ResponseEntity<DocumentDetailResponseDTO> approveDocument(@PathVariable UUID id) {
+        return ResponseEntity.ok(documentService.approveDocument(id));
     }
 
     /**
@@ -240,11 +240,11 @@ public class DocumentController {
         @ApiResponse(responseCode = "400", description = "Invalid request or document not in a PENDING state."),
         @ApiResponse(responseCode = "404", description = "Document not found with the given ID.")
     })
-    @PostMapping("/{documentId}/review/reject")
+    @PostMapping("/{id}/review/reject")
     public ResponseEntity<DocumentDetailResponseDTO> rejectDocument(
-            @PathVariable UUID documentId,
+            @PathVariable UUID id,
             @RequestBody @Valid DocumentRejectionDTO rejectionDto) {
 
-        return ResponseEntity.ok(documentService.rejectDocument(documentId, rejectionDto));
+        return ResponseEntity.ok(documentService.rejectDocument(id, rejectionDto));
     }
 }

@@ -219,16 +219,16 @@ public class ConstructionLicenseRequirementController {
                         @ApiResponse(responseCode = "409", description = "Workflow Conflict: Technical Responsible approval/association is still PENDING or missing."),
                         @ApiResponse(responseCode = "422", description = "Validation error in fields or If 3 or more documents are not approved")
         })
-        @PostMapping(path = "/construction-license-requirement/{constructionLicenseRequirementId}/approve")
+        @PostMapping(path = "/construction-license-requirement/{id}/approve")
         public ResponseEntity<?> approveConstructionLicenseRequirement(
-                        @PathVariable("constructionLicenseRequirementId") Long constructionLicenseRequirementId,
+                        @PathVariable("id") Long id,
                         @RequestBody @Valid ConstructionLicenseRequirementFinalizeRequestDTO dto,
                         BindingResult result) {
                 return result.hasErrors()
                                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                                 .body(ResultError.getResultErrors(result))
                                 : ResponseEntity.ok(service.approveConstructionLicenseRequirement(
-                                                constructionLicenseRequirementId, dto));
+                                                id, dto));
         }
 
         /**
@@ -252,16 +252,16 @@ public class ConstructionLicenseRequirementController {
                         @ApiResponse(responseCode = "409", description = "Workflow Conflict: Technical Responsible approval/association is still PENDING or missing."),
                         @ApiResponse(responseCode = "422", description = "Validation error in fields")
         })
-        @PostMapping(path = "/construction-license-requirement/{constructionLicenseRequirementId}/rejected")
+        @PostMapping(path = "/construction-license-requirement/{id}/rejected")
         public ResponseEntity<?> rejectedConstructionLicenseRequirement(
-                        @PathVariable("constructionLicenseRequirementId") Long constructionLicenseRequirementId,
+                        @PathVariable("id") Long id,
                         @RequestBody @Valid ConstructionLicenseRequirementFinalizeRequestDTO dto,
                         BindingResult result) {
                 return result.hasErrors()
                                 ? ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                                 .body(ResultError.getResultErrors(result))
                                 : ResponseEntity.ok(service.rejectConstructionLicenseRequirement(
-                                                constructionLicenseRequirementId, dto));
+                                                id, dto));
         }
 
         /**

@@ -5,6 +5,7 @@ import br.edu.ifba.conectairece.api.features.permission.domain.dto.response.Perm
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileRequestUpdateChangeProfileTypeDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.request.ProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileResponseCurrentTypeDTO;
+import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
 import br.edu.ifba.conectairece.api.features.profile.domain.service.IProfileService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -77,9 +78,9 @@ public class ProfileController {
                     "by another class"),
     })
     @DeleteMapping(value = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> delete(@PathVariable("id") UUID id) {
+    public ResponseEntity<ProfileSimpleResponseDTO> delete(@PathVariable("id") UUID id) {
         profileService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new ProfileSimpleResponseDTO(id));
     }
 
     @Operation(summary = "List all Profiles with pagination",

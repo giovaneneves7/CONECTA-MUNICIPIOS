@@ -85,9 +85,9 @@ public class FunctionController {
             @ApiResponse(responseCode = "404", description = "Function not found")
     })
     @DeleteMapping(path = "/function/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<Long> delete(@PathVariable("id") Long id) {
         functionService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(id);
     }
 
     @Operation(summary = "List all Functions with pagination",

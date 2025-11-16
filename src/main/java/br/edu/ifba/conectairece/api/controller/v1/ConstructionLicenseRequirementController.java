@@ -29,6 +29,7 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.request.ConstructionLicenseRequirementUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementDetailDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementResponseDTO;
+import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.dto.response.ConstructionLicenseRequirementSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.IConstructionLicenseRequirementService;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
@@ -165,9 +166,9 @@ public class ConstructionLicenseRequirementController {
                         @ApiResponse(responseCode = "404", description = "Requirement not found")
         })
         @DeleteMapping(value = "/construction-license-requirement/{id}")
-        public ResponseEntity<Void> delete(@PathVariable @NotNull Long id) {
+        public ResponseEntity<ConstructionLicenseRequirementSimpleResponseDTO> delete(@PathVariable @NotNull Long id) {
                 service.delete(id);
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.ok(new ConstructionLicenseRequirementSimpleResponseDTO(id));
         }
 
         /**

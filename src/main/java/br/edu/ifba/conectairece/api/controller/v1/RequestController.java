@@ -4,10 +4,11 @@ import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.doma
 import br.edu.ifba.conectairece.api.features.constructionLicenseRequirement.domain.service.ConstructionLicenseRequirementService;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentResponseDTO;
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.response.RequestResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.response.RequestResponseWithDetailsDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.response.RequestSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.service.IRequestService;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
@@ -171,9 +172,9 @@ public class RequestController {
     }
   )
   @DeleteMapping("/request/{id}")
-  public ResponseEntity<Void> delete(@Valid @PathVariable UUID id) {
+  public ResponseEntity<RequestSimpleResponseDTO> delete(@Valid @PathVariable UUID id) {
     requestService.delete(id);
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok(new RequestSimpleResponseDTO(id));
   }
 
   /**

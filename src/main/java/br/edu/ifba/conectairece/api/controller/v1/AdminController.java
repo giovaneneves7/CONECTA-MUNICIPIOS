@@ -5,6 +5,7 @@ import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminAssin
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.request.AdminProfileUpdateRequestDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminResponseDTO;
+import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.dto.response.AdminUserDetailResponseDTO;
 import br.edu.ifba.conectairece.api.features.admin.domain.model.AdminProfile;
 import br.edu.ifba.conectairece.api.features.admin.domain.service.IAdminService;
@@ -85,18 +86,31 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Profile not found"),
             @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
     })
-    @PutMapping(path = "/admin-profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<?> update (
-            @RequestBody @Valid AdminProfileUpdateRequestDTO dto,
-            BindingResult result
-    ) {
-        if (result.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
-        }
+@PutMapping(
+    path = "/admin-profile",
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE
+)
+public ResponseEntity<AdminSimpleResponseDTO> update(
+        @RequestBody @Valid AdminProfileUpdateRequestDTO dto,
+        BindingResult result
+) {
 
-        this.adminService.update(dto.userId(), objectMapperUtil.map(dto, AdminProfile.class));
-        return ResponseEntity.noContent().build();
+    if (result.hasErrors()) {
+        return ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(null);
     }
+
+    adminService.update(
+            dto.userId(),
+            objectMapperUtil.map(dto, AdminProfile.class)
+    );
+
+    AdminSimpleResponseDTO response = new AdminSimpleResponseDTO(dto.userId());
+
+    return ResponseEntity.ok(response);
+}
 
     /***
      * In this case you need to pass the admin profile ID
@@ -108,11 +122,12 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "Profile not found"),
     })
     @DeleteMapping(value = "/admin-profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<?> delete (
+    ResponseEntity<AdminSimpleResponseDTO> delete (
             @PathVariable("id") UUID id
     ) {
         this.adminService.delete(id);
-        return ResponseEntity.noContent().build();
+        AdminSimpleResponseDTO response = new AdminSimpleResponseDTO(id);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "List all Admin Profiles with pagination",
@@ -203,9 +218,10 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "User not found or does not have the specified profile")
     })
     @DeleteMapping("/technical-responsible/{profileId}")
-    public ResponseEntity<Void> removeTechnicalResponsible(@PathVariable UUID profileId) {
+    public ResponseEntity<AdminSimpleResponseDTO> removeTechnicalResponsible(@PathVariable UUID profileId) {
         adminService.removeTechnicalResponsibleProfile(profileId);
-        return ResponseEntity.noContent().build();
+        AdminSimpleResponseDTO response = new AdminSimpleResponseDTO(profileId);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -222,9 +238,10 @@ public class AdminController {
             @ApiResponse(responseCode = "404", description = "User not found or does not have the specified profile")
     })
     @DeleteMapping("/public-servant/{profileId}")
-    public ResponseEntity<Void> removePublicServant(@PathVariable UUID profileId) {
+    public ResponseEntity<AdminSimpleResponseDTO> removePublicServant(@PathVariable UUID profileId) {
         adminService.removePublicServantProfile(profileId);
-        return ResponseEntity.noContent().build();
+        AdminSimpleResponseDTO response = new AdminSimpleResponseDTO(profileId);
+        return ResponseEntity.ok(response);
     }
 
     /**

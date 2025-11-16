@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.request.RequirementTypeRequestDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
+import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.service.IRequirementTypeService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -119,8 +120,8 @@ public class RequirementTypeController {
             @ApiResponse(responseCode = "404", description = "Requirement type not found")
     })
     @DeleteMapping(value = "/requirement-type/{id}")
-    public ResponseEntity<Void> delete(@PathVariable @Valid Long id) {
+    public ResponseEntity<RequirementTypeSimpleResponseDTO> delete(@PathVariable @Valid Long id) {
         requirementTypeService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new RequirementTypeSimpleResponseDTO(id));
     }
 }

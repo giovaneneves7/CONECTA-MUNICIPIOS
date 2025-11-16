@@ -1,0 +1,15 @@
+package br.edu.ifba.conectairece.api.features.evaluationItem.domain.dto.response;
+
+import java.util.UUID;
+
+/**
+ * Lightweight response DTO for an Evaluation Item entity.
+ *
+ * <p>Provides only the unique identifier, typically used in simplified
+ * responses or nested resource structures where full entity details
+ * are not required.</p>
+ *
+ * @author Andesson Reis
+ */
+public record EvaluationItemSimpleResponseDTO(UUID id) {
+}

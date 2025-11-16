@@ -2,10 +2,10 @@ package br.edu.ifba.conectairece.api.features.request.domain.service;
 
 import br.edu.ifba.conectairece.api.features.document.domain.dto.response.DocumentWithStatusResponseDTO;
 import br.edu.ifba.conectairece.api.features.monitoring.domain.dto.response.MonitoringResponseDTO;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseDTO;
-import br.edu.ifba.conectairece.api.features.request.domain.dto.reposnse.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestPostRequestDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.dto.request.RequestUpdateRequestDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.response.RequestResponseDTO;
+import br.edu.ifba.conectairece.api.features.request.domain.dto.response.RequestResponseWithDetailsDTO;
 import br.edu.ifba.conectairece.api.features.request.domain.model.Request;
 import br.edu.ifba.conectairece.api.features.update.domain.dto.response.UpdateResponseDTO;
 import java.util.List;

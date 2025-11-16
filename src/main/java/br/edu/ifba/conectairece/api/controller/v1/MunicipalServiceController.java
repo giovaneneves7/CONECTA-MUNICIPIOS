@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.request.MunicipalServiceRequestDTO;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceResponseDTO;
+import br.edu.ifba.conectairece.api.features.municipalservice.domain.dto.response.MunicipalServiceSimpleResponseDTO;
 import br.edu.ifba.conectairece.api.features.municipalservice.domain.service.IMunicipalServiceService;
 import br.edu.ifba.conectairece.api.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -117,9 +118,10 @@ public class MunicipalServiceController {
             @ApiResponse(responseCode = "404", description = "Municipal service not found")
     })
     @DeleteMapping(path = "/municipal-service/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> delete(@Valid @PathVariable Long id) {
+    public ResponseEntity<MunicipalServiceSimpleResponseDTO> delete(@Valid @PathVariable Long id) {
         municipalServiceService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new MunicipalServiceSimpleResponseDTO(id));
+
     }
 
     @Operation(summary = "Get a flow by the municipal service id passed as a parameter",

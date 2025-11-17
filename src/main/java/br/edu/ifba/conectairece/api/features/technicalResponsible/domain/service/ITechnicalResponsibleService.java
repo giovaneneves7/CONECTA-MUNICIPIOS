@@ -7,6 +7,7 @@ import java.util.UUID;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.request.TechnicalResponsibleRequestDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.dto.response.TechnicalResponsibleResponseDTO;
 import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.TechnicalResponsible;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service interface for managing {@link TechnicalResponsible} entities.
@@ -16,13 +17,13 @@ import br.edu.ifba.conectairece.api.features.technicalResponsible.domain.model.T
  */
 public interface ITechnicalResponsibleService {
 
-    TechnicalResponsibleResponseDTO save(TechnicalResponsibleRequestDTO dto);
+    TechnicalResponsibleResponseDTO save(final TechnicalResponsibleRequestDTO dto);
 
-    List<TechnicalResponsibleResponseDTO> findAll();
+    List<TechnicalResponsibleResponseDTO> findAll(final Pageable pageable);
 
-    Optional<TechnicalResponsibleResponseDTO> findById(UUID id);
+    Optional<TechnicalResponsibleResponseDTO> findById(final UUID id);
 
     void delete(UUID id);
 
-    Optional<TechnicalResponsibleResponseDTO> findByRegistrationId(String registrationId);
+    Optional<TechnicalResponsibleResponseDTO> findByRegistrationId(final String registrationId);
 }

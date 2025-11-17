@@ -3,6 +3,9 @@ package br.edu.ifba.conectairece.api.controller.v1;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -91,8 +94,8 @@ public class TechnicalResponsibleController {
      */
     @Operation(summary = "List all Technical Responsibles", description = "Retrieves a list of all registered technical responsibles.")
     @GetMapping
-    public ResponseEntity<List<TechnicalResponsibleResponseDTO>> getAll() {
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<List<?>> getAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(pageable));
     }
 
     /**

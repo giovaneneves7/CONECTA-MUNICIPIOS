@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
@@ -40,7 +41,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     
     @Override
     @Transactional
-    public TechnicalResponsibleResponseDTO save(TechnicalResponsibleRequestDTO dto) {
+    public TechnicalResponsibleResponseDTO save(final TechnicalResponsibleRequestDTO dto) {
 
          if (repository.findByRegistrationId(dto.registrationId()).isPresent()) {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
@@ -79,8 +80,9 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     
     @Override
     @Transactional
-    public List<TechnicalResponsibleResponseDTO> findAll() {
-        return repository.findAll().stream()
+    public List<TechnicalResponsibleResponseDTO> findAll(final Pageable pageable) {
+
+        return repository.findAll(pageable).stream()
                 .map(this::convertToDto)
                 .toList();
     }
@@ -94,7 +96,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
 
     @Override
     @Transactional
-    public void delete(UUID id) {
+    public void delete(final UUID id) {
         if (!repository.existsById(id)) {
             throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
@@ -103,12 +105,12 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     }
 
     @Override
-    public Optional<TechnicalResponsibleResponseDTO> findByRegistrationId(String registrationId){
+    public Optional<TechnicalResponsibleResponseDTO> findByRegistrationId(final String registrationId){
         return repository.findByRegistrationId(registrationId)
             .map(this::convertToDto);
     }
 
-    private TechnicalResponsibleResponseDTO convertToDto (TechnicalResponsible entity){
+    private TechnicalResponsibleResponseDTO convertToDto (final TechnicalResponsible entity){
         User user = entity.getUser();
         String responsibleName = null;
         String email = null;

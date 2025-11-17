@@ -5,6 +5,7 @@ import java.util.List;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.request.RequirementTypeRequestDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.response.RequirementTypeResponseDTO;
 import br.edu.ifba.conectairece.api.features.requirementType.domain.model.RequirementType;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Interface defining the contract for managing {@link RequirementType} entities.
@@ -27,14 +28,14 @@ public interface IRequirementTypeService {
      * @param dto request data containing requirement type details
      * @return DTO with saved requirement type information
      */
-    RequirementTypeResponseDTO save(RequirementTypeRequestDTO dto);
+    RequirementTypeResponseDTO save(final RequirementTypeRequestDTO dto);
 
     /**
      * Retrieves all requirement types.
      *
      * @return list of requirement type DTOs
      */
-    List<RequirementTypeResponseDTO> findAll();
+    List<RequirementTypeResponseDTO> findAll(final Pageable pageable);
 
     /**
      * Finds a requirement type by its identifier.
@@ -42,12 +43,12 @@ public interface IRequirementTypeService {
      * @param id requirement type ID
      * @return the found requirement type entity
      */
-    RequirementTypeResponseDTO findById(Long id);
+    RequirementTypeResponseDTO findById(final Long id);
 
     /**
      * Deletes a requirement type by its identifier.
      *
      * @param id requirement type ID
      */
-    void delete(Long id);
+    void delete(final Long id);
 }

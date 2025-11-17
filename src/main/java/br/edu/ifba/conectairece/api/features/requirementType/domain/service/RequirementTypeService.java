@@ -4,6 +4,8 @@ import java.util.List;
 
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessException;
 import br.edu.ifba.conectairece.api.infraestructure.exception.BusinessExceptionMessage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifba.conectairece.api.features.requirementType.domain.dto.request.RequirementTypeRequestDTO;
@@ -45,7 +47,7 @@ public class RequirementTypeService implements IRequirementTypeService {
      */
 
      @Override
-    public RequirementTypeResponseDTO save(RequirementTypeRequestDTO dto) {
+    public RequirementTypeResponseDTO save(final RequirementTypeRequestDTO dto) {
         RequirementType entity = new RequirementType();
         entity.setName(dto.name());
         entity.setDescription(dto.description());
@@ -60,8 +62,9 @@ public class RequirementTypeService implements IRequirementTypeService {
      * @return list of requirement type DTOs
      */
     @Override
-    public List<RequirementTypeResponseDTO> findAll() {
-        List<RequirementType> types = repository.findAll();
+    public List<RequirementTypeResponseDTO> findAll(final Pageable pageable) {
+
+        Page<RequirementType> types = repository.findAll(pageable);
         return types.stream()
                 .map(type -> objectMapperUtil.mapToRecord(type, RequirementTypeResponseDTO.class))
                 .toList();
@@ -75,7 +78,7 @@ public class RequirementTypeService implements IRequirementTypeService {
      * @return DTO containing requirement type data
      */
     @Override
-    public RequirementTypeResponseDTO findById(Long id) {
+    public RequirementTypeResponseDTO findById(final Long id) {
         RequirementType entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -88,7 +91,7 @@ public class RequirementTypeService implements IRequirementTypeService {
      * @param id requirement type ID
      */
     @Override
-    public void delete(Long id) {
+    public void delete(final Long id) {
         RequirementType entity = repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 

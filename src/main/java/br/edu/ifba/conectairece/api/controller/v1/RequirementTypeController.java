@@ -2,6 +2,9 @@ package br.edu.ifba.conectairece.api.controller.v1;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -85,8 +88,8 @@ public class RequirementTypeController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = RequirementTypeResponseDTO.class))))
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<RequirementTypeResponseDTO>> getAll() {
-        return ResponseEntity.ok(requirementTypeService.findAll());
+    public ResponseEntity<List<RequirementTypeResponseDTO>> getAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(requirementTypeService.findAll(pageable));
     }
 
     /**

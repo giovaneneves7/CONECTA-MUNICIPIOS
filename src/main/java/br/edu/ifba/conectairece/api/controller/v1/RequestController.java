@@ -99,8 +99,8 @@ public class RequestController {
     }
   )
   @GetMapping
-  public ResponseEntity<List<RequestResponseDTO>> getAll() {
-    return ResponseEntity.ok(requestService.findAll());
+  public ResponseEntity<List<RequestResponseDTO>> getAll(@PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    return ResponseEntity.ok(requestService.findAll(pageable));
   }
 
   /**

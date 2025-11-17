@@ -25,7 +25,7 @@ public interface IRequestService {
 
   RequestResponseDTO update(UUID id, RequestUpdateRequestDTO dto);
 
-  List<RequestResponseDTO> findAll();
+  List<RequestResponseDTO> findAll(final Pageable pageable);
 
   RequestResponseDTO findById(UUID id);
 

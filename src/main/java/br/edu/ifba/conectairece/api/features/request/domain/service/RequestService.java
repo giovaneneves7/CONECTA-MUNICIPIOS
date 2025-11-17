@@ -116,9 +116,9 @@ public class RequestService implements IRequestService {
      */
 
      @Override
-    public List<RequestResponseDTO> findAll(){
+    public List<RequestResponseDTO> findAll(final Pageable pageable){
 
-        List<Request> requests = requestRepository.findAll();
+        Page<Request> requests = requestRepository.findAll(pageable);
 
         return requests.stream()
                 .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO.class))

@@ -16,6 +16,8 @@ import java.util.UUID;
 
 import br.edu.ifba.conectairece.api.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,9 +48,9 @@ public class UserService implements IUserService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProfileWithRoleResponseDTO> getUserProfiles(final UUID id){
+    public List<ProfileWithRoleResponseDTO> getUserProfiles(final UUID id, final Pageable pageable) {
 
-        List<Profile> profiles = this.profileRepository.findAllByUserId(id);
+        Page<Profile> profiles = this.profileRepository.findAllByUserId(id, pageable);
 
         return profiles.stream()
                 .map(profile -> new ProfileWithRoleResponseDTO(
@@ -61,8 +63,9 @@ public class UserService implements IUserService {
     }
 
 
-    @Override @Transactional(readOnly = true)
-    public ProfileWithRoleResponseDTO findActiveProfileByUserId(UUID id) {
+    @Override
+    @Transactional(readOnly = true)
+    public ProfileWithRoleResponseDTO findActiveProfileByUserId(final UUID id) {
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -83,8 +86,9 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponseDTO> findAllUsers() {
-        List<User> users = userRepository.findAll();
+    public List<UserResponseDTO> findAllUsers(final Pageable pageable) {
+
+        Page<User> users = userRepository.findAll(pageable);
         return users.stream()
                 .map(user -> this.objectMapperUtil.mapToRecord(user, UserResponseDTO.class))
                 .toList();

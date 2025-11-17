@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,10 +58,10 @@ public class UserController {
      * @return Response with the user's profiles data
      */
     @GetMapping(path = "/user/{id}/profiles", produces = "application/json")
-    public ResponseEntity<?> getUserProfiles(@PathVariable("id") @NotNull UUID id){
+    public ResponseEntity<?> getUserProfiles(@PathVariable("id") @NotNull UUID id, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
 
         return ResponseEntity.status((HttpStatus.OK))
-                .body(userService.getUserProfiles(id));
+                .body(userService.getUserProfiles(id, pageable));
 
     }
 
@@ -75,7 +78,7 @@ public class UserController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = UserResponseDTO.class))))
     })
     @GetMapping
-    public ResponseEntity<?> findAllUsers () {
-        return ResponseEntity.ok(this.userService.findAllUsers());
+    public ResponseEntity<?> findAllUsers(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(this.userService.findAllUsers(pageable));
     }
 }

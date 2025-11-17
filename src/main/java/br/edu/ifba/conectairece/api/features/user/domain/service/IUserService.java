@@ -4,14 +4,15 @@ import br.edu.ifba.conectairece.api.features.auth.domain.dto.response.UserDataRe
 import br.edu.ifba.conectairece.api.features.auth.domain.enums.UserStatus;
 import br.edu.ifba.conectairece.api.features.profile.domain.dto.response.ProfileWithRoleResponseDTO;
 import br.edu.ifba.conectairece.api.features.user.domain.dto.response.UserResponseDTO;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface IUserService {
     UserDataResponseDTO getUserById(final UUID id);
-    List<ProfileWithRoleResponseDTO> getUserProfiles(final UUID id);
-    ProfileWithRoleResponseDTO findActiveProfileByUserId(UUID id);
-    List<UserResponseDTO> findAllUsers ();
+    List<ProfileWithRoleResponseDTO> getUserProfiles(final UUID id, final Pageable pageable);
+    ProfileWithRoleResponseDTO findActiveProfileByUserId(final UUID id);
+    List<UserResponseDTO> findAllUsers (final Pageable pageable);
     void updateUserStatus (UUID userId, UserStatus newStatus);
 }

@@ -1,5 +1,7 @@
 package br.edu.ifba.conectairece.api.features.evaluationItem.domain.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
 /**
@@ -11,5 +13,8 @@ import java.util.UUID;
  *
  * @author Andesson Reis
  */
-public record EvaluationItemSimpleResponseDTO(UUID id) {
+public record EvaluationItemSimpleResponseDTO(
+        @JsonProperty(value = "id")
+        UUID id
+) {
 }

@@ -4,6 +4,8 @@ import br.edu.ifba.conectairece.api.features.evaluationItem.domain.enums.Evaluat
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.UUID;
+
 /**
  * Data Transfer Object for responding with the details of an evaluation item.
  *
@@ -11,6 +13,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record EvaluationItemResponseDTO(
+
+        @JsonProperty(value = "id")
+        UUID id,
+
         @JsonProperty(value = "name")
         String name,
 

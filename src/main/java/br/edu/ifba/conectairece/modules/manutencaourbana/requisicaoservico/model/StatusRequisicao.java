@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.manutencaourbana.model;
+package br.edu.ifba.conectairece.modules.manutencaourbana.requisicaoservico.model;
 
 public enum StatusRequisicao {
     PENDENTE,

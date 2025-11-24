@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.api.manutencaourbana.model;
+package br.edu.ifba.conectairece.modules.manutencaourbana.requisicaoservico.model;
 
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;

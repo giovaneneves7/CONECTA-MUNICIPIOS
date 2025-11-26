@@ -1,4 +1,4 @@
-package br.edu.ifba.conectairece.modules.manutencaourbana.requisicaoservico.model;
+package br.edu.ifba.conectairece.api.modules.manutencaourbana.requisicaoservico.model;
 
 import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;

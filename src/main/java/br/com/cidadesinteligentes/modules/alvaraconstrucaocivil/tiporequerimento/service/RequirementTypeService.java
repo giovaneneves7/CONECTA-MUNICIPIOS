@@ -1,0 +1,100 @@
+package br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.service;
+
+import java.util.List;
+
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.dto.request.RequirementTypeRequestDTO;
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.dto.response.RequirementTypeResponseDTO;
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.repository.IRequirementTypeRepository;
+import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Service responsible for managing {@link RequirementType} entities.
+ * Handles persistence and retrieval of requirement type definitions,
+ * ensuring consistent classification of requirements.
+ *
+ * Main features:
+ * - Save new requirement types (name and description).
+ * - Retrieve all requirement types.
+ * - Find requirement type by identifier.
+ * - Delete requirement type by identifier.
+ *
+ * This service provides an abstraction over repository access,
+ * exposing DTOs to maintain separation between persistence and API layers.
+ *
+ * Author: Caio Alves
+ */
+
+@Service
+@RequiredArgsConstructor
+public class RequirementTypeService implements IRequirementTypeService {
+
+    private final IRequirementTypeRepository repository;
+    private final ObjectMapperUtil objectMapperUtil;
+
+        /**
+     * Saves a new requirement type in the database.
+     *
+     * @param dto request data containing requirement type details
+     * @return DTO with saved requirement type information
+     */
+
+     @Override
+    public RequirementTypeResponseDTO save(final RequirementTypeRequestDTO dto) {
+        RequirementType entity = new RequirementType();
+        entity.setName(dto.name());
+        entity.setDescription(dto.description());
+
+        RequirementType saved = repository.save(entity);
+        return objectMapperUtil.mapToRecord(saved, RequirementTypeResponseDTO.class);
+    }
+
+    /**
+     * Retrieves all requirement types.
+     *
+     * @return list of requirement type DTOs
+     */
+    @Override
+    public List<RequirementTypeResponseDTO> findAll(final Pageable pageable) {
+
+        Page<RequirementType> types = repository.findAll(pageable);
+        return types.stream()
+                .map(type -> objectMapperUtil.mapToRecord(type, RequirementTypeResponseDTO.class))
+                .toList();
+
+    }
+
+    /**
+     * Finds a requirement type by its identifier.
+     *
+     * @param id requirement type ID
+     * @return DTO containing requirement type data
+     */
+    @Override
+    public RequirementTypeResponseDTO findById(final Long id) {
+        RequirementType entity = repository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        return objectMapperUtil.mapToRecord(entity, RequirementTypeResponseDTO.class);
+    }
+
+    /**
+     * Deletes a requirement type by its identifier.
+     *
+     * @param id requirement type ID
+     */
+    @Override
+    public void delete(final Long id) {
+        RequirementType entity = repository.findById(id)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+
+        repository.delete(entity);
+    }
+}

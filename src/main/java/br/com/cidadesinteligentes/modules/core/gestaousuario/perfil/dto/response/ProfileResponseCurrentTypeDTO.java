@@ -1,0 +1,16 @@
+package br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Data Transfer Object (DTO) for sending active profile type.
+ *
+ * @author Jorge Roberto
+ */
+public record ProfileResponseCurrentTypeDTO (
+        @JsonProperty("active_type")
+        String activeType,
+
+        @JsonProperty("role")
+        String role
+) {}

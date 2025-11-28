@@ -1,0 +1,28 @@
+package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository;
+
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Flow;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.FlowStep;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * @author Giovane Neves
+ */
+@Repository
+public interface IFlowStepRepository extends JpaRepository<FlowStep, UUID> {
+
+    Optional<FlowStep> findByFlowIdAndStepId(UUID flowId, UUID stepId);
+
+    UUID flow(Flow flow);
+
+    Optional<FlowStep> findFirstByFlowOrderByStepOrderAsc(Flow flow);
+
+    @Query("SELECT fs FROM FlowStep fs WHERE fs.flow.id = :flowId AND fs.stepOrder = :order + 1")
+    Optional<FlowStep> findNextStep(@Param("flowId") UUID flowId, @Param("order") Long order);
+
+}

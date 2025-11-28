@@ -1,0 +1,18 @@
+package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
+
+/**
+ * Data access repository for the {@link MunicipalService} entity.
+ * Provides CRUD operations and database interaction methods for municipal services.
+ *
+ * @author Caio Alves
+ */
+
+@Repository
+public interface IMunicipalServiceRepository extends JpaRepository<MunicipalService, Long>{
+
+}

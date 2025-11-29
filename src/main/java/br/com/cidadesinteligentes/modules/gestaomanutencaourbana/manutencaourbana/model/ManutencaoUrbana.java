@@ -1,8 +1,12 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.model;
 
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model.CategoriaManutencaoUrbana;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model.GestorSolicitacoesManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Prioridade;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Viabilidade;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
+// ManutencaoUrbana.java
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model.Endereco;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +22,18 @@ import java.time.LocalDateTime;
 // Define que a coluna "id" desta tabela é FK da tabela "municipal_services"
 @PrimaryKeyJoinColumn(name = "id")
 public class ManutencaoUrbana extends MunicipalService {
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private CategoriaManutencaoUrbana categoria;
+
+    @ManyToOne
+    @JoinColumn(name = "endereco_id", nullable = false)
+    private Endereco endereco;
+
+    @ManyToOne
+    @JoinColumn(name = "gestor_id") // Pode ser null no início (antes de alguém assumir)
+    private GestorSolicitacoesManutencaoUrbana gestor;
 
     @Column(name = "data_criada", nullable = false, updatable = false)
     private LocalDateTime dataCriada;

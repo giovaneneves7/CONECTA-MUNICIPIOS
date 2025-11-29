@@ -6,18 +6,26 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class ManutencaoUrbanaRequestDTO {
 
-    // --- Campos herdados de MunicipalService ---
+    // Herdado de MunicipalService
     @NotBlank(message = "O nome do serviço é obrigatório")
-    @Size(max = 255)
     private String name;
-
-    @Size(max = 255)
     private String description;
 
-    // --- Campos de ManutencaoUrbana ---
+    // Relacionamentos (IDs)
+    @NotNull(message = "A categoria é obrigatória")
+    private Long categoriaId;
+
+    @NotNull(message = "O endereço é obrigatório")
+    private Long enderecoId;
+
+    private UUID gestorId; // Opcional na criação
+
+    // Campos Próprios
     @NotNull(message = "A prioridade é obrigatória")
     private Prioridade prioridade;
 

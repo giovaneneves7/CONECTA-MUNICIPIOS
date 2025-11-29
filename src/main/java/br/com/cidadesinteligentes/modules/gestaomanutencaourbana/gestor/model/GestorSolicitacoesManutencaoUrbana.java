@@ -1,6 +1,6 @@
-package br.edu.ifba.conectairece.api.modules.manutencaourbana.gestor.model;
+package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model;
 
-import br.edu.ifba.conectairece.api.features.profile.domain.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 

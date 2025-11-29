@@ -1,6 +1,7 @@
-package br.edu.ifba.conectairece.api.modules.manutencaourbana.requisicaoservico.model;
+package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.model;
 
-import br.edu.ifba.conectairece.api.infraestructure.model.PersistenceEntity;
+
+import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequisicaoServico extends PersistenceEntity {
+public class ManutencaoUrbana extends PersistenceEntity {
 
     @Column(name = "titulo", nullable = false)
     private String titulo;

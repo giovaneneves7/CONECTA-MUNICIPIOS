@@ -6,7 +6,7 @@ import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.r
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model.CategoriaManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service.ICategoriaManutencaoUrbanaService;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service.ICategoriaService;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service.ICategoriaManutencaoUrbanaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;

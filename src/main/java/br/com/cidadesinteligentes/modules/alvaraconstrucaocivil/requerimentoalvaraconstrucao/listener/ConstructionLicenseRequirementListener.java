@@ -26,7 +26,7 @@ public class ConstructionLicenseRequirementListener {
             requirement.getRequirementType().getName(),         
             "Request created automatically from ConstructionLicenseRequirement " + requirement.getId(),
             requirement.getSolicitante().getActiveProfile().getId(),    
-            requirement.getMunicipalService().getId()            
+            requirement.getId()
         );
 
         requestService.save(requestDto);

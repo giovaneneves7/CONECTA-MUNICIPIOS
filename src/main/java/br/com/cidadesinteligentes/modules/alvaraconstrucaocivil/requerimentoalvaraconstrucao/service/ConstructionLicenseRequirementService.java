@@ -92,6 +92,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
     private final ICommentRepository commentRepository;
 
     @Override
+    @Transactional
     public ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
 
         Profile solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
@@ -103,9 +104,8 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
 
         entity.setSolicitante(solicitante);
 
-        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
+        MunicipalService serviceToInherit = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-        entity.setMunicipalService(service);
 
         RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
@@ -116,8 +116,13 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
                 .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: "
                         + dto.technicalResponsibleRegistrationId()));
 
+        if (serviceToInherit.getFlow() != null) {
+            // Como o CLR herda de MunicipalService, ele tem o campo 'flow'.
+            entity.setFlow(serviceToInherit.getFlow());
+        }
         entity.setTechnicalResponsible(responsible);
-
+        entity.setName(serviceToInherit.getName());
+        entity.setDescription(serviceToInherit.getDescription());
         entity.setTechnicalResponsibleStatus(AssociationStatus.PENDING);
 
         if (dto.documents() != null) {
@@ -136,8 +141,8 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
 
         Request createdRequest = requestRepository.findFirstByMunicipalServiceIdOrderByCreatedAtDesc(
-                saved.getMunicipalService().getId())
-                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
+                saved.getId()
+        ).orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         return this.toResponseWithRequestIdDTO(saved, createdRequest.getId());
     }
@@ -162,9 +167,8 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setHousingUnitNumber(dto.housingUnitNumber());
         entity.setTerrainArea(dto.terrainArea());
 
-        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
+        MunicipalService serviceToInherit = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-        entity.setMunicipalService(service);
 
         RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
@@ -176,6 +180,8 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
                         + dto.technicalResponsibleRegistrationId()));
 
         entity.setTechnicalResponsible(responsible);
+        entity.setName(serviceToInherit.getName());
+        entity.setDescription(serviceToInherit.getDescription());
 
         if (dto.documents() != null) {
             entity.getDocuments().clear();
@@ -234,7 +240,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
         repository.save(entity);
 
-        List<Request> requests = entity.getMunicipalService().getRequests();
+        List<Request> requests = entity.getRequests();
         Request request = requests.get(requests.size() - 1);
         this.monitoringService.completeCurrentMonitoringAndActivateNext(request, true);
     }
@@ -265,7 +271,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setRejectionJustification(dto.justification());
         ConstructionLicenseRequirement saved = repository.save(entity);
 
-        List<Request> requests = entity.getMunicipalService().getRequests();
+        List<Request> requests = entity.getRequests();
         Request request = requests.get(requests.size() - 1);
         this.monitoringService.completeCurrentMonitoringAndActivateNext(request, false);
 
@@ -525,7 +531,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         repository.save(license);
 
         // INFO: Updates the monitoring status
-        List<Request> requests = license.getMunicipalService().getRequests();
+        List<Request> requests = license.getRequests();
         if (requests.isEmpty()) {
             throw new BusinessException("No requests found for this municipal service.");
         }
@@ -570,7 +576,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         repository.save(license);
 
         // INFO: Updates the monitoring status
-        List<Request> requests = license.getMunicipalService().getRequests();
+        List<Request> requests = license.getRequests();
         if (requests.isEmpty()) {
             throw new BusinessException("No requests found for this municipal service.");
         }

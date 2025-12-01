@@ -249,7 +249,7 @@ public class RequestService implements IRequestService {
         }
 
         ConstructionLicenseRequirement requirement = requirementRepository
-                .findFirstByMunicipalServiceIdOrderByIdDesc(municipalService.getId())
+                .findById(municipalService.getId())
                 .orElseThrow(() -> new BusinessException(
                         "Nenhum Requirement encontrado para o Serviço Municipal ID: " + municipalService.getId()));
 
@@ -277,7 +277,7 @@ public class RequestService implements IRequestService {
         }
 
         ConstructionLicenseRequirement requirement = requirementRepository
-                .findFirstByMunicipalServiceIdOrderByIdDesc(municipalService.getId())
+                .findById(municipalService.getId())
                 .orElseThrow(() -> new BusinessException(
                         "Nenhum Requirement encontrado para o Serviço Municipal ID: " + municipalService.getId()));
 

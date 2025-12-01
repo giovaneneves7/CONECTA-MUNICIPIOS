@@ -1,16 +1,13 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Flow;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
-import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -19,6 +16,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a MunicipalService entity that models a public service provided by the municipality.
@@ -32,6 +32,8 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "municipal_services")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "service_type")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -41,21 +41,15 @@ import lombok.Setter;
  */
 
 @Entity
-@Table(name = "requirements")
-@Inheritance(strategy = InheritanceType.JOINED) 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Requirement extends SimplePersistenceEntity{
+public abstract class Requirement extends MunicipalService{
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt ;
-
-    @ManyToOne
-    @JoinColumn(name = "municipal_service_id")
-    private MunicipalService municipalService;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "requirement_type_id", nullable = false)

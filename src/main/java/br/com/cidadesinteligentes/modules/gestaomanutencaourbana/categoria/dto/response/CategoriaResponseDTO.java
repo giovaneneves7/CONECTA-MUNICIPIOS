@@ -1,15 +1,18 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class CategoriaResponseDTO {
+// Record para resposta
+@JsonInclude(JsonInclude.Include.NON_NULL) // Não retorna campos nulos no JSON final
+public record CategoriaResponseDTO(
 
-    private Long id;
-    private String nome;
-    private String descricao;
-}
+        @JsonProperty("id")
+        Long id,
+
+        @JsonProperty("nome")
+        String nome,
+
+        @JsonProperty("descricao")
+        String descricao
+) {}

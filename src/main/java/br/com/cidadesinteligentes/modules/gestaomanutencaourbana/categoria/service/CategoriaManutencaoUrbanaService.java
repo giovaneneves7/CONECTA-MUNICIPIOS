@@ -1,10 +1,13 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service;
 
+// Import baseado na imagem da estrutura de pastas enviada
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCreateRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaUpdateRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model.CategoriaManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.repository.ICategoriaManutencaoUrbanaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,36 +23,42 @@ public class CategoriaManutencaoUrbanaService implements ICategoriaManutencaoUrb
 
     @Override
     @Transactional
-    public CategoriaResponseDTO createCategoria(CategoriaManutencaoUrbana categoria) {
-        // Regra de negócio: Poderia validar se já existe nome aqui
-        // if (repository.existsByNome(categoria.getNome())) { ... }
+    public CategoriaResponseDTO save(CategoriaCreateRequestDTO dto) {
+        // Validação de regra de negócio: Nome único
+        if (repository.existsByNome(dto.nome())) {
+            throw new BusinessException("Já existe uma categoria com o nome informado.");
+        }
 
-        CategoriaManutencaoUrbana savedEntity = repository.save(categoria);
+        // Converte o Record (DTO) para Entidade
+        CategoriaManutencaoUrbana entity = objectMapperUtil.map(dto, CategoriaManutencaoUrbana.class);
+
+        CategoriaManutencaoUrbana savedEntity = repository.save(entity);
         return objectMapperUtil.map(savedEntity, CategoriaResponseDTO.class);
     }
 
     @Override
-    public List<CategoriaResponseDTO> findAllCategorias() {
+    public List<CategoriaResponseDTO> findAll() {
         return objectMapperUtil.mapAll(repository.findAll(), CategoriaResponseDTO.class);
     }
 
     @Override
-    public CategoriaResponseDTO findCategoriaById(Long id) {
-        CategoriaManutencaoUrbana entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada com o ID: " + id));
-
-        return objectMapperUtil.map(entity, CategoriaResponseDTO.class);
+    public CategoriaResponseDTO findById(Long id) {
+        // Usa o .map() seguido de .orElseThrow() conforme sugerido no print
+        return repository.findById(id)
+                .map(entity -> objectMapperUtil.map(entity, CategoriaResponseDTO.class))
+                .orElseThrow(() -> new BusinessException("Categoria não encontrada com o ID: " + id));
     }
 
     @Override
     @Transactional
-    public CategoriaResponseDTO updateCategoria(Long id, CategoriaManutencaoUrbana categoriaComNovosDados) {
-        CategoriaManutencaoUrbana categoriaExistente = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada para atualização."));
+    public CategoriaResponseDTO update(CategoriaUpdateRequestDTO dto) {
+        // Busca a entidade ou lança BusinessException usando o ID que vem dentro do DTO de update
+        CategoriaManutencaoUrbana categoriaExistente = repository.findById(dto.id())
+                .orElseThrow(() -> new BusinessException("Categoria não encontrada para atualização com o ID: " + dto.id()));
 
-        // Atualiza os dados
-        categoriaExistente.setNome(categoriaComNovosDados.getNome());
-        categoriaExistente.setDescricao(categoriaComNovosDados.getDescricao());
+        // Atualiza os dados manualmente para garantir que o ID não mude
+        categoriaExistente.setNome(dto.nome());
+        categoriaExistente.setDescricao(dto.descricao());
 
         CategoriaManutencaoUrbana updatedEntity = repository.save(categoriaExistente);
         return objectMapperUtil.map(updatedEntity, CategoriaResponseDTO.class);
@@ -57,9 +66,9 @@ public class CategoriaManutencaoUrbanaService implements ICategoriaManutencaoUrb
 
     @Override
     @Transactional
-    public void deleteCategoria(Long id) {
+    public void delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Categoria não encontrada para exclusão.");
+            throw new BusinessException("Categoria não encontrada para exclusão com o ID: " + id);
         }
         repository.deleteById(id);
     }

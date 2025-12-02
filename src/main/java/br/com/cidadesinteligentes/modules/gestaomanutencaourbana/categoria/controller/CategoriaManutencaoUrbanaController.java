@@ -1,9 +1,12 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.controller;
 
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ResultError;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCreateRequestDTO;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaUpdateRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaRetornarIdResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service.ICategoriaManutencaoUrbanaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -23,13 +26,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * REST controller responsible for managing urban maintenance categories.
+ * Controlador REST responsável pelo gerenciamento das categorias de manutenção urbana.
+ * <p>
+ * Expõe endpoints para criar, listar, atualizar e excluir categorias.
+ * Delega a lógica de negócios para a camada de serviço de domínio.
+ * </p>
  *
  * @author Jeovani
  * @since 1.0
+ * @see ICategoriaManutencaoUrbanaService
+ * @see CategoriaResponseDTO
  */
 @RestController
-// Base path ajustado conforme contexto, os métodos adicionam o sufixo solicitado
 @RequestMapping("/api/v1/manutencao-urbana/categorias")
 @Tag(name = "Gestão de Categorias", description = "Endpoints para gerenciamento das categorias de manutenção urbana")
 @RequiredArgsConstructor
@@ -37,18 +45,24 @@ public class CategoriaManutencaoUrbanaController {
 
     private final ICategoriaManutencaoUrbanaService categoriaService;
 
-    // POST /api/v1/manutencao-urbana/categorias/categoria
-    @Operation(summary = "Create a New Category", description = "Creates a new urban maintenance category.")
+    /**
+     * Cria uma nova categoria de manutenção urbana.
+     *
+     * @param categoriaDto O DTO contendo os dados da categoria a ser persistida.
+     * @param result       Resultado da validação para erros no corpo da requisição.
+     * @return Um {@link ResponseEntity} com status 201 Created ou 422 Unprocessable Entity.
+     */
+    @Operation(summary = "Criar Nova Categoria", description = "Cria uma nova categoria de manutenção urbana no sistema.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Category successfully created."),
-            @ApiResponse(responseCode = "422", description = "Validation error.")
+            @ApiResponse(responseCode = "201", description = "Categoria criada com sucesso."),
+            @ApiResponse(responseCode = "422", description = "Erro de validação: Um ou mais campos na requisição são inválidos.")
     })
     @PostMapping(value = "/categoria",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> save(
-            @RequestBody @Valid CategoriaCreateRequestDTO categoriaDto,
+            @RequestBody @Valid CategoriaCriarRequestDTO categoriaDto,
             BindingResult result) {
 
         if (result.hasErrors()) {
@@ -56,15 +70,18 @@ public class CategoriaManutencaoUrbanaController {
                     .body(ResultError.getResultErrors(result));
         }
 
-        // Passa o DTO direto para o service
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(categoriaService.save(categoriaDto));
     }
 
-    // GET /api/v1/manutencao-urbana/categorias
-    @Operation(summary = "List All Categories", description = "Retrieves a list of all maintenance categories.")
+    /**
+     * Recupera todas as categorias de manutenção urbana cadastradas.
+     *
+     * @return Uma lista de categorias.
+     */
+    @Operation(summary = "Listar Todas as Categorias", description = "Recupera uma lista de todas as categorias de manutenção armazenadas no sistema.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List retrieved successfully.",
+            @ApiResponse(responseCode = "200", description = "Lista de categorias recuperada com sucesso.",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoriaResponseDTO.class))))
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,28 +89,41 @@ public class CategoriaManutencaoUrbanaController {
         return ResponseEntity.ok(categoriaService.findAll());
     }
 
-    // GET /api/v1/manutencao-urbana/categorias/categoria/{id}
-    @Operation(summary = "Find Category by ID", description = "Retrieves detailed information for a specific category.")
+    /**
+     * Recupera uma categoria pelo seu ID.
+     *
+     * @param id O ID da categoria a ser recuperada.
+     * @return Os detalhes da categoria.
+     */
+    @Operation(summary = "Buscar Categoria por ID", description = "Recupera informações detalhadas de uma categoria específica identificada pelo seu ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category found successfully."),
-            @ApiResponse(responseCode = "404", description = "Category not found.")
+            @ApiResponse(responseCode = "200", description = "Categoria encontrada com sucesso.",
+                    content = @Content(schema = @Schema(implementation = CategoriaResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Categoria não encontrada com o ID fornecido.")
     })
     @GetMapping("/categoria/{id}")
     public ResponseEntity<CategoriaResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(categoriaService.findById(id));
     }
 
-    // PUT /api/v1/manutencao-urbana/categorias/categoria/{id}
-    @Operation(summary = "Update Category", description = "Updates the properties of a category.")
+    /**
+     * Atualiza uma categoria existente.
+     *
+     * @param id           O ID da categoria a ser atualizada.
+     * @param categoriaDto O DTO contendo os dados atualizados.
+     * @param result       Resultado da validação.
+     * @return A categoria atualizada.
+     */
+    @Operation(summary = "Atualizar Categoria", description = "Atualiza as propriedades de uma categoria identificada pelo seu ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Category not found"),
-            @ApiResponse(responseCode = "422", description = "Validation error")
+            @ApiResponse(responseCode = "200", description = "Categoria atualizada com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Categoria não encontrada."),
+            @ApiResponse(responseCode = "422", description = "Erro de validação: Dados inválidos.")
     })
     @PutMapping("/categoria/{id}")
     public ResponseEntity<?> update(
             @PathVariable Long id,
-            @RequestBody @Valid CategoriaUpdateRequestDTO categoriaDto,
+            @RequestBody @Valid CategoriaAtualizarRequestDTO categoriaDto,
             BindingResult result) {
 
         if (result.hasErrors()) {
@@ -101,24 +131,31 @@ public class CategoriaManutencaoUrbanaController {
                     .body(ResultError.getResultErrors(result));
         }
 
-        // Nota: O Service espera um DTO que contenha o ID.
-        // Idealmente o ID da URL deve bater com o do DTO, ou garantimos aqui.
+        // Validação de consistência: O ID da URL deve ser igual ao do Corpo
         if (!id.equals(categoriaDto.id())) {
-
+            throw new BusinessException(BusinessExceptionMessage.ID_MISMATCH.getMessage());
         }
 
         return ResponseEntity.ok(categoriaService.update(categoriaDto));
     }
 
-    // DELETE /api/v1/manutencao-urbana/categorias/categoria/{id}
-    @Operation(summary = "Delete Category", description = "Removes a category from the system.")
+    /**
+     * Exclui uma categoria pelo seu ID.
+     *
+     * @param id O ID da categoria a ser excluída.
+     * @return O DTO contendo o ID da categoria excluída.
+     */
+    @Operation(summary = "Excluir Categoria", description = "Remove uma categoria do sistema identificada pelo seu ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Category deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Category not found")
+            @ApiResponse(responseCode = "200", description = "Categoria excluída com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Categoria não encontrada.")
     })
     @DeleteMapping("/categoria/{id}")
-    public ResponseEntity<Long> delete(@PathVariable Long id) {
-        categoriaService.delete(id);
-        return ResponseEntity.ok(id);
+    public ResponseEntity<CategoriaRetornarIdResponseDTO> excluir(@PathVariable Long id) {
+        // Recebe o ID do service (Long)
+        Long idDeletado = categoriaService.delete(id);
+
+        // Retorna embrulhado no DTO: { "id": 1 }
+        return ResponseEntity.ok(new CategoriaRetornarIdResponseDTO(idDeletado));
     }
 }

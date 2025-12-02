@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service;
 
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCreateRequestDTO;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaUpdateRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface ICategoriaManutencaoUrbanaService {
      * @param dto Dados da nova categoria.
      * @return DTO com os dados da categoria salva.
      */
-    CategoriaResponseDTO save(CategoriaCreateRequestDTO dto);
+    CategoriaResponseDTO save(CategoriaCriarRequestDTO dto);
 
     /**
      * Lista todas as categorias cadastradas.
@@ -33,11 +33,12 @@ public interface ICategoriaManutencaoUrbanaService {
      * @param dto Dados para atualização (contém o ID).
      * @return DTO da categoria atualizada.
      */
-    CategoriaResponseDTO update(CategoriaUpdateRequestDTO dto);
+    CategoriaResponseDTO update(CategoriaAtualizarRequestDTO dto);
 
     /**
      * Remove uma categoria pelo ID.
      * @param id Identificador da categoria a ser removida.
+     * @return O ID da categoria que foi excluída.
      */
-    void delete(Long id);
+    Long delete(Long id);
 }

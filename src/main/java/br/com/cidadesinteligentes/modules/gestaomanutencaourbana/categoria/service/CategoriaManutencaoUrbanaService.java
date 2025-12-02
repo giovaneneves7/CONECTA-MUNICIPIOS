@@ -1,10 +1,10 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service;
 
-// Import baseado na imagem da estrutura de pastas enviada
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCreateRequestDTO;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaUpdateRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model.CategoriaManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.repository.ICategoriaManutencaoUrbanaRepository;
@@ -23,40 +23,37 @@ public class CategoriaManutencaoUrbanaService implements ICategoriaManutencaoUrb
 
     @Override
     @Transactional
-    public CategoriaResponseDTO save(CategoriaCreateRequestDTO dto) {
-        // Validação de regra de negócio: Nome único
+    public CategoriaResponseDTO save(CategoriaCriarRequestDTO dto) {
         if (repository.existsByNome(dto.nome())) {
-            throw new BusinessException("Já existe uma categoria com o nome informado.");
+            throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getAttributeValueAlreadyExistsMessage("Nome"));
         }
 
-        // Converte o Record (DTO) para Entidade
         CategoriaManutencaoUrbana entity = objectMapperUtil.map(dto, CategoriaManutencaoUrbana.class);
-
         CategoriaManutencaoUrbana savedEntity = repository.save(entity);
+
         return objectMapperUtil.map(savedEntity, CategoriaResponseDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoriaResponseDTO> findAll() {
         return objectMapperUtil.mapAll(repository.findAll(), CategoriaResponseDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CategoriaResponseDTO findById(Long id) {
-        // Usa o .map() seguido de .orElseThrow() conforme sugerido no print
         return repository.findById(id)
                 .map(entity -> objectMapperUtil.map(entity, CategoriaResponseDTO.class))
-                .orElseThrow(() -> new BusinessException("Categoria não encontrada com o ID: " + id));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }
 
     @Override
     @Transactional
-    public CategoriaResponseDTO update(CategoriaUpdateRequestDTO dto) {
-        // Busca a entidade ou lança BusinessException usando o ID que vem dentro do DTO de update
+    public CategoriaResponseDTO update(CategoriaAtualizarRequestDTO dto) {
         CategoriaManutencaoUrbana categoriaExistente = repository.findById(dto.id())
-                .orElseThrow(() -> new BusinessException("Categoria não encontrada para atualização com o ID: " + dto.id()));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        // Atualiza os dados manualmente para garantir que o ID não mude
         categoriaExistente.setNome(dto.nome());
         categoriaExistente.setDescricao(dto.descricao());
 
@@ -66,10 +63,12 @@ public class CategoriaManutencaoUrbanaService implements ICategoriaManutencaoUrb
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public Long delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new BusinessException("Categoria não encontrada para exclusão com o ID: " + id);
+            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
+
+        return id;
     }
 }

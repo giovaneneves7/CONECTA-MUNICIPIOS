@@ -3,12 +3,12 @@ package br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.dto.reques
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
- * Data Transfer Object for receiving Citizen data in API requests.
- * Used when creating or updating citizen information.
- *
+ * Objeto de transferência de dados de Cidadão.
+ * Usado para criar ou atualizar informações do cidadão.
+ * 
  * @author Jorge Roberto
  */
-public record CitizenRequestDTO (
+public record CidadaoRequestDTO (
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        String govProfileSnapshot
+        String perfilGovSnapshot
 ) {}

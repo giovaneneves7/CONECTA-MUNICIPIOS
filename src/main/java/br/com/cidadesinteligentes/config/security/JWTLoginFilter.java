@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.config.security;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.service.TokenAuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -46,11 +46,11 @@ public class JWTLoginFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final TokenAuthenticationService tokenAuthenticationService;
-    private final IUserRepository userRepository;
+    private final IUsuarioRepository userRepository;
 
 
     public JWTLoginFilter(TokenAuthenticationService tokenAuthenticationService,
-                          IUserRepository userRepository) {
+                          IUsuarioRepository userRepository) {
         this.tokenAuthenticationService = tokenAuthenticationService;
         this.userRepository = userRepository;
     }
@@ -79,7 +79,7 @@ public class JWTLoginFilter extends OncePerRequestFilter {
                 String email = tokenAuthenticationService.validateToken(tokenOpt.get());
 
                 if (email != null) {
-                    User user = userRepository.findByEmail(email)
+                    Usuario user = userRepository.findByEmail(email)
                             .orElseThrow(() -> new IllegalStateException("User not found for email: " + email));
 
                     UsernamePasswordAuthenticationToken authToken =

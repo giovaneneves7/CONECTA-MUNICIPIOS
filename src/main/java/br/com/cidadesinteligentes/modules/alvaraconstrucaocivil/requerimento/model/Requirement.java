@@ -13,7 +13,7 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalva
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.model.Document;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -60,7 +60,7 @@ public abstract class Requirement extends MunicipalService{
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "solicitante_user_id", nullable = false)
-    private User solicitante;
+    private Usuario solicitante;
 
     /**
      * The single Comment or justification associated with this requirement.

@@ -8,7 +8,7 @@ import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.itemavalia
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.model.Monitoring;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.atualizacao.model.Update;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import br.com.cidadesinteligentes.infraestructure.model.StatusHistory;
 import jakarta.persistence.Column;
@@ -54,7 +54,7 @@ public class Request extends PersistenceEntity{
 
     @ManyToOne
     @JoinColumn(name = "profile_id", nullable = false)
-    private Profile profile;
+    private Perfil profile;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

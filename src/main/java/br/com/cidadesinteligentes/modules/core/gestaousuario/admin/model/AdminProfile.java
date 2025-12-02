@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.admin.model;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.*;
@@ -16,5 +16,5 @@ import lombok.*;
 //@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @DiscriminatorValue("ADMIN")
-public class AdminProfile extends Profile {
+public class AdminProfile extends Perfil {
 }

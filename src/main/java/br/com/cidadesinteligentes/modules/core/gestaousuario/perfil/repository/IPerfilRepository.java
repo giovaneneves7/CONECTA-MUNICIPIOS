@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,21 +11,21 @@ import java.util.UUID;
 
 
 /**
- * Data access repository for the {@link Profile} entity.
+ * Repositório de acesso a dados para a entidade {@link Perfil}.
  *
  * @author Jorge Roberto, Giovane Neves
  */
-public interface IProfileRepository extends JpaRepository<Profile, UUID> {
+public interface IPerfilRepository extends JpaRepository<Perfil, UUID> {
 
     /**
-     * Get all profiles linked to a user by the user's id passed as a parameter
+     * Obtém todos os perfis vinculados a um usuário pelo ID do usuário passado como parâmetro
      *
      * @author Giovane Neves
-     * @param userId The user's id
-     * @return A list of the user's linked profiles
+     * @param userId O id do usuário
+     * @return Uma lista dos perfis vinculados ao usuário
      */
     @Query("SELECT p FROM Profile p WHERE p.user.id = :userId")
-    Page<Profile> findAllByUserId(@Param("userId") UUID userId, Pageable pageable);
+    Page<Perfil> findAllByUserId(@Param("userId") UUID userId, Pageable pageable);
 
 
 }

@@ -37,17 +37,17 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.dto.re
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.model.Document;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IMunicipalServiceRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Person;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfilePublicDataResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IProfileRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.repository.IRequirementTypeRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.response.TechnicalResponsibleResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.model.TechnicalResponsible;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.repository.ITechnicalResponsibleRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import jakarta.validation.constraints.NotNull;
 
@@ -85,8 +85,8 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
     private final ObjectMapperUtil objectMapperUtil;
     private final ITechnicalResponsibleRepository technicalResponsibleRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final IUserRepository userRepository;
-    private final IProfileRepository profileRepository;
+    private final IUsuarioRepository userRepository;
+    private final IPerfilRepository profileRepository;
     private final IRequestRepository requestRepository;
     private final IPublicServantProfileRepository publicServantProfileRepository;
     private final ICommentRepository commentRepository;
@@ -95,10 +95,10 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
     @Transactional
     public ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
 
-        Profile solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
+        Perfil solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
                 .orElseThrow(() -> new BusinessException("Perfil do solicitante não encontrado"));
 
-        User solicitante = solicitanteProfile.getUser();
+        Usuario solicitante = solicitanteProfile.getUser();
 
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
 
@@ -292,9 +292,9 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
 
         if (responsibleEntity != null &&
                 responsibleEntity.getUser() != null &&
-                responsibleEntity.getUser().getPerson() != null) {
+                responsibleEntity.getUser().getPessoa() != null) {
 
-            responsibleName = responsibleEntity.getUser().getPerson().getFullName();
+            responsibleName = responsibleEntity.getUser().getPessoa().getNomeCompleto();
         }
 
         return new ConstructionLicenseRequirementResponseDTO(
@@ -336,9 +336,9 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
 
         if (responsibleEntity != null &&
                 responsibleEntity.getUser() != null &&
-                responsibleEntity.getUser().getPerson() != null) {
+                responsibleEntity.getUser().getPessoa() != null) {
 
-            responsibleName = responsibleEntity.getUser().getPerson().getFullName();
+            responsibleName = responsibleEntity.getUser().getPessoa().getNomeCompleto();
         }
 
         return new ConstructionLicenseRequirementWithRequestIDResponseDTO(
@@ -420,31 +420,31 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         }
 
         TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
-        User responsibleUser = responsibleEntity.getUser();
+        Usuario responsibleUser = responsibleEntity.getUser();
 
         TechnicalResponsibleResponseDTO responsibleDTO = new TechnicalResponsibleResponseDTO(
                 responsibleEntity.getId(),
                 responsibleEntity.getRegistrationId(),
                 responsibleEntity.getResponsibleType(),
-                responsibleEntity.getImageUrl(),
-                responsibleUser.getPerson().getFullName(),
-                responsibleUser.getPerson().getCpf(),
+                responsibleEntity.getImagemUrl(),
+                responsibleUser.getPessoa().getNomeCompleto(),
+                responsibleUser.getPessoa().getCpf(),
                 responsibleUser.getEmail(),
-                responsibleUser.getPhone());
+                responsibleUser.getTelefone());
 
-        User applicantUser = entity.getSolicitante();
-        Person applicantPerson = applicantUser.getPerson();
+        Usuario applicantUser = entity.getSolicitante();
+        Pessoa applicantPerson = applicantUser.getPessoa();
 
         ProfilePublicDataResponseDTO applicantDTO = new ProfilePublicDataResponseDTO(
-                applicantUser.getActiveProfile().getId(),
-                applicantUser.getActiveProfile().getType(),
-                applicantUser.getActiveProfile().getImageUrl(),
-                applicantPerson.getFullName(),
+                applicantUser.getPerfilAtivo().getId(),
+                applicantUser.getPerfilAtivo().getTipo(),
+                applicantUser.getPerfilAtivo().getImagemUrl(),
+                applicantPerson.getNomeCompleto(),
                 applicantPerson.getCpf(),
-                applicantUser.getPhone(),
+                applicantUser.getTelefone(),
                 applicantUser.getEmail(),
-                applicantPerson.getGender().toString(),
-                applicantPerson.getBirthDate());
+                applicantPerson.getGenero().toString(),
+                applicantPerson.getDataNascimento());
 
         List<DocumentResponseDTO> documentDTOs = entity.getDocuments().stream()
                 .map(doc -> new DocumentResponseDTO(

@@ -1,8 +1,8 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Person;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,9 +41,9 @@ import java.util.List;
  *
  * Uses Lombok and JPA annotations for persistence and auditing.
  *
- * @author Jorge Roberto, Giovane Neves
+ * @author Jorge Roberto, Giovane Neves, Caio Alves
  */
-@Table(name = "users")
+@Table(name = "usuarios")
 @Entity
 @Getter
 @Setter
@@ -52,28 +52,28 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true) //apenas o campo id
 @ToString(onlyExplicitlyIncluded = true,  callSuper = true)
 @EntityListeners(AuditingEntityListener.class) //Auditoria
-public class User extends PersistenceEntity implements UserDetails, Serializable {
+public class Usuario extends PersistenceEntity implements UserDetails, Serializable {
 
     @Email
     @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
-    @Column(name = "phone", nullable = false, length = 20, unique = true)
-    private String phone;
+    @Column(name = "telefone", nullable = false, length = 20, unique = true)
+    private String telefone;
 
-    @Column(name = "username",  nullable = false, length = 100)
-    private String username;
+    @Column(name = "nome_usuario",  nullable = false, length = 100)
+    private String nomeUsuario;
 
-    @Column(name = "password", nullable = false, length = 255)
-    private String password;
+    @Column(name = "senha", nullable = false, length = 255)
+    private String senha;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private UserStatus status;
+    private StatusUsuario status;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "person_id", unique = true, nullable = false)
-    private Person person;
+    @JoinColumn(name = "id_pessoa", unique = true, nullable = false)
+    private Pessoa pessoa;
 
     @CreatedDate
     @Column(name = "created_at")
@@ -83,12 +83,12 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
     @Column(name = "update_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user")
-    private List<Profile> profiles = new ArrayList<>();
+    @OneToMany(mappedBy = "usuario")
+    private List<Perfil> perfis = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "active_profile_id")
-    private Profile activeProfile;
+    @JoinColumn(name = "id_perfil_ativo")
+    private Perfil perfilAtivo;
 
     //TODO: Implementar lógica de autoridades
     @Override
@@ -98,7 +98,12 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
 
     @Override
     public String getUsername() {
-        return this.username;
+        return this.nomeUsuario;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
     }
 
     @Override
@@ -121,6 +126,6 @@ public class User extends PersistenceEntity implements UserDetails, Serializable
 
     @Override
     public boolean isEnabled() {
-        return this.status == UserStatus.ACTIVE;
+        return this.status == StatusUsuario.ATIVO;
     }
 }

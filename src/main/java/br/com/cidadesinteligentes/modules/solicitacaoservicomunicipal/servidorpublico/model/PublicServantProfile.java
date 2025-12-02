@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.model;
 
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.funcaoservidorpublico.model.Function;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -31,7 +31,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @DiscriminatorValue("PUBLIC_SERVANT")
-public class PublicServantProfile extends Profile implements Serializable {
+public class PublicServantProfile extends Perfil implements Serializable {
 
     @Column(name = "employee_id", unique = true)
     private String employeeId;

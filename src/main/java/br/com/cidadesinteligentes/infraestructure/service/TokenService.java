@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +52,7 @@ public class TokenService {
      * @return the JWT token as {@link String}
      * @throws RuntimeException in case of generation failure
      */
-    public String generateToken(User user) {
+    public String generateToken(Usuario user) {
         try {
             Date issuedAt = new Date();
             Date expirationDate = generateExpirationDate();

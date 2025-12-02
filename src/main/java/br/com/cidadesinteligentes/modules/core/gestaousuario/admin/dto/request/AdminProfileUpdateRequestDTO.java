@@ -35,7 +35,7 @@ public record AdminProfileUpdateRequestDTO(
         String imageUrl,
 
         /**
-         * The unique identifier (UUID) of the {@link br.edu.ifba.conectairece.api.features.user.domain.entity.User}
+         * The unique identifier (UUID) of the {@link br.edu.ifba.conectairece.api.features.user.domain.entity.Usuario}
          * to which this admin profile is linked.
          * <p>
          * This field is mandatory to identify which user (and, consequently,

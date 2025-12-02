@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.model;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -13,20 +13,20 @@ import org.hibernate.type.SqlTypes;
 
 
 /**
- * Represents a Citizen entity that extends the Profile base class.
- * This class is used to store citizen-specific information including government profile data.
+ * Representação de uma entidade Cidadão que estende a classe base Perfil.
+ * Esta classe é usada para armazenar informações específicas do cidadão, incluindo dados do perfil governamental.
  *
- * @author Jorge Roberto
+ * @author Jorge Roberto, Caio Alves
  */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorValue("CITIZEN")
-public class Citizen extends Profile {
+@DiscriminatorValue("CIDADAO")
+public class Cidadao extends Perfil {
 
-    @Column(name = "gov_profile_snapshot", columnDefinition = "jsonb")
+    @Column(name = "perfil_gov_snapshot", columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
-    private String govProfileSnapshot;
+    private String perfilGovSnapshot;
 }

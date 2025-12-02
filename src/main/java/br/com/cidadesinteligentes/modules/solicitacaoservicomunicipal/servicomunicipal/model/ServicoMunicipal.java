@@ -1,8 +1,9 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model;
 
 import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Flow;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Fluxo;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -11,6 +12,7 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,33 +23,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a MunicipalService entity that models a public service provided by the municipality.
- * This class stores service-specific information such as name and description.
+ * Representa a entidade de Serviço Municipal fornecido pela prefeitura.
+ * Esta classe armazena informações específicas do serviço, como nome e descrição.
  *
- * - One municipal service can have multiple requests.
- * - A municipal service can belong to multiple categories.
+ * <p>Regras de Negócio:
+ * <ul>
+ * <li>Um serviço municipal pode ter múltiplas solicitações.</li>
+ * <li>Um serviço municipal possui um fluxo de trabalho associado.</li>
+ * </ul>
  *
- * @author Caio Alves
+ * @author Caio Alves, Andesson Reis
  */
 
 @Entity
-@Table(name = "municipal_services")
+@Table(name = "servicos_municipais")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "service_type")
+@DiscriminatorColumn(name = "tipo_servico")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class MunicipalService extends SimplePersistenceEntity {
+public class ServicoMunicipal extends SimplePersistenceEntity {
 
-    private String name;
-    private String description;
+    private String nome;
+    private String descricao;
 
-    @OneToMany(mappedBy = "municipalService", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Request> requests = new ArrayList<>();
+    @OneToMany(mappedBy = "servicoMunicipal", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Request> solicitacoes = new ArrayList<>();
 
-    @OneToOne(mappedBy = "municipalService")
-    private Flow flow;
+    @OneToOne(mappedBy = "servicoMunicipal")
+    private Fluxo fluxo;
 
 }

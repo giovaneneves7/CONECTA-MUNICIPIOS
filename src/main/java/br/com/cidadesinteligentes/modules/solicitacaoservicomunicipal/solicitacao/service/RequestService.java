@@ -6,8 +6,8 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.dto.re
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.enums.DocumentStatus;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.dto.response.MonitoringResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.repository.IMonitoringRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IProfileRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.event.RequestCreatedEvent;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.atualizacao.dto.response.UpdateResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.atualizacao.repository.IUpdateRepository;
@@ -53,7 +53,7 @@ public class RequestService implements IRequestService {
     private final IRequestRepository requestRepository;
     private final IMunicipalServiceRepository municipalServiceRepository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final IProfileRepository profileRepository;
+    private final IPerfilRepository profileRepository;
     private final IMonitoringRepository monitoringRepository;
     private final IUpdateRepository updateRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -72,7 +72,7 @@ public class RequestService implements IRequestService {
         MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        Profile profile = profileRepository.findById(dto.profileId())
+        Perfil profile = profileRepository.findById(dto.profileId())
                 .orElseThrow(() -> new BusinessException("Profile not found"));
         Request request = new Request();
         request.setProtocolNumber(dto.protocolNumber());
@@ -231,8 +231,8 @@ public class RequestService implements IRequestService {
                     baseDto.note(),
                     baseDto.municipalServiceId(),
                     statusValue,
-                    request.getProfile().getUser().getPerson().getFullName(),
-                    request.getProfile().getUser().getPerson().getCpf());
+                    request.getProfile().getUser().getPessoa().getNomeCompleto(),
+                    request.getProfile().getUser().getPessoa().getCpf());
         });
     }
 

@@ -1,9 +1,9 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.controller;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Role;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.request.PermissionRequestAddDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.request.PermissionRequestUpdateDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.service.IRoleService;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.service.ICargoService;
 import br.com.cidadesinteligentes.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,15 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST Controller responsible for managing {@link Role} resources.
+ * REST Controller responsible for managing {@link Cargo} resources.
  *
  * @author Jorge Roberto
  */
 @RestController
 @RequestMapping("/api/v1/roles")
 @RequiredArgsConstructor
-public class RoleController {
-    private final IRoleService roleService;
+public class CargoController {
+    private final ICargoService roleService;
 
     @Operation(summary = "Adds a permission to a role",
             description = "Adds one of the existing permissions in the database to a role.")
@@ -51,7 +51,7 @@ public class RoleController {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        roleService.addPermission(dto.permissionName(), roleId);
+        roleService.adicionarPermissao(dto.permissionName(), roleId);
         return ResponseEntity.noContent().build();
     }
 
@@ -72,7 +72,7 @@ public class RoleController {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        roleService.removePermission(dto.permissionName(), roleId);
+        roleService.removerPermissao(dto.permissionName(), roleId);
         return ResponseEntity.noContent().build();
     }
 }

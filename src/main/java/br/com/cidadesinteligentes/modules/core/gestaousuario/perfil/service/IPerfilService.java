@@ -4,8 +4,8 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.respo
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfilePublicDataResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileResponseCurrentTypeDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileWithRoleResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.projection.ProfileProjection;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.projection.ProjecaoPerfil;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.RequestResponseDTO;
 
 import org.springframework.data.domain.Page;
@@ -15,16 +15,16 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Service interface for managing {@link Profile} entities.
+ * Service interface for managing {@link Perfil} entities.
  *
  * @author Jorge Roberto
  */
-public interface IProfileService {
+public interface IPerfilService {
 
     /**
      * Updates an existing profile in the database.
      */
-    ProfileWithRoleResponseDTO update(Profile profile);
+    ProfileWithRoleResponseDTO update(Perfil profile);
 
     /**
      * Deletes a profile by its identifier.
@@ -37,7 +37,7 @@ public interface IProfileService {
     ProfilePublicDataResponseDTO findById(UUID id);
 
     /**
-     * Retrieves a paginated list of projected {@link ProfileProjection} entities.
+     * Retrieves a paginated list of projected {@link ProjecaoPerfil} entities.
      */
     List<ProfileWithRoleResponseDTO> getAllProfiles(Pageable pageable);
 

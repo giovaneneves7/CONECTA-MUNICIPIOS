@@ -1,8 +1,8 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.service;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.model.Permission;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Role;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.IRoleRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.model.Permissao;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.ICargoRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.repository.IPermissionRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
@@ -14,57 +14,57 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
-public class RoleService implements IRoleService{
+public class CargoService implements ICargoService{
 
     private final IPermissionRepository permissionRepository;
-    private final IRoleRepository roleRepository;
+    private final ICargoRepository cargoRepository;
 
     @Override @Transactional
-    public void addPermission(String permissionName, Long roleId) {
-        Permission permission = permissionRepository.findByName(permissionName)
+    public void adicionarPermissao(String nomePermissao, Long idCargo) {
+        Permissao permission = permissionRepository.findByName(nomePermissao)
             .orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()
             )
         );
 
-        Role role = roleRepository.findById(roleId)
+        Cargo cargo = cargoRepository.findById(idCargo)
             .orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()
             )
         );
 
-        Set<Permission> currentPermissions = role.getPermissions();
+        Set<Permissao> currentPermissions = cargo.getPermissoes();
 
         if (!currentPermissions.add(permission)) {
             throw new BusinessException(BusinessExceptionMessage.PROFILE_ALREADY_HAS_THIS_PERMISSION.getMessage());
         }
 
 
-        roleRepository.save(role);
+        cargoRepository.save(cargo);
     }
 
     @Override @Transactional
-    public void removePermission(String permissionName, Long roleId) {
-        Permission permission = permissionRepository.findByName(permissionName)
+    public void removerPermissao(String nomePermissao, Long idCargo) {
+        Permissao permission = permissionRepository.findByName(nomePermissao)
             .orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()
             )
         );
 
-        Role role = roleRepository.findById(roleId)
+        Cargo cargo = cargoRepository.findById(idCargo)
             .orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()
             )
         );
 
-        Set<Permission> currentPermissions = role.getPermissions();
+        Set<Permissao> currentPermissions = cargo.getPermissoes();
 
         if (!currentPermissions.remove(permission)) {
             throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
 
-        role.setPermissions(currentPermissions);
+        cargo.setPermissoes(currentPermissions);
 
-        roleRepository.save(role);
+        cargoRepository.save(cargo);
     }
 }

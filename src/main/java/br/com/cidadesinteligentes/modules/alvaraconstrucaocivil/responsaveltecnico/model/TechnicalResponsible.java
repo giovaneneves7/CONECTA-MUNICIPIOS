@@ -2,7 +2,7 @@ package br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecn
 
 import java.io.Serializable;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @DiscriminatorValue("TECHNICAL_RESPONSIBLE")
-public class TechnicalResponsible extends Profile implements Serializable {
+public class TechnicalResponsible extends Perfil implements Serializable {
 
     @Column(name = "registration_id", unique = true)
     private String registrationId;

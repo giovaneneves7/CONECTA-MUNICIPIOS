@@ -6,8 +6,8 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.ProfileUpdateRequestDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileResponseCurrentTypeDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileSimpleResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.service.IProfileService;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.service.IPerfilService;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import br.com.cidadesinteligentes.infraestructure.util.ResultError;
 import br.com.cidadesinteligentes.infraestructure.util.dto.PageableDTO;
@@ -40,15 +40,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 /**
- * REST Controller responsible for managing {@link Profile} resources.
+ * REST Controller responsible for managing {@link Perfil} resources.
  *
  * @author Jorge Roberto
  */
 @RestController
 @RequestMapping("/api/v1/profiles")
 @RequiredArgsConstructor
-public class ProfileController {
-    private final IProfileService profileService;
+public class PerfilController {
+    private final IPerfilService profileService;
     private final ObjectMapperUtil objectMapperUtil;
 
     @Operation(summary = "Update an existing Profile",
@@ -65,7 +65,7 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
 
-        this.profileService.update(objectMapperUtil.map(body, Profile.class));
+        this.profileService.update(objectMapperUtil.map(body, Perfil.class));
         return ResponseEntity.noContent().build();
     }
 

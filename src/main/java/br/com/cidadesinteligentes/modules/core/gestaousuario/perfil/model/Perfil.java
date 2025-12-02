@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Role;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -37,19 +37,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public abstract class Profile extends PersistenceEntity {
+public abstract class Perfil extends PersistenceEntity {
 
-    @Column(name = "type", nullable = false)
-    private String type;
+    @Column(name = "tipo", nullable = false)
+    private String tipo;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "imagem_url")
+    private String imagemUrl;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Usuario user;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    private Cargo role;
 }

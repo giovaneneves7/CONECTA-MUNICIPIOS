@@ -8,17 +8,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Entity representing a role's permission in the system
+ * Entidade que representa a permissão de uma role no sistema.
  *
  * @author Giovane Neves
  */
 @Entity
-@Table(name = "permissions")
+@Table(name = "permissoes")
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Permission  extends PersistenceEntity {
+public class Permissao  extends PersistenceEntity {
 
-    @Column(name = "name", nullable = false, length = 100)
-    String name;
+    @Column(name = "nome", nullable = false, length = 100)
+    String nome;
 
 }

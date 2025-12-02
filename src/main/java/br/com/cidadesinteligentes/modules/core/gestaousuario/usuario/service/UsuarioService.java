@@ -1,13 +1,13 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.service;
 
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileWithRoleResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IProfileRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 
@@ -23,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements IUserService {
+public class UsuarioService implements IUsuarioService {
 
     private final ObjectMapperUtil objectMapperUtil;
-    private final IProfileRepository profileRepository;
-    private final IUserRepository userRepository;
+    private final IPerfilRepository profileRepository;
+    private final IUsuarioRepository userRepository;
 
     /**
      * Searches for a user by the ID passed as a parameter
@@ -40,7 +40,7 @@ public class UserService implements IUserService {
     @Transactional(readOnly = true)
     public UserDataResponseDTO getUserById(final UUID id){
 
-        User user = userRepository.findById(id)
+        Usuario user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage()));
 
         return objectMapperUtil.map(user, UserDataResponseDTO.class);
@@ -50,14 +50,14 @@ public class UserService implements IUserService {
     @Transactional(readOnly = true)
     public List<ProfileWithRoleResponseDTO> getUserProfiles(final UUID id, final Pageable pageable) {
 
-        Page<Profile> profiles = this.profileRepository.findAllByUserId(id, pageable);
+        Page<Perfil> profiles = this.profileRepository.findAllByUserId(id, pageable);
 
         return profiles.stream()
                 .map(profile -> new ProfileWithRoleResponseDTO(
                         profile.getId(),
-                        profile.getRole().getName(),
-                        profile.getType(),
-                        profile.getImageUrl()
+                        profile.getRole().getNome(),
+                        profile.getTipo(),
+                        profile.getImagemUrl()
                 ))
                 .toList();
     }
@@ -66,20 +66,20 @@ public class UserService implements IUserService {
     @Override
     @Transactional(readOnly = true)
     public ProfileWithRoleResponseDTO findActiveProfileByUserId(final UUID id) {
-        User user = this.userRepository.findById(id)
+        Usuario user = this.userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        if (user.getActiveProfile() == null) {
+        if (user.getPerfilAtivo() == null) {
             throw new BusinessException(BusinessExceptionMessage.USER_WITHOUT_PROFILES.getMessage());
         }
 
-        Profile profile = user.getActiveProfile();
+        Perfil profile = user.getPerfilAtivo();
 
         return new ProfileWithRoleResponseDTO(
                 profile.getId(),
-                profile.getRole().getName(),
-                profile.getType(),
-                profile.getImageUrl()
+                profile.getRole().getNome(),
+                profile.getTipo(),
+                profile.getImagemUrl()
         );
     }
 
@@ -88,7 +88,7 @@ public class UserService implements IUserService {
     @Transactional(readOnly = true)
     public List<UserResponseDTO> findAllUsers(final Pageable pageable) {
 
-        Page<User> users = userRepository.findAll(pageable);
+        Page<Usuario> users = userRepository.findAll(pageable);
         return users.stream()
                 .map(user -> this.objectMapperUtil.mapToRecord(user, UserResponseDTO.class))
                 .toList();
@@ -96,14 +96,14 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional
-    public void updateUserStatus(UUID userId, UserStatus newStatus) {
-            User user = this.findById(userId);
+    public void updateUserStatus(UUID userId, StatusUsuario newStatus) {
+            Usuario user = this.findById(userId);
             user.setStatus(newStatus);
             this.userRepository.save(user);
     }
 
     @Transactional(readOnly = true)
-    public User findById(UUID id) {
+    public Usuario findById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }

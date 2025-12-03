@@ -110,14 +110,14 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/construction-license-requirements/**").permitAll()
         
 
-                        //Profiles - /api/v1/profiles
-                        .requestMatchers(HttpMethod.POST, "/api/v1/profiles/profile").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/profiles/profile").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/profiles/profile").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/profiles/profile").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/profiles/profile/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/profiles/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/profiles/profile/**").permitAll()
+                        //Perfis
+                        .requestMatchers(HttpMethod.POST, "/api/v1/perfis/perfil").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/perfis/perfil").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/perfis/perfil").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/perfis/perfil").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/perfis/perfil/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/perfis/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/perfis/perfil/**").permitAll()
 
                         //Users - /api/v1/users
                         .requestMatchers(HttpMethod.GET, "/api/v1/users").permitAll()
@@ -156,11 +156,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles/public-servant-profile").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/public-servant-profiles/public-servant-profile/**").permitAll()
 
-                        //Roles
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/roles/role").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/roles/role/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/role").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/roles/role/**").permitAll()
+                        //Cargos
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/cargos/cargo").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/cargos/cargo/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cargos/cargo").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cargos/cargo/**").permitAll()
 
                         //admin controller
                         .requestMatchers(HttpMethod.POST, "/api/v1/admin-profiles").permitAll()

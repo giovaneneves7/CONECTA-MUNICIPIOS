@@ -2,7 +2,7 @@ package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.service;
 
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileWithRoleResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilComCargoResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserResponseDTO;
@@ -48,14 +48,14 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProfileWithRoleResponseDTO> getUserProfiles(final UUID id, final Pageable pageable) {
+    public List<PerfilComCargoResponseDTO> getUserProfiles(final UUID id, final Pageable pageable) {
 
-        Page<Perfil> profiles = this.profileRepository.findAllByUserId(id, pageable);
+        Page<Perfil> profiles = this.profileRepository.findAllByUsuarioId(id, pageable);
 
         return profiles.stream()
-                .map(profile -> new ProfileWithRoleResponseDTO(
+                .map(profile -> new PerfilComCargoResponseDTO(
                         profile.getId(),
-                        profile.getRole().getNome(),
+                        profile.getCargo().getNome(),
                         profile.getTipo(),
                         profile.getImagemUrl()
                 ))
@@ -65,7 +65,7 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProfileWithRoleResponseDTO findActiveProfileByUserId(final UUID id) {
+    public PerfilComCargoResponseDTO findActiveProfileByUserId(final UUID id) {
         Usuario user = this.userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -75,9 +75,9 @@ public class UsuarioService implements IUsuarioService {
 
         Perfil profile = user.getPerfilAtivo();
 
-        return new ProfileWithRoleResponseDTO(
+        return new PerfilComCargoResponseDTO(
                 profile.getId(),
-                profile.getRole().getNome(),
+                profile.getCargo().getNome(),
                 profile.getTipo(),
                 profile.getImagemUrl()
         );

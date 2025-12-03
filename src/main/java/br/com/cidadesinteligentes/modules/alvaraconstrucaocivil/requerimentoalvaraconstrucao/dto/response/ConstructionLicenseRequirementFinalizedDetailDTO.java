@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.enums.AssociationStatus;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.dto.response.DocumentResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfilePublicDataResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilDadosPublicosResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.response.TechnicalResponsibleResponseDTO;
 
 /**
@@ -42,7 +42,7 @@ public record ConstructionLicenseRequirementFinalizedDetailDTO(
         long id,
         LocalDateTime createdAt,
         AssociationStatus technicalResponsibleStatus,
-        ProfilePublicDataResponseDTO solicitante,
+        PerfilDadosPublicosResponseDTO solicitante,
         TechnicalResponsibleResponseDTO technicalResponsible,
         String owner,
         String phone,

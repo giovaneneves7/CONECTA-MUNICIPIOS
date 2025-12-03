@@ -107,7 +107,7 @@ public class AuthenticationService {
 
         Perfil profile = new Cidadao();
         profile.setTipo("Cidadão");
-        profile.setRole(role);
+        profile.setCargo(role);
         profile.setUsuario(user);
         profile = profileRepository.save(profile);
 

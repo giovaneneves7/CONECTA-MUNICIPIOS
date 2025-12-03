@@ -1,8 +1,6 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.controller;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.request.PermissionRequestAddDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.request.PermissionRequestUpdateDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.request.PermissaoRequestDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.service.ICargoService;
 import br.com.cidadesinteligentes.infraestructure.util.ResultError;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,56 +21,72 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST Controller responsible for managing {@link Cargo} resources.
- *
- * @author Jorge Roberto
+ * REST Controller responsável por gerenciar Cargo.
  */
 @RestController
-@RequestMapping("/api/v1/roles")
+@RequestMapping("/api/v1/cargos")
 @RequiredArgsConstructor
 public class CargoController {
-    private final ICargoService roleService;
+    private final ICargoService cargoService;
 
-    @Operation(summary = "Adds a permission to a role",
-            description = "Adds one of the existing permissions in the database to a role.")
+    /**
+     * Adiciona uma permissão a um cargo específico.
+     * * A Função recebe o ID do cargo na URL e o nome da permissão no corpo da requisição.
+     * A operação falha se a permissão já estiver presente no cargo (409 Conflict).
+     *
+     * @param cargoId O ID do cargo ao qual a permissão será adicionada. Deve ser um ID válido.
+     * @param dto O DTO contendo o nome da permissão a ser adicionada.
+     * @param result O resultado da validação do DTO.
+     * @return ResponseEntity com o DTO da permissão adicionada e status 200 OK, ou 4xx em caso de erro.
+     */
+    @Operation(summary = "Adiciona uma permissão a um cargo de um perfil",
+            description = "Adiciona uma das permissões, se ela existir no banco de dados ao cargo")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Permission added successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request content", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Permission or Role not found"),
-            @ApiResponse(responseCode = "409", description = "This role already has this permission"),
-            @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Permissão adicionada com sucesso ao cargo"),
+            @ApiResponse(responseCode = "400", description = "Conteúdo da requisição é inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Permissão ou cargo não foram encontrados"),
+            @ApiResponse(responseCode = "409", description = "Esse cargo já possui essa permissão"),
+            @ApiResponse(responseCode = "422", description = "Um ou mais campos são inválidos", content = @Content)
     })
-    @PatchMapping("/role/{roleId}/permissions")
+    @PatchMapping("/cargo/{cargoId}/permissoes")
     public ResponseEntity<?> addPermission(
-        @PathVariable("roleId") @NotNull Long roleId,
-        @RequestBody @Valid PermissionRequestUpdateDTO dto,
-        BindingResult result
+            @PathVariable("cargoId") @NotNull Long cargoId,
+            @RequestBody @Valid PermissaoRequestDTO dto,
+            BindingResult result
     ) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        roleService.adicionarPermissao(dto.permissionName(), roleId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(cargoService.adicionarPermissao(dto.nome(), cargoId));
     }
 
-    @Operation(summary = "Remove a permission to a role",
-            description = "Remove one of the permissions from a role.")
+    /**
+     * Remove uma permissão de um cargo específico.
+     * * A Função recebe o ID do cargo na URL e o nome da permissão no corpo da requisição.
+     * A operação falha se a permissão não for encontrada no cargo (404 Not Found).
+     *
+     * @param cargoId O ID do cargo do qual a permissão será removida. Deve ser um ID válido.
+     * @param dto O DTO contendo o nome da permissão a ser removida.
+     * @param result O resultado da validação do DTO.
+     * @return ResponseEntity com o DTO da permissão removida e status 200 OK, ou 4xx em caso de erro.
+     */
+    @Operation(summary = "Remove a permissão de um cargo",
+            description = "Remove umas das permissões de um cargo")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Permission removed successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request content", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Permission or Role not found"),
-            @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Permissão removida com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Conteúdo da requisição é inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Permissão ou cargo não foram encontrados"),
+            @ApiResponse(responseCode = "422", description = "Um ou mais campos são inválidos", content = @Content)
     })
-    @DeleteMapping("/role/{roleId}/permissions/remove")
+    @DeleteMapping("/cargo/{cargoId}/permissoes")
     public ResponseEntity<?> removePermission(
-        @PathVariable("roleId") @NotNull Long roleId,
-        @RequestBody @Valid PermissionRequestAddDTO dto,
-        BindingResult result
+            @PathVariable("cargoId") @NotNull Long cargoId,
+            @RequestBody @Valid PermissaoRequestDTO dto,
+            BindingResult result
     ) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
-        roleService.removerPermissao(dto.permissionName(), roleId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(cargoService.removerPermissao(dto.nome(), cargoId));
     }
 }

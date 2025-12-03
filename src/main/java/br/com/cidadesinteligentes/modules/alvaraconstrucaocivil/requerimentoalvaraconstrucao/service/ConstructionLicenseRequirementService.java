@@ -38,7 +38,7 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.model.
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IServicoMunicipalRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfilePublicDataResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilDadosPublicosResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
@@ -435,7 +435,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         Usuario applicantUser = entity.getSolicitante();
         Pessoa applicantPerson = applicantUser.getPessoa();
 
-        ProfilePublicDataResponseDTO applicantDTO = new ProfilePublicDataResponseDTO(
+        PerfilDadosPublicosResponseDTO applicantDTO = new PerfilDadosPublicosResponseDTO(
                 applicantUser.getPerfilAtivo().getId(),
                 applicantUser.getPerfilAtivo().getTipo(),
                 applicantUser.getPerfilAtivo().getImagemUrl(),

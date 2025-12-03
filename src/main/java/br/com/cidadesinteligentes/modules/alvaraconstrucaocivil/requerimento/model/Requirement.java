@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.model.ConstructionLicenseRequirement;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.model.Document;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
@@ -36,8 +36,8 @@ import lombok.Setter;
  *
  * Uses JOINED inheritance strategy to allow different requirement types 
  * to share common fields while storing type-specific fields in separate tables.
- * 
- * Author: Caio Alves
+ *
+ * Author: Caio Alves, Andesson Reis
  */
 
 @Entity
@@ -45,7 +45,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Requirement extends MunicipalService{
+public abstract class Requirement extends ServicoMunicipal{
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp

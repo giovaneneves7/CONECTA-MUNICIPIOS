@@ -3,7 +3,7 @@ package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanha
 
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.enums.MonitoringStatus;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Step;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Etapa;
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,8 +47,9 @@ public class Monitoring extends PersistenceEntity {
     private MonitoringStatus monitoringStatus;
 
     @ManyToOne
-    @JoinColumn(name = "step_id", nullable = false)
-    private Step step;
+    @JoinColumn(name = "etapa_id", nullable = false)
+    private Etapa etapa;
+
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

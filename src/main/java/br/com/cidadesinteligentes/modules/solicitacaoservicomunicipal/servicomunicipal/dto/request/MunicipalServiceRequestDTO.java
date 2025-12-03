@@ -9,21 +9,23 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Data Transfer Object for receiving MunicipalService data in API requests.
- * Used when creating or updating municipal service information.
- * Includes the service's name, description, and associated category IDs.
+ * Representa o DTO utilizado para receber dados de um Serviço Municipal em requisições da API.
+ * Este record carrega informações essenciais do serviço, tais como nome, descrição e IDs das categorias associadas.
  *
- * @author Caio Alves
+ * @author: Caio Alves, Andesson Reis
  */
 public record MunicipalServiceRequestDTO (
-    @JsonProperty("name")
-    @NotNull(message = "Name is mandatory.")
-    @NotBlank(message = "Name is cannot be blank.")
-    String name,
 
-    @JsonProperty("description")
-    String description,
+    @JsonProperty("nome")
+    @NotNull(message = "O nome é obrigatório.")
+    @NotBlank(message = "O nome não pode estar em branco.")
+    String nome,
 
-    @NotEmpty(message = "At least one category must be informed.")
-    List<Integer> categoryIds
+    @JsonProperty("descricao")
+    String descricao,
+
+    @JsonProperty("ids_categorias")
+    @NotEmpty(message = "Pelo menos uma categoria deve ser informada.")
+    List<Long> idsCategorias
+
 ) {}

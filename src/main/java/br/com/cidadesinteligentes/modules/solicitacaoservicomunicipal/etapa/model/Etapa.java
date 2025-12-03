@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model;
 
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.FlowStep;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.EtapaFluxo;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.model.Monitoring;
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import jakarta.persistence.Column;
@@ -24,19 +24,19 @@ import java.util.List;
  * relationship with associated flow.
  * </p>
  *
- * @author Giovane Neves
+ * @author Giovane Neves, Andesson Reis
  */
 @Entity
-@Table(name = "steps")
+@Table(name = "etapas")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class Step extends PersistenceEntity {
+public class Etapa extends PersistenceEntity {
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "nome", nullable = false)
+    private String nome;
 
     @Column(name = "code",  nullable = false, unique = true)
     private String code;
@@ -45,10 +45,10 @@ public class Step extends PersistenceEntity {
     private String imageUrl;
 
 
-    @OneToMany(mappedBy = "step")
-    private List<FlowStep> flowSteps = new ArrayList<>();
+    @OneToMany(mappedBy = "etapa")
+    private List<EtapaFluxo> etapaFluxos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "step")
-    private List<Monitoring> monitorings = new ArrayList<>();
+    @OneToMany(mappedBy = "etapa")
+    private List<Monitoring> monitoramentos = new ArrayList<>();
 
 }

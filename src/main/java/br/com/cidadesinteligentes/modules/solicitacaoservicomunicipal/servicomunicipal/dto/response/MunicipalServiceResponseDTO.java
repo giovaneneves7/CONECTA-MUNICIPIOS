@@ -3,21 +3,21 @@ package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomu
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Data Transfer Object for representing MunicipalService data in API responses.
- * Contains the municipal service identifier, name, description,
- * and its associated categories.
+ * DTO utilizado para representar os dados de um Serviço Municipal nas respostas da API.
+ * Contém o identificador do serviço, seu nome e sua descrição.
  *
- * @author Caio Alves, Giovane Neves
+ *
+ * @author: Caio Alves, Giovane Neves, Andesson Reis
  */
-
 public record MunicipalServiceResponseDTO(
+
     @JsonProperty("id")
     Long id,
 
-    @JsonProperty("name")
-    String name,
+    @JsonProperty("nome")
+    String nome,
 
-    @JsonProperty("description")
-    String description
+    @JsonProperty("descricao")
+    String descricao
 
-){}
+) {}

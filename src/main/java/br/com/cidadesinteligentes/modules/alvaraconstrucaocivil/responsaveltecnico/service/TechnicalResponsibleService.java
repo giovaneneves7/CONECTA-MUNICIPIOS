@@ -60,10 +60,10 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
         entity.setResponsibleType(dto.responsibleType());
 
         entity.setImagemUrl(dto.imageUrl());
-        entity.setUser(user);
+        entity.setUsuario(user);
         entity.setTipo("TECHNICAL_RESPONSIBLE");
 
-        Cargo role = roleRepository.findByName("ROLE_TECHNICAL_RESPONSIBLE")
+        Cargo role = roleRepository.findByNome("ROLE_TECHNICAL_RESPONSIBLE")
                 .orElseGet(() -> {
                     Cargo newRole = new Cargo();
                     newRole.setNome("ROLE_TECHNICAL_RESPONSIBLE");
@@ -111,7 +111,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     }
 
     private TechnicalResponsibleResponseDTO convertToDto (final TechnicalResponsible entity){
-        Usuario user = entity.getUser();
+        Usuario user = entity.getUsuario();
         String responsibleName = null;
         String email = null;
         String phone = null;

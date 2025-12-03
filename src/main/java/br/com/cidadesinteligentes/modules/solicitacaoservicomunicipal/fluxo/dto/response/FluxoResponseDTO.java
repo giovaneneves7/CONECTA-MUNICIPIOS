@@ -5,9 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 /**
- * @author Giovane Neves
+ * @author Giovane Neves, Andesson Reis
  */
-public record FlowResponseDTO(
+public record FluxoResponseDTO(
         @JsonProperty("id")
         UUID id
 ) {

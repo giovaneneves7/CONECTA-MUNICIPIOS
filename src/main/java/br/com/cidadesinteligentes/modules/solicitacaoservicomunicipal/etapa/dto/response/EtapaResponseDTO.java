@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
-public record StepResponseDTO(
+public record EtapaResponseDTO(
         @JsonProperty("id")
         UUID id
 ) {

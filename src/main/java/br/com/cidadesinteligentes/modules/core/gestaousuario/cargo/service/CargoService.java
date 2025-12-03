@@ -21,7 +21,7 @@ public class CargoService implements ICargoService{
 
     @Override @Transactional
     public void adicionarPermissao(String nomePermissao, Long idCargo) {
-        Permissao permission = permissionRepository.findByName(nomePermissao)
+        Permissao permission = permissionRepository.findByNome(nomePermissao)
             .orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()
             )
@@ -45,7 +45,7 @@ public class CargoService implements ICargoService{
 
     @Override @Transactional
     public void removerPermissao(String nomePermissao, Long idCargo) {
-        Permissao permission = permissionRepository.findByName(nomePermissao)
+        Permissao permission = permissionRepository.findByNome(nomePermissao)
             .orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()
             )

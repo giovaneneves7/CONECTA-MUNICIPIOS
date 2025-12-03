@@ -62,7 +62,7 @@ public class PerfilService implements IPerfilService {
         Perfil profile = this.repository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        if (profile.getUser() != null) {
+        if (profile.getUsuario() != null) {
             throw new BusinessException(BusinessExceptionMessage.CLASS_IN_USE.getMessage());
         }
         repository.delete(profile);
@@ -78,12 +78,12 @@ public class PerfilService implements IPerfilService {
                 found.getId(),
                 found.getTipo(),
                 found.getImagemUrl(),
-                found.getUser().getUsername(),
-                found.getUser().getPerson().getCpf(),
-                found.getUser().getTelefone(),
-                found.getUser().getEmail(),
-                found.getUser().getPerson().getGenero(),
-                found.getUser().getPerson().getDataNascimento()
+                found.getUsuario().getUsername(),
+                found.getUsuario().getPessoa().getCpf(),
+                found.getUsuario().getTelefone(),
+                found.getUsuario().getEmail(),
+                found.getUsuario().getPessoa().getGenero(),
+                found.getUsuario().getPessoa().getDataNascimento()
                 );
 
     }

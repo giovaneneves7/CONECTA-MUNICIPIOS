@@ -17,8 +17,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IMunicipalServiceRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IServicoMunicipalRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.RequestPostRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.RequestUpdateRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.RequestResponseDTO;
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 public class RequestService implements IRequestService {
 
     private final IRequestRepository requestRepository;
-    private final IMunicipalServiceRepository municipalServiceRepository;
+    private final IServicoMunicipalRepository municipalServiceRepository;
     private final ObjectMapperUtil objectMapperUtil;
     private final IPerfilRepository profileRepository;
     private final IMonitoringRepository monitoringRepository;
@@ -69,7 +69,7 @@ public class RequestService implements IRequestService {
     @Override
     public RequestResponseDTO save(final RequestPostRequestDTO dto) {
 
-        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
+        ServicoMunicipal service = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         Perfil profile = profileRepository.findById(dto.profileId())
@@ -79,7 +79,7 @@ public class RequestService implements IRequestService {
         request.setEstimatedCompletionDate(dto.estimatedCompletionDate());
         request.setType(dto.type());
         request.setNote(dto.note());
-        request.setMunicipalService(service);
+        request.setServicoMunicipal(service);
         request.setProfile(profile);
 
         Request saved = requestRepository.save(request);
@@ -106,9 +106,9 @@ public class RequestService implements IRequestService {
         request.setType(dto.type());
         request.setNote(dto.note());
 
-        MunicipalService service = municipalServiceRepository.findById(dto.municipalServiceId())
+        ServicoMunicipal service = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-        request.setMunicipalService(service);
+        request.setServicoMunicipal(service);
 
         requestRepository.save(request);
         return objectMapperUtil.map(request, RequestResponseDTO.class);
@@ -231,8 +231,8 @@ public class RequestService implements IRequestService {
                     baseDto.note(),
                     baseDto.municipalServiceId(),
                     statusValue,
-                    request.getProfile().getUser().getPessoa().getNomeCompleto(),
-                    request.getProfile().getUser().getPessoa().getCpf());
+                    request.getProfile().getUsuario().getPessoa().getNomeCompleto(),
+                    request.getProfile().getUsuario().getPessoa().getCpf());
         });
     }
 
@@ -243,7 +243,7 @@ public class RequestService implements IRequestService {
                 .findById(requestId)
                 .orElseThrow(() -> new BusinessException("Request not found with ID: " + requestId));
 
-        MunicipalService municipalService = request.getMunicipalService();
+        ServicoMunicipal municipalService = request.getServicoMunicipal();
         if (municipalService == null) {
             throw new BusinessException("Request não está associado a um Serviço Municipal.");
         }
@@ -271,7 +271,7 @@ public class RequestService implements IRequestService {
                 .findById(requestId)
                 .orElseThrow(() -> new BusinessException("Request not found with ID: " + requestId));
 
-        MunicipalService municipalService = request.getMunicipalService();
+        ServicoMunicipal municipalService = request.getServicoMunicipal();
         if (municipalService == null) {
             throw new BusinessException("Request não está associado a um Serviço Municipal.");
         }

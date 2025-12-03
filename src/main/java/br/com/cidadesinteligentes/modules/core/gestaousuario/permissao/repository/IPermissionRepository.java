@@ -7,5 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IPermissionRepository extends JpaRepository<Permissao, UUID> {
-    Optional<Permissao> findByName(String name);
+    Optional<Permissao> findByNome(String nome);
 }

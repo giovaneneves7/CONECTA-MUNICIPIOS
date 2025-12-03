@@ -97,7 +97,7 @@ public class AuthenticationService {
         user.setPerfis(new ArrayList<>());
         user = userRepository.save(user);
 
-        Cargo role = roleRepository.findByName("ROLE_CITIZEN")
+        Cargo role = roleRepository.findByNome("ROLE_CITIZEN")
                 .orElseGet(() -> {
                     Cargo newRole = new Cargo();
                     newRole.setNome("ROLE_CITIZEN");
@@ -108,7 +108,7 @@ public class AuthenticationService {
         Perfil profile = new Cidadao();
         profile.setTipo("Cidadão");
         profile.setRole(role);
-        profile.setUser(user);
+        profile.setUsuario(user);
         profile = profileRepository.save(profile);
 
         user.getPerfis().add(profile);

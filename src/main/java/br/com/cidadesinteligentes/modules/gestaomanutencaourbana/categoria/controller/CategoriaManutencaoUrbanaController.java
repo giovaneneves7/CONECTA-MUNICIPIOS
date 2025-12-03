@@ -154,8 +154,6 @@ public class CategoriaManutencaoUrbanaController {
     public ResponseEntity<CategoriaRetornarIdResponseDTO> excluir(@PathVariable Long id) {
         // Recebe o ID do service (Long)
         Long idDeletado = categoriaService.delete(id);
-
-        // Retorna embrulhado no DTO: { "id": 1 }
         return ResponseEntity.ok(new CategoriaRetornarIdResponseDTO(idDeletado));
     }
 }

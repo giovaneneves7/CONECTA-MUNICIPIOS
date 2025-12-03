@@ -1,6 +1,7 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model;
 
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
+import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Endereco extends PersistenceEntity {
+public class Endereco extends SimplePersistenceEntity {
 
     @Column(nullable = false, length = 150)
     private String rua;

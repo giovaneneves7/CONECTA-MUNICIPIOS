@@ -1,11 +1,13 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.service;
 
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.request.EnderecoRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.request.EnderecoAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.request.EnderecoCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.response.EnderecoResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model.Endereco;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.repository.IEnderecoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,50 +23,55 @@ public class EnderecoService implements IEnderecoService {
 
     @Override
     @Transactional
-    public EnderecoResponseDTO create(EnderecoRequestDTO dto) {
-        Endereco endereco = objectMapperUtil.map(dto, Endereco.class);
-        Endereco saved = repository.save(endereco);
-        return objectMapperUtil.map(saved, EnderecoResponseDTO.class);
+    public EnderecoResponseDTO save(EnderecoCriarRequestDTO dto) {
+        Endereco entity = objectMapperUtil.map(dto, Endereco.class);
+        Endereco savedEntity = repository.save(entity);
+
+        return objectMapperUtil.map(savedEntity, EnderecoResponseDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<EnderecoResponseDTO> findAll() {
         return objectMapperUtil.mapAll(repository.findAll(), EnderecoResponseDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public EnderecoResponseDTO findById(Long id) {
-        Endereco endereco = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado com ID: " + id));
-        return objectMapperUtil.map(endereco, EnderecoResponseDTO.class);
+        return repository.findById(id)
+                .map(entity -> objectMapperUtil.map(entity, EnderecoResponseDTO.class))
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }
 
     @Override
     @Transactional
-    public EnderecoResponseDTO update(Long id, EnderecoRequestDTO dto) {
-        Endereco endereco = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado com ID: " + id));
+    public EnderecoResponseDTO update(EnderecoAtualizarRequestDTO dto) {
+        Endereco enderecoExistente = repository.findById(dto.id())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        // Atualizando os campos
-        endereco.setRua(dto.getRua());
-        endereco.setNumero(dto.getNumero());
-        endereco.setBairro(dto.getBairro());
-        endereco.setCidade(dto.getCidade());
-        endereco.setEstado(dto.getEstado());
-        endereco.setCep(dto.getCep());
-        endereco.setLatitude(dto.getLatitude());
-        endereco.setLongitude(dto.getLongitude());
+        // Atualização manual para garantir consistência dos dados parciais
+        enderecoExistente.setRua(dto.rua());
+        enderecoExistente.setNumero(dto.numero());
+        enderecoExistente.setBairro(dto.bairro());
+        enderecoExistente.setCidade(dto.cidade());
+        enderecoExistente.setEstado(dto.estado());
+        enderecoExistente.setCep(dto.cep());
+        enderecoExistente.setLatitude(dto.latitude());
+        enderecoExistente.setLongitude(dto.longitude());
 
-        Endereco updated = repository.save(endereco);
-        return objectMapperUtil.map(updated, EnderecoResponseDTO.class);
+        Endereco updatedEntity = repository.save(enderecoExistente);
+        return objectMapperUtil.map(updatedEntity, EnderecoResponseDTO.class);
     }
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public Long delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Endereço não encontrado com ID: " + id);
+            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
+
+        return id;
     }
 }

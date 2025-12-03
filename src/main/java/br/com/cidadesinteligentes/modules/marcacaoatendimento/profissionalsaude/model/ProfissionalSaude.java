@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.marcacaoatendimento.profissionalsaude.model;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.model.Agendamento;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.disponibilidadeprofissional.model.DisponibilidadeProfissional;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.servico.model.Servico;
@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class ProfissionalSaude extends Profile {
+public class ProfissionalSaude extends Perfil {
 
     @Column(nullable = false, unique = true) // CRM deve ser único
     private String crm;

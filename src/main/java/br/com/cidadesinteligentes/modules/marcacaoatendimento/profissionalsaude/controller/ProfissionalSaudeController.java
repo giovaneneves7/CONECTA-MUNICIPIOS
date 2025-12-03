@@ -206,9 +206,9 @@ public class ProfissionalSaudeController {
     private ProfissionalSaudeResponseDTO toResponseDTO(ProfissionalSaude entity) {
         return new ProfissionalSaudeResponseDTO(
                 entity.getId(),
-                entity.getUser().getPerson().getFullName(),
-                entity.getUser().getPerson().getCpf(),
-                entity.getUser().getEmail(),
+                entity.getUsuario().getPessoa().getNomeCompleto(),
+                entity.getUsuario().getPessoa().getCpf(),
+                entity.getUsuario().getEmail(),
                 entity.getCrm(),
                 entity.getUnidadeVinculada() != null ? entity.getUnidadeVinculada().getId() : null,
                 entity.getUnidadeVinculada() != null ? entity.getUnidadeVinculada().getNome() : null,

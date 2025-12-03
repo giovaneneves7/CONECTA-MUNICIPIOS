@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.service;
 
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.model.Citizen;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.model.Cidadao;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.enums.StatusAgendamento;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.model.Agendamento;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.repository.IAgendamentoRepository;
@@ -72,7 +72,7 @@ public class AgendamentoService implements IAgendamentoService {
         // Utilizamos getReference para criar um proxy apenas com o ID.
         // O Hibernate usará esse ID para preencher a FK 'paciente_id' ao salvar o agendamento.
         // Nota: Se o ID não existir no banco, ocorrerá um erro de ConstraintViolation no momento do commit.
-        Citizen paciente = entityManager.getReference(Citizen.class, agendamento.getPaciente().getId());
+        Cidadao paciente = entityManager.getReference(Cidadao.class, agendamento.getPaciente().getId());
 
         // Regra: Validar se médico atende nesse dia da semana e horário (Grade de Trabalho)
         existsByProfissionalAndDataAndHoraAndStatusNot(profissional, agendamento.getData(), agendamento.getHora());

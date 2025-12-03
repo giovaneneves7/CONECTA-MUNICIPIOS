@@ -152,7 +152,7 @@ public class DisponibilidadeProfissionalController {
                 entity.getHoraInicio(),
                 entity.getHoraFim(),
                 entity.getProfissional() != null ? entity.getProfissional().getId() : null,
-                entity.getProfissional() != null ? entity.getProfissional().getUser().getPerson().getFullName() : null
+                entity.getProfissional() != null ? entity.getProfissional().getUsuario().getPessoa().getNomeCompleto() : null
         );
     }
 

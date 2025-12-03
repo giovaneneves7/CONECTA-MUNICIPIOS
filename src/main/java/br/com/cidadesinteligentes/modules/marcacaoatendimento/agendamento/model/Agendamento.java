@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.model;
 
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.model.Citizen;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.model.Cidadao;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.enums.StatusAgendamento;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.profissionalsaude.model.ProfissionalSaude;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.servico.model.Servico;
@@ -49,5 +49,5 @@ public class Agendamento extends PersistenceEntity {
     // N:1 com o Cidadão/Paciente
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paciente_id",  nullable = false)
-    private Citizen paciente;
+    private Cidadao paciente;
 }

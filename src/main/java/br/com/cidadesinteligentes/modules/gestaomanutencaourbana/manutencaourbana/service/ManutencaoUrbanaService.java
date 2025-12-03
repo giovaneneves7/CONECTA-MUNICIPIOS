@@ -1,18 +1,19 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.service;
 
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model.CategoriaManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.repository.ICategoriaManutencaoUrbanaRepository;
-// ManutencaoUrbana.java
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model.Endereco;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.repository.IEnderecoRepository;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model.GestorSolicitacoesManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.repository.IGestorManutencaoRepository;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.request.ManutencaoUrbanaRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.request.ManutencaoUrbanaAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.request.ManutencaoUrbanaCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.response.ManutencaoUrbanaResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.model.ManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.repository.IManutencaoUrbanaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,32 +25,35 @@ import java.util.List;
 public class ManutencaoUrbanaService implements IManutencaoUrbanaService {
 
     private final IManutencaoUrbanaRepository repository;
-    // Repositórios necessários para as relações
     private final ICategoriaManutencaoUrbanaRepository categoriaRepository;
     private final IEnderecoRepository enderecoRepository;
     private final IGestorManutencaoRepository gestorRepository;
-
     private final ObjectMapperUtil objectMapperUtil;
 
     @Override
     @Transactional
-    public ManutencaoUrbanaResponseDTO create(ManutencaoUrbanaRequestDTO dto) {
-        ManutencaoUrbana entity = objectMapperUtil.map(dto, ManutencaoUrbana.class);
+    public ManutencaoUrbanaResponseDTO save(ManutencaoUrbanaCriarRequestDTO dto) {
+        ManutencaoUrbana entity = new ManutencaoUrbana();
 
-        // 1. Busca e seta a Categoria
-        CategoriaManutencaoUrbana categoria = categoriaRepository.findById(dto.getCategoriaId())
-                .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada ID: " + dto.getCategoriaId()));
+        // Mapeamento manual dos campos simples para garantir a tradução DTO(PT) -> Entity(EN/Inherited)
+        entity.setName(dto.nome());
+        entity.setDescription(dto.descricao());
+        entity.setPrioridade(dto.prioridade());
+        entity.setImageURL(dto.urlImagem());
+        entity.setProtocolo(dto.protocolo());
+
+        // Relacionamentos
+        CategoriaManutencaoUrbana categoria = categoriaRepository.findById(dto.categoriaId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setCategoria(categoria);
 
-        // 2. Busca e seta o Endereço
-        Endereco endereco = enderecoRepository.findById(dto.getEnderecoId())
-                .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado ID: " + dto.getEnderecoId()));
+        Endereco endereco = enderecoRepository.findById(dto.enderecoId())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
         entity.setEndereco(endereco);
 
-        // 3. Busca e seta o Gestor (se informado)
-        if (dto.getGestorId() != null) {
-            GestorSolicitacoesManutencaoUrbana gestor = gestorRepository.findById(dto.getGestorId())
-                    .orElseThrow(() -> new EntityNotFoundException("Gestor não encontrado ID: " + dto.getGestorId()));
+        if (dto.gestorId() != null) {
+            GestorSolicitacoesManutencaoUrbana gestor = gestorRepository.findById(dto.gestorId())
+                    .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
             entity.setGestor(gestor);
         }
 
@@ -58,50 +62,56 @@ public class ManutencaoUrbanaService implements IManutencaoUrbanaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ManutencaoUrbanaResponseDTO> findAll() {
         return objectMapperUtil.mapAll(repository.findAll(), ManutencaoUrbanaResponseDTO.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ManutencaoUrbanaResponseDTO findById(Long id) {
         return repository.findById(id)
                 .map(entity -> objectMapperUtil.map(entity, ManutencaoUrbanaResponseDTO.class))
-                .orElseThrow(() -> new EntityNotFoundException("Manutenção não encontrada ID: " + id));
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }
 
     @Override
     @Transactional
-    public ManutencaoUrbanaResponseDTO update(Long id, ManutencaoUrbanaRequestDTO dto) {
-        ManutencaoUrbana entity = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Manutenção não encontrada ID: " + id));
+    public ManutencaoUrbanaResponseDTO update(ManutencaoUrbanaAtualizarRequestDTO dto) {
+        ManutencaoUrbana entity = repository.findById(dto.id())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        // Atualiza campos simples
-        entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
-        entity.setPrioridade(dto.getPrioridade());
-        entity.setImageURL(dto.getImageURL());
-        entity.setProtocolo(dto.getProtocolo());
+        // Atualização dos campos simples
+        entity.setName(dto.nome());
+        entity.setDescription(dto.descricao());
+        entity.setPrioridade(dto.prioridade());
+        entity.setViabilidade(dto.viabilidade());
+        entity.setImageURL(dto.urlImagem());
+        entity.setProtocolo(dto.protocolo());
 
-        // Atualiza Relações se mudaram
-        if (!entity.getCategoria().getId().equals(dto.getCategoriaId())) {
-            CategoriaManutencaoUrbana novaCategoria = categoriaRepository.findById(dto.getCategoriaId())
-                    .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
+        // Atualização de relacionamentos apenas se o ID mudou
+        if (!entity.getCategoria().getId().equals(dto.categoriaId())) {
+            CategoriaManutencaoUrbana novaCategoria = categoriaRepository.findById(dto.categoriaId())
+                    .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
             entity.setCategoria(novaCategoria);
         }
 
-        if (!entity.getEndereco().getId().equals(dto.getEnderecoId())) {
-            Endereco novoEndereco = enderecoRepository.findById(dto.getEnderecoId())
-                    .orElseThrow(() -> new EntityNotFoundException("Endereço não encontrado"));
+        if (!entity.getEndereco().getId().equals(dto.enderecoId())) {
+            Endereco novoEndereco = enderecoRepository.findById(dto.enderecoId())
+                    .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
             entity.setEndereco(novoEndereco);
         }
 
-        if (dto.getGestorId() != null) {
-            // Verifica se mudou ou se não tinha gestor antes
-            if (entity.getGestor() == null || !entity.getGestor().getId().equals(dto.getGestorId())) {
-                GestorSolicitacoesManutencaoUrbana novoGestor = gestorRepository.findById(dto.getGestorId())
-                        .orElseThrow(() -> new EntityNotFoundException("Gestor não encontrado"));
+        if (dto.gestorId() != null) {
+            if (entity.getGestor() == null || !entity.getGestor().getId().equals(dto.gestorId())) {
+                GestorSolicitacoesManutencaoUrbana novoGestor = gestorRepository.findById(dto.gestorId())
+                        .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
                 entity.setGestor(novoGestor);
             }
+        } else {
+            // Se o DTO vier com gestor null, removemos o gestor da entidade?
+            // Geralmente sim, mas depende da regra de negócio. Aqui assumo que sim.
+            entity.setGestor(null);
         }
 
         ManutencaoUrbana updated = repository.save(entity);
@@ -110,10 +120,11 @@ public class ManutencaoUrbanaService implements IManutencaoUrbanaService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public Long delete(Long id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Manutenção não encontrada ID: " + id);
+            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
+        return id;
     }
 }

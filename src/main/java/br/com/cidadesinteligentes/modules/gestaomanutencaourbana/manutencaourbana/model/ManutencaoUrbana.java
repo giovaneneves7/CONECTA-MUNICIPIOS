@@ -1,25 +1,25 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.model;
 
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model.CategoriaManutencaoUrbana;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model.Endereco;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model.GestorSolicitacoesManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Prioridade;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Viabilidade;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
-// ManutencaoUrbana.java
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model.Endereco;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requisicao_servico") // Nome da tabela específica deste filho
+@Table(name = "requisicao_servico")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-// Importante: Chama o equals da classe pai para comparar IDs corretamente
 @EqualsAndHashCode(callSuper = true)
-// Define que a coluna "id" desta tabela é FK da tabela "municipal_services"
 @PrimaryKeyJoinColumn(name = "id")
 public class ManutencaoUrbana extends MunicipalService {
 
@@ -32,7 +32,7 @@ public class ManutencaoUrbana extends MunicipalService {
     private Endereco endereco;
 
     @ManyToOne
-    @JoinColumn(name = "gestor_id") // Pode ser null no início (antes de alguém assumir)
+    @JoinColumn(name = "gestor_id")
     private GestorSolicitacoesManutencaoUrbana gestor;
 
     @Column(name = "data_criada", nullable = false, updatable = false)
@@ -41,41 +41,31 @@ public class ManutencaoUrbana extends MunicipalService {
     @Column(name = "data_atualizacao", nullable = false)
     private LocalDateTime dataAtualizacao;
 
-    @Enumerated(EnumType.STRING) // Salva como texto ("ALTA", "BAIXA")
+    @Enumerated(EnumType.STRING)
     @Column(name = "prioridade", nullable = false)
     private Prioridade prioridade;
 
     @Column(name = "image_url", nullable = false)
     private String imageURL;
 
-    @Enumerated(EnumType.STRING) // Salva como texto
+    @Enumerated(EnumType.STRING)
     @Column(name = "viabilidade", nullable = false)
     private Viabilidade viabilidade;
 
     @Column(name = "protocolo", nullable = false)
     private String protocolo;
 
-    // --- MÉTODOS AUXILIARES ---
-
     @PrePersist
     public void prePersist() {
         this.dataCriada = LocalDateTime.now();
         this.dataAtualizacao = LocalDateTime.now();
         if (this.viabilidade == null) {
-            this.viabilidade = Viabilidade.EM_ANALISE; // Valor padrão
+            this.viabilidade = Viabilidade.EM_ANALISE;
         }
     }
 
     @PreUpdate
     public void preUpdate() {
         this.dataAtualizacao = LocalDateTime.now();
-    }
-
-    public void atualizarStatus() {
-        this.dataAtualizacao = LocalDateTime.now();
-    }
-
-    public void adicionarHistorico() {
-        // Lógica futura
     }
 }

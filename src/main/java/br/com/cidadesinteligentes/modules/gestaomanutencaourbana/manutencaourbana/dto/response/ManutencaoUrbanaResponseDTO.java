@@ -5,25 +5,46 @@ import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.re
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.response.GestorResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Prioridade;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Viabilidade;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
-@Data
-public class ManutencaoUrbanaResponseDTO {
-    private Long id;
-    private String name;
-    private String description;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record ManutencaoUrbanaResponseDTO(
+        @JsonProperty("id")
+        Long id,
 
-    // Devolvemos os objetos completos para o front saber o nome da rua, da categoria, etc.
-    private CategoriaResponseDTO categoria;
-    private EnderecoResponseDTO endereco;
-    private GestorResponseDTO gestor;
+        @JsonProperty("nome")
+        String name, // Mapeia do getNome() ou getName() da entidade pai
 
-    private String protocolo;
-    private String imageURL;
-    private Prioridade prioridade;
-    private Viabilidade viabilidade;
-    private LocalDateTime dataCriada;
-    private LocalDateTime dataAtualizacao;
-}
+        @JsonProperty("descricao")
+        String description,
+
+        @JsonProperty("categoria")
+        CategoriaResponseDTO categoria,
+
+        @JsonProperty("endereco")
+        EnderecoResponseDTO endereco,
+
+        @JsonProperty("gestor")
+        GestorResponseDTO gestor,
+
+        @JsonProperty("protocolo")
+        String protocolo,
+
+        @JsonProperty("urlImagem")
+        String imageURL,
+
+        @JsonProperty("prioridade")
+        Prioridade prioridade,
+
+        @JsonProperty("viabilidade")
+        Viabilidade viabilidade,
+
+        @JsonProperty("dataCriada")
+        LocalDateTime dataCriada,
+
+        @JsonProperty("dataAtualizacao")
+        LocalDateTime dataAtualizacao
+) {}

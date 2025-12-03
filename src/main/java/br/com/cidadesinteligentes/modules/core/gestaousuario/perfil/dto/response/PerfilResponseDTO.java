@@ -6,19 +6,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 /**
- * Data Transfer Object (DTO) for sending function data in API responses.
- *
- * @author Jorge Roberto, Giovane Neves
+ * DTO para pegar os dados de um Perfil
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ProfileResponseDTO (
+public record PerfilResponseDTO(
 
     @JsonProperty("id")
     UUID id,
 
-    @JsonProperty("type")
-    String type,
+    @JsonProperty("tipo")
+    String tipo,
 
-    @JsonProperty("imageUrl")
-    String imageUrl
+    @JsonProperty("imagemUrl")
+    String imagemUrl
 ){}

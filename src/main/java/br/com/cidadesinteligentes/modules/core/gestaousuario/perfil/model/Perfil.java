@@ -19,19 +19,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Class representing a user profile in the system.
+ * Classe que representa aum perfil no sistema.
  * <p>
- * This class is the main entity for managing user profiles,
- * containing basic information such as profile type, image URL, and
- * relationship with associated users.
+ * Essa classe é a entidade principal para gerenciamento dos perfis de usuários,
+ * contêm as informações básicas de um perfil
  * </p>
  *
  * @author Jorge Roberto, Giovane Neves
  */
 @Entity
-@Table(name = "profiles")
+@Table(name = "perfis")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "profile_type")
+@DiscriminatorColumn(name = "perfil_tipo")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -50,6 +49,6 @@ public abstract class Perfil extends PersistenceEntity {
     private Usuario usuario;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Cargo role;
+    @JoinColumn(name = "cargo_id", nullable = false)
+    private Cargo cargo;
 }

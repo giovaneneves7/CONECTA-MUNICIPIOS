@@ -6,20 +6,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 /**
- * Data Transfer Object (DTO) for sending function data in API responses.
+ * DTO com o cargo do perfil
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ProfileWithRoleResponseDTO(
+public record PerfilComCargoResponseDTO(
         @JsonProperty("id")
         UUID id,
 
-        @JsonProperty("role")
-        String role,
+        @JsonProperty("cargo")
+        String cargo,
 
-        @JsonProperty("type")
-        String type,
+        @JsonProperty("tipo")
+        String tipo,
 
-        @JsonProperty("imageUrl")
-        String imageUrl
+        @JsonProperty("imagemUrl")
+        String imagemUrl
 ) {
 }

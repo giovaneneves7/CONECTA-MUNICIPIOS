@@ -30,13 +30,13 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, UUID> {
      * Finds a paginated list of users who have at least one profile associated with the specified role name.
      * Uses DISTINCT to avoid returning the same user multiple times if they have multiple profiles with the same role (unlikely but safe).
      *
-     * @param roleName The name of the Role to filter by.
+     * @param cargoNome The name of the Role to filter by.
      * @param pageable Pagination and sorting information.
      * @return A Page containing the Users matching the role name criteria.
      * @author Caio Alves
      */
-@Query("SELECT DISTINCT u FROM Usuario u JOIN u.perfis p JOIN p.role r WHERE r.nome = :roleName")
-    Page<Usuario> findByProfileRoleName(@Param("roleName") String roleName, Pageable pageable);
+    @Query("SELECT DISTINCT u FROM Usuario u JOIN u.perfis p JOIN p.cargo c WHERE c.nome = :cargoNome")
+    Page<Usuario> findByPerfisCargoNome(@Param("cargoNome") String cargoNome, Pageable pageable);
 
     /**
      * Finds a paginated list of users filtered by their status (e.g., ACTIVE, INACTIVE).
@@ -68,13 +68,16 @@ Page<Usuario> findByFullNameOrCpfContaining(@Param("term") String term, Pageable
      * Finds a paginated list of users filtered by both their status AND a specific role name
      * associated with one of their profiles.
      *
-     * @param roleName The name of the Role to filter by.
+     * @param cargoNome The name of the Role to filter by.
      * @param status The UserStatus enum to filter by.
      * @param pageable Pagination and sorting information.
      * @return A Page containing the Users matching both criteria.
      * @author Caio Alves
      */
-    @Query("SELECT u FROM Usuario u JOIN u.perfis p JOIN p.role r " +
-       "WHERE r.nome = :roleName AND u.status = :status")
-    Page<Usuario> findByProfileRoleNameAndStatus(@Param("roleName") String roleName, @Param("status") StatusUsuario status, Pageable pageable);
-}
+    @Query("SELECT u FROM Usuario u JOIN u.perfis p JOIN p.cargo c " +
+            "WHERE c.nome = :cargoNome AND u.status = :status")
+    Page<Usuario> findByPerfisCargoNomeAndStatus(
+            @Param("cargoNome") String cargoNome,
+            @Param("status") StatusUsuario status,
+            Pageable pageable
+    ); }

@@ -6,7 +6,6 @@ import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -17,9 +16,9 @@ import java.util.Set;
  * @author Giovane Neves,Jorge Roberto, Caio Alves
  */
 @Entity
-@Table(name = "roles")
+@Table(name = "cargos")
 @Data
-public class Cargo extends SimplePersistenceEntity implements Serializable {
+public class Cargo extends SimplePersistenceEntity {
 
     @Column(name = "nome",  nullable = false, length = 50)
     String nome;
@@ -33,6 +32,6 @@ public class Cargo extends SimplePersistenceEntity implements Serializable {
     )
     private Set<Permissao> permissoes;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany(mappedBy = "cargo")
     private List<Perfil> perfis = new ArrayList<>();
 }

@@ -70,7 +70,7 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
                     newRole.setDescricao("Technical Responsible Role");
                     return roleRepository.save(newRole);
                 });
-        entity.setRole(role);
+        entity.setCargo(role);
 
         TechnicalResponsible savedEntity = repository.save(entity);
 

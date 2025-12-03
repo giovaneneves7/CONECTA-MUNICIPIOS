@@ -80,7 +80,7 @@ public class AdminService implements IAdminService{
         role.setDescricao("Role for administrator");
         roleRepository.save(role);
 
-        admin.setRole(role);
+        admin.setCargo(role);
         admin.setUsuario(user);
 
         admin = adminProfileRepository.save(admin);
@@ -272,7 +272,6 @@ public class AdminService implements IAdminService{
      * Retrieves detailed information about a specific user, including their core data
      * and a list of all their associated profiles.
      *
-     * @param userId The UUID of the user to retrieve details for.
      * @return An AdminUserDetailResponseDTO containing the user's details.
      * @throws BusinessException if the user is not found.
      * @author Caio Alves
@@ -298,7 +297,7 @@ public class AdminService implements IAdminService{
     @Transactional(readOnly = true)
     public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleName(String roleName, Pageable pageable) {
 
-        Page<Usuario> userPage = userRepository.findByProfileRoleName(roleName, pageable);
+        Page<Usuario> userPage = userRepository.findByPerfisCargoNome(roleName, pageable);
 
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -344,7 +343,7 @@ public class AdminService implements IAdminService{
      */
     @Override @Transactional(readOnly = true)
     public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, StatusUsuario status, Pageable pageable){
-        Page<Usuario> userPage = userRepository.findByProfileRoleNameAndStatus(roleName, status, pageable);
+        Page<Usuario> userPage = userRepository.findByPerfisCargoNomeAndStatus(roleName, status, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
     

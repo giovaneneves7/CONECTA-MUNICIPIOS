@@ -1,11 +1,8 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.service;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.response.PermissionResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfilePublicDataResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileResponseCurrentTypeDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileWithRoleResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.projection.ProjecaoPerfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.PerfilAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.*;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.response.PermissaoResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.RequestResponseDTO;
 
 import org.springframework.data.domain.Page;
@@ -15,50 +12,45 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Service interface for managing {@link Perfil} entities.
- *
- * @author Jorge Roberto
+ * Interface do Service de Perfil
  */
 public interface IPerfilService {
 
     /**
-     * Updates an existing profile in the database.
+     * Atualiza um perfil existente.
      */
-    ProfileWithRoleResponseDTO update(Perfil profile);
+    PerfilComCargoResponseDTO update(PerfilAtualizarRequestDTO dto);
 
     /**
-     * Deletes a profile by its identifier.
+     * Deleta um perfil com base no ID do mesmo.
      */
-    void delete(UUID id);
+    PerfilApenasIdResponseDTO delete(UUID id);
 
     /**
-     * Finds a profile by its identifier.
+     * Encontra um perfil com base no ID fornecido.
      */
-    ProfilePublicDataResponseDTO findById(UUID id);
+    PerfilDadosPublicosResponseDTO findById(UUID id);
+
 
     /**
-     * Retrieves a paginated list of projected {@link ProjecaoPerfil} entities.
-     */
-    List<ProfileWithRoleResponseDTO> getAllProfiles(Pageable pageable);
+     * Retorna a paginação de todos os perfis
+     * */
+    List<PerfilComCargoResponseDTO> findAll(Pageable pageable);
 
     /**
-     * Find all requests linked to the user id passed as a parameter
-     *
-     * @author Giovane Neves
-     * @param userId The userId linked to the requests
-     * @return A pageable list of requests linked to the user id passed as a parameter
+     * Encontra todas as requisições ligadas a um perfil de usuário, usando o ID do perfil, para buscar
      */
-    // No seu arquivo de interface de serviço
-    Page<RequestResponseDTO> findAllRequestsByProfileId(UUID profileId, Pageable pageable);
+    Page<RequestResponseDTO> findAllRequestsByPerfilId(UUID perfilId, Pageable pageable);
 
     /**
-     * Changes the active profile type for a specific user.
-     * This method updates the user's active profile based on the provided user ID and the new profile type.
-     *
-     * @return A {@link ProfileResponseCurrentTypeDTO} object containing the updated active profile information.
+     * Essa função atualiza o perfil ativo de um usuário, por outro perfil,
+     * desde de que o usuário, tenha esse outro perfil
      */
-    ProfileResponseCurrentTypeDTO changeActiveProfile(UUID userId, String newActiveType);
+    PerfilVerificarTipoAtivoResponseDTO changeActivePerfil(UUID usuarioId, String novoTipoAtivo);
 
-    List<PermissionResponseDTO> findAllPermissionsByProfile(UUID profileId, Pageable pageable);
+    /**
+     * Lista todas as permissões de um perfil
+     * */
+    List<PermissaoResponseDTO> findAllPermissoesByPerfil(UUID perfilId, Pageable pageable);
 
 }

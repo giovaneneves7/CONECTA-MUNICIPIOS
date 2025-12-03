@@ -67,13 +67,13 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/functions/function/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/functions").permitAll()
 
-                        // Functions for Municipal Services /api/v1/municipal-services
-                        .requestMatchers(HttpMethod.POST, "/api/v1/municipal-services/municipal-service").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services/municipal-service").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/municipal-services/municipal-service/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/municipal-service").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/municipal-services/municipal-service/**").permitAll()
+                        // Functions for Municipal Services /api/v1/servicos-municipais
+                        .requestMatchers(HttpMethod.POST, "/api/v1/servicos-municipais/servico-municipal").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/servicos-municipais").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/servicos-municipais/servico-municipal").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/servicos-municipais/servico-municipal/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/servicos-municipais/servico-municipal").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/servicos-municipais/servico-municipal/**").permitAll()
 
                         // Functions for Requests /api/v1/requests
                         .requestMatchers(HttpMethod.POST, "/api/v1/requests/request").permitAll()

@@ -9,12 +9,12 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.model.AdminProfile;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.repository.IAdminProfileRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Role;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.IRoleRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Person;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IProfileRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.ICargoRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.response.PublicServantRegisterResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.model.PublicServantProfile;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.repository.IPublicServantProfileRepository;
@@ -24,8 +24,8 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecni
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.model.TechnicalResponsible;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.repository.ITechnicalResponsibleRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.service.ITechnicalResponsibleService;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
@@ -43,15 +43,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminService implements IAdminService{
 
-    private final IUserRepository userRepository;
+    private final IUsuarioRepository userRepository;
     private final IAdminProfileRepository adminProfileRepository;
-    private final IRoleRepository roleRepository;
+    private final ICargoRepository roleRepository;
     private final ObjectMapperUtil objectMapperUtil;
     private final ITechnicalResponsibleService technicalResponsibleService;
     private final IPublicServantProfileService publicServantProfileService;
     private final ITechnicalResponsibleRepository technicalResponsibleRepository;
     private final IPublicServantProfileRepository publicServantProfileRepository;
-    private final IProfileRepository profileRepository;
+    private final IPerfilRepository profileRepository;
 
 
 
@@ -61,34 +61,34 @@ public class AdminService implements IAdminService{
             throw new BusinessException(BusinessExceptionMessage.INVALID_DATA.getMessage());
         }
 
-        User user = userRepository.findById(userId).orElseThrow(
+        Usuario user = userRepository.findById(userId).orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
         );
 
-        if (user.getStatus() != UserStatus.ACTIVE) {
+        if (user.getStatus() != StatusUsuario.ATIVO) {
             throw new BusinessException("User must be ACTIVE to be assigned an Admin profile.");
         }
 
-        boolean alreadyHasAdminProfile = user.getProfiles().stream().anyMatch(p -> p instanceof AdminProfile);
+        boolean alreadyHasAdminProfile = user.getPerfis().stream().anyMatch(p -> p instanceof AdminProfile);
 
         if (alreadyHasAdminProfile) {
             throw new BusinessException(BusinessExceptionMessage.USER_ALREADY_HAS_THIS_PROFILE.getMessage());
         }
 
-        Role role = new Role();
-        role.setName("ROLE_ADMIN");
-        role.setDescription("Role for administrator");
+        Cargo role = new Cargo();
+        role.setNome("ROLE_ADMIN");
+        role.setDescricao("Role for administrator");
         roleRepository.save(role);
 
         admin.setRole(role);
-        admin.setUser(user);
+        admin.setUsuario(user);
 
         admin = adminProfileRepository.save(admin);
 
-        user.getProfiles().add(admin);
+        user.getPerfis().add(admin);
 
-        if (user.getActiveProfile() == null) {
-            user.setActiveProfile(admin);
+        if (user.getPerfilAtivo() == null) {
+            user.setPerfilAtivo(admin);
         }
 
         userRepository.save(user);
@@ -98,17 +98,17 @@ public class AdminService implements IAdminService{
 
     @Override @Transactional
     public void update(UUID userId, AdminProfile profile) {
-        User user = userRepository.findById(userId)
+        Usuario user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        AdminProfile existing = user.getProfiles().stream()
+        AdminProfile existing = user.getPerfis().stream()
                         .filter(p -> p instanceof AdminProfile)
                         .map(p -> (AdminProfile) p)
                         .findFirst()
                         .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_PROFILE.getMessage()));
 
-        existing.setType(profile.getType());
-        existing.setImageUrl(profile.getImageUrl());
+        existing.setTipo(profile.getTipo());
+        existing.setImagemUrl(profile.getImagemUrl());
 
         adminProfileRepository.save(existing);
     }
@@ -135,8 +135,8 @@ public class AdminService implements IAdminService{
         return profiles.stream()
                 .map(profile -> new AdminResponseDTO(
                         profile.getId(),
-                        profile.getType(),
-                        profile.getImageUrl()
+                        profile.getTipo(),
+                        profile.getImagemUrl()
                 ))
                 .toList();
     }
@@ -172,8 +172,8 @@ public class AdminService implements IAdminService{
     public PublicServantRegisterResponseDTO assignPublicServantProfile(AdminAssignPublicServantDTO dto) {
         PublicServantProfile profile = new PublicServantProfile();
         profile.setEmployeeId(dto.employeeId());
-        profile.setImageUrl(dto.imageUrl());
-        profile.setType(dto.type());
+        profile.setImagemUrl(dto.imageUrl());
+        profile.setTipo(dto.type());
 
         return publicServantProfileService.createPublicServantProfile(dto.userId(), profile);
     }
@@ -190,11 +190,11 @@ public class AdminService implements IAdminService{
         TechnicalResponsible profileToRemove = technicalResponsibleRepository.findById(profileId)
             .orElseThrow(() -> new BusinessException("Perfil de Responsável Técnico não encontrado com o ID fornecido."));
 
-        User user = profileToRemove.getUser();
-        user.getProfiles().remove(profileToRemove);
+        Usuario user = profileToRemove.getUsuario();
+        user.getPerfis().remove(profileToRemove);
         
-        if (user.getActiveProfile() != null && user.getActiveProfile().getId().equals(profileToRemove.getId())) {
-            user.setActiveProfile(null); 
+        if (user.getPerfilAtivo() != null && user.getPerfilAtivo().getId().equals(profileToRemove.getId())) {
+            user.setPerfilAtivo(null); 
         }
         
         userRepository.save(user);
@@ -213,11 +213,11 @@ public class AdminService implements IAdminService{
         PublicServantProfile profileToRemove = publicServantProfileRepository.findById(profileId)
                 .orElseThrow(() -> new BusinessException("Perfil de Funcionário Público não encontrado com o ID fornecido."));
 
-        User user = profileToRemove.getUser();
+        Usuario user = profileToRemove.getUsuario();
 
-        user.getProfiles().remove(profileToRemove);
-            if (user.getActiveProfile() != null && user.getActiveProfile().getId().equals(profileToRemove.getId())) {
-            user.setActiveProfile(null);
+        user.getPerfis().remove(profileToRemove);
+            if (user.getPerfilAtivo() != null && user.getPerfilAtivo().getId().equals(profileToRemove.getId())) {
+            user.setPerfilAtivo(null);
         }
         
         userRepository.save(user);
@@ -233,7 +233,7 @@ public class AdminService implements IAdminService{
      */
     @Override @Transactional
     public UserDataResponseDTO activateUser(UUID userId){
-        return updateUserStatus(userId, UserStatus.ACTIVE);
+        return updateUserStatus(userId, StatusUsuario.ATIVO);
     }
 
     /**
@@ -245,7 +245,7 @@ public class AdminService implements IAdminService{
      */    
     @Override @Transactional
     public UserDataResponseDTO deactivateUser(UUID userId) {
-        return updateUserStatus(userId, UserStatus.INACTIVE); 
+        return updateUserStatus(userId, StatusUsuario.INATIVO); 
     }
 
     /**
@@ -256,14 +256,14 @@ public class AdminService implements IAdminService{
      * @return A DTO with the updated user data.
      * @author Caio Alves
      */
-    private UserDataResponseDTO updateUserStatus(UUID userId, UserStatus newStatus){
+    private UserDataResponseDTO updateUserStatus(UUID userId, StatusUsuario newStatus){
 
-        User user = userRepository.findById(userId)
+        Usuario user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
 
         user.setStatus(newStatus);
 
-        User updatedUser = userRepository.save(user);
+        Usuario updatedUser = userRepository.save(user);
 
         return objectMapperUtil.map(updatedUser, UserDataResponseDTO.class);
     }
@@ -280,7 +280,7 @@ public class AdminService implements IAdminService{
     @Override @Transactional
     public Page<AdminUserDetailResponseDTO> findAllUserDetails(Pageable pageable) {
 
-        Page<User> userPage = userRepository.findAll(pageable);
+        Page<Usuario> userPage = userRepository.findAll(pageable);
 
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -298,7 +298,7 @@ public class AdminService implements IAdminService{
     @Transactional(readOnly = true)
     public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleName(String roleName, Pageable pageable) {
 
-        Page<User> userPage = userRepository.findByProfileRoleName(roleName, pageable);
+        Page<Usuario> userPage = userRepository.findByProfileRoleName(roleName, pageable);
 
         return userPage.map(this::mapUserToAdminDetailDto);
     }
@@ -313,8 +313,8 @@ public class AdminService implements IAdminService{
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO> findUserDetailsByStatus(UserStatus status, Pageable pageable) {
-        Page<User> userPage = userRepository.findByStatus(status, pageable);
+    public Page<AdminUserDetailResponseDTO> findUserDetailsByStatus(StatusUsuario status, Pageable pageable) {
+        Page<Usuario> userPage = userRepository.findByStatus(status, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
 
@@ -329,7 +329,7 @@ public class AdminService implements IAdminService{
     @Override
     @Transactional(readOnly = true)
     public Page<AdminUserDetailResponseDTO> findUserDetailsByNameOrCpf(String term, Pageable pageable) {
-        Page<User> userPage = userRepository.findByFullNameOrCpfContaining(term, pageable);
+        Page<Usuario> userPage = userRepository.findByFullNameOrCpfContaining(term, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
 
@@ -343,8 +343,8 @@ public class AdminService implements IAdminService{
      * @author Caio Alves 
      */
     @Override @Transactional(readOnly = true)
-    public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable){
-        Page<User> userPage = userRepository.findByProfileRoleNameAndStatus(roleName, status, pageable);
+    public Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, StatusUsuario status, Pageable pageable){
+        Page<Usuario> userPage = userRepository.findByProfileRoleNameAndStatus(roleName, status, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
     
@@ -354,24 +354,24 @@ public class AdminService implements IAdminService{
      * @return The corresponding AdminUserDetailResponseDto.
      * @Author Caio Alves
      */
-    private AdminUserDetailResponseDTO mapUserToAdminDetailDto(User user) {
-        Person person = user.getPerson();
-        Profile activeProfile = user.getActiveProfile();
+    private AdminUserDetailResponseDTO mapUserToAdminDetailDto(Usuario user) {
+        Pessoa person = user.getPessoa();
+        Perfil activeProfile = user.getPerfilAtivo();
 
         AdminUserContentResponseDTO contentDto = new AdminUserContentResponseDTO(
                 user.getId(),
-                activeProfile != null ? activeProfile.getType() : null,
-                activeProfile != null ? activeProfile.getImageUrl() : null,
-                person != null ? person.getFullName() : null,
+                activeProfile != null ? activeProfile.getTipo() : null,
+                activeProfile != null ? activeProfile.getImagemUrl() : null,
+                person != null ? person.getNomeCompleto() : null,
                 person != null ? person.getCpf() : null,
-                user.getPhone(),
+                user.getTelefone(),
                 user.getEmail(),
-                person != null && person.getGender() != null ? person.getGender().toString() : null,
-                person != null ? person.getBirthDate() : null,
+                person != null && person.getGenero() != null ? person.getGenero().toString() : null,
+                person != null ? person.getDataNascimento() : null,
                 user.getStatus() != null ? user.getStatus().toString() : null
         );
 
-        List<AdminProfileListResponseDTO> profileListDto = user.getProfiles().stream()
+        List<AdminProfileListResponseDTO> profileListDto = user.getPerfis().stream()
                 .map(profile -> {
                     
                     String displayType; 
@@ -385,22 +385,22 @@ public class AdminService implements IAdminService{
                     } else if (profile instanceof PublicServantProfile) {
                         PublicServantProfile ps = (PublicServantProfile) profile;
                         displayType = "Servidor Público";
-                        specificType = ps.getType(); 
+                        specificType = ps.getTipo(); 
                     
                     } else if (profile instanceof AdminProfile) {
                         AdminProfile ap = (AdminProfile) profile;
                         displayType = "Administrador";
-                        specificType = ap.getType();
+                        specificType = ap.getTipo();
                         
                     
                     } else {
-                        displayType = profile.getType(); 
+                        displayType = profile.getTipo(); 
                     }
                     
                     return new AdminProfileListResponseDTO(
                             profile.getId(),
                             displayType, 
-                            profile.getImageUrl(),
+                            profile.getImagemUrl(),
                             specificType  
                     );
                 })

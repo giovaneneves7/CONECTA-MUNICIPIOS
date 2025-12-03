@@ -7,15 +7,15 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Role;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.IRoleRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.ICargoRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.request.TechnicalResponsibleRequestDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.response.TechnicalResponsibleResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.model.TechnicalResponsible;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.repository.ITechnicalResponsibleRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
@@ -35,8 +35,8 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
 
     private final ITechnicalResponsibleRepository repository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final IRoleRepository roleRepository;
-    private final IUserRepository userRepository;
+    private final ICargoRepository roleRepository;
+    private final IUsuarioRepository userRepository;
 
     
     @Override
@@ -47,10 +47,10 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
 
-        User user = userRepository.findById(dto.userId())
+        Usuario user = userRepository.findById(dto.userId())
             .orElseThrow(() -> new BusinessException("User not found ." + dto.userId()));
 
-        if(user.getStatus() != UserStatus.ACTIVE){
+        if(user.getStatus() != StatusUsuario.ATIVO){
             throw new BusinessException("User must be ACTIVE to be assigned a Technical Responsible profile.");
         }
 
@@ -59,15 +59,15 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
         entity.setRegistrationId(dto.registrationId());
         entity.setResponsibleType(dto.responsibleType());
 
-        entity.setImageUrl(dto.imageUrl());
-        entity.setUser(user);
-        entity.setType("TECHNICAL_RESPONSIBLE");
+        entity.setImagemUrl(dto.imageUrl());
+        entity.setUsuario(user);
+        entity.setTipo("TECHNICAL_RESPONSIBLE");
 
-        Role role = roleRepository.findByName("ROLE_TECHNICAL_RESPONSIBLE")
+        Cargo role = roleRepository.findByNome("ROLE_TECHNICAL_RESPONSIBLE")
                 .orElseGet(() -> {
-                    Role newRole = new Role();
-                    newRole.setName("ROLE_TECHNICAL_RESPONSIBLE");
-                    newRole.setDescription("Technical Responsible Role");
+                    Cargo newRole = new Cargo();
+                    newRole.setNome("ROLE_TECHNICAL_RESPONSIBLE");
+                    newRole.setDescricao("Technical Responsible Role");
                     return roleRepository.save(newRole);
                 });
         entity.setRole(role);
@@ -111,22 +111,22 @@ public class TechnicalResponsibleService implements ITechnicalResponsibleService
     }
 
     private TechnicalResponsibleResponseDTO convertToDto (final TechnicalResponsible entity){
-        User user = entity.getUser();
+        Usuario user = entity.getUsuario();
         String responsibleName = null;
         String email = null;
         String phone = null;
         String cpf = null;
-    if (user != null && user.getPerson() != null) {
-        responsibleName = user.getPerson().getFullName();
+    if (user != null && user.getPessoa() != null) {
+        responsibleName = user.getPessoa().getNomeCompleto();
         email = user.getEmail();
-        phone = user.getPhone();
-        cpf = user.getPerson().getCpf();
+        phone = user.getTelefone();
+        cpf = user.getPessoa().getCpf();
     }
         return new TechnicalResponsibleResponseDTO(
             entity.getId(),
             entity.getRegistrationId(),
             entity.getResponsibleType(),
-            entity.getImageUrl(),
+            entity.getImagemUrl(),
             responsibleName,
             cpf,
             email,

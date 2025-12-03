@@ -4,8 +4,8 @@ package br.com.cidadesinteligentes.infraestructure.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,7 +37,7 @@ public class TokenAuthenticationService {
     private String secretKey;
 
     @Autowired
-    private IUserRepository userRepository;
+    private IUsuarioRepository userRepository;
 
     /**
      * Extracts and validates the token from the HTTP request.
@@ -120,7 +120,7 @@ public class TokenAuthenticationService {
      * @param email the user's email
      * @return the user found
      */
-    public User findUserByEmail(String email) {
+    public Usuario findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
     }

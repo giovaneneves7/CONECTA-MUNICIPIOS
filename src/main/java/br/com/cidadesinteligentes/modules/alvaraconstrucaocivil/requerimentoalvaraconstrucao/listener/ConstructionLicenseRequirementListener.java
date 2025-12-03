@@ -25,7 +25,7 @@ public class ConstructionLicenseRequirementListener {
             requirement.getEndDate(),  
             requirement.getRequirementType().getName(),         
             "Request created automatically from ConstructionLicenseRequirement " + requirement.getId(),
-            requirement.getSolicitante().getActiveProfile().getId(),    
+            requirement.getSolicitante().getPerfilAtivo().getId(),    
             requirement.getId()
         );
 

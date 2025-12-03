@@ -2,7 +2,7 @@ package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.respon
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,5 +28,5 @@ public class UserDataResponseDTO{
     private String email;
 
     @JsonProperty("userStatus")
-    private UserStatus userStatus;
+    private StatusUsuario userStatus;
 }

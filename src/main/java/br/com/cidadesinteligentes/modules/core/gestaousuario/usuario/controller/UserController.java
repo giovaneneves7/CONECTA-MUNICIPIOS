@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.controller;
 
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.service.IUserService;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.service.IUsuarioService;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -33,7 +33,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final IUserService userService;
+    private final IUsuarioService userService;
     private final ObjectMapperUtil objectMapperUtil;
 
     /**

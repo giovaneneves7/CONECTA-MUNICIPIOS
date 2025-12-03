@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.config.tests;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.model.Permission;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.model.Permissao;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.repository.IPermissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -26,13 +26,13 @@ public class DataLoader implements CommandLineRunner {
                 "REJECT_LICENSE_REQUEST", "MANAGE_ROLES", "DEACTIVATE_USER", "VIEW_SYSTEM_LOGS"
         );
 
-        requiredPermissions.forEach(name -> {
+        requiredPermissions.forEach(nome -> {
             //avoid duplication
-            if (permissionRepository.findByName(name).isEmpty()) {
-                Permission permission = new Permission();
-                permission.setName(name);
+            if (permissionRepository.findByNome(nome).isEmpty()) {
+                Permissao permission = new Permissao();
+                permission.setNome(nome);
                 permissionRepository.save(permission);
-                System.out.println("Permissão criada: " + name);
+                System.out.println("Permissão criada: " + nome);
             }
         });
     }

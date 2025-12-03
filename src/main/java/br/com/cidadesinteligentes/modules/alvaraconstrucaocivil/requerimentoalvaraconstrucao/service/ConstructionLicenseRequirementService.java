@@ -35,19 +35,19 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalva
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.repository.IConstructionLicenseRequirementRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.dto.response.DocumentResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.model.Document;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IMunicipalServiceRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Person;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IServicoMunicipalRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfilePublicDataResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IProfileRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.repository.IRequirementTypeRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.response.TechnicalResponsibleResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.model.TechnicalResponsible;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.repository.ITechnicalResponsibleRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import jakarta.validation.constraints.NotNull;
 
@@ -80,13 +80,13 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
     private final IMonitoringService monitoringService;
 
     private final IConstructionLicenseRequirementRepository repository;
-    private final IMunicipalServiceRepository municipalServiceRepository;
+    private final IServicoMunicipalRepository municipalServiceRepository;
     private final IRequirementTypeRepository requirementTypeRepository;
     private final ObjectMapperUtil objectMapperUtil;
     private final ITechnicalResponsibleRepository technicalResponsibleRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final IUserRepository userRepository;
-    private final IProfileRepository profileRepository;
+    private final IUsuarioRepository userRepository;
+    private final IPerfilRepository profileRepository;
     private final IRequestRepository requestRepository;
     private final IPublicServantProfileRepository publicServantProfileRepository;
     private final ICommentRepository commentRepository;
@@ -95,16 +95,16 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
     @Transactional
     public ConstructionLicenseRequirementWithRequestIDResponseDTO save(ConstructionLicenseRequirementRequestDTO dto) {
 
-        Profile solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
+        Perfil solicitanteProfile = profileRepository.findById(dto.solicitanteProfileId())
                 .orElseThrow(() -> new BusinessException("Perfil do solicitante não encontrado"));
 
-        User solicitante = solicitanteProfile.getUser();
+        Usuario solicitante = solicitanteProfile.getUsuario();
 
         ConstructionLicenseRequirement entity = objectMapperUtil.map(dto, ConstructionLicenseRequirement.class);
 
         entity.setSolicitante(solicitante);
 
-        MunicipalService serviceToInherit = municipalServiceRepository.findById(dto.municipalServiceId())
+        ServicoMunicipal serviceToInherit = municipalServiceRepository.findById(dto.servicoMunicipalId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
@@ -116,13 +116,13 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
                 .orElseThrow(() -> new BusinessException("Responsável Técnico não encontrado com o registro: "
                         + dto.technicalResponsibleRegistrationId()));
 
-        if (serviceToInherit.getFlow() != null) {
-            // Como o CLR herda de MunicipalService, ele tem o campo 'flow'.
-            entity.setFlow(serviceToInherit.getFlow());
+        if (serviceToInherit.getFluxo() != null) {
+            // Como o CLR herda de MunicipalService, ele tem o campo 'fluxo'.
+            entity.setFluxo(serviceToInherit.getFluxo());
         }
         entity.setTechnicalResponsible(responsible);
-        entity.setName(serviceToInherit.getName());
-        entity.setDescription(serviceToInherit.getDescription());
+        entity.setNome(serviceToInherit.getNome());
+        entity.setDescricao(serviceToInherit.getDescricao());
         entity.setTechnicalResponsibleStatus(AssociationStatus.PENDING);
 
         if (dto.documents() != null) {
@@ -140,7 +140,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
 
         eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
 
-        Request createdRequest = requestRepository.findFirstByMunicipalServiceIdOrderByCreatedAtDesc(
+        Request createdRequest = requestRepository.findFirstByServicoMunicipalIdOrderByCreatedAtDesc(
                 saved.getId()
         ).orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -167,7 +167,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setHousingUnitNumber(dto.housingUnitNumber());
         entity.setTerrainArea(dto.terrainArea());
 
-        MunicipalService serviceToInherit = municipalServiceRepository.findById(dto.municipalServiceId())
+        ServicoMunicipal serviceToInherit = municipalServiceRepository.findById(dto.municipalServiceId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         RequirementType type = requirementTypeRepository.findById(dto.requirementTypeId())
@@ -180,8 +180,8 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
                         + dto.technicalResponsibleRegistrationId()));
 
         entity.setTechnicalResponsible(responsible);
-        entity.setName(serviceToInherit.getName());
-        entity.setDescription(serviceToInherit.getDescription());
+        entity.setNome(serviceToInherit.getNome());
+        entity.setDescricao(serviceToInherit.getDescricao());
 
         if (dto.documents() != null) {
             entity.getDocuments().clear();
@@ -240,7 +240,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
         repository.save(entity);
 
-        List<Request> requests = entity.getRequests();
+        List<Request> requests = entity.getSolicitacoes();
         Request request = requests.get(requests.size() - 1);
         this.monitoringService.completeCurrentMonitoringAndActivateNext(request, true);
     }
@@ -271,7 +271,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setRejectionJustification(dto.justification());
         ConstructionLicenseRequirement saved = repository.save(entity);
 
-        List<Request> requests = entity.getRequests();
+        List<Request> requests = entity.getSolicitacoes();
         Request request = requests.get(requests.size() - 1);
         this.monitoringService.completeCurrentMonitoringAndActivateNext(request, false);
 
@@ -291,10 +291,10 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
 
         if (responsibleEntity != null &&
-                responsibleEntity.getUser() != null &&
-                responsibleEntity.getUser().getPerson() != null) {
+                responsibleEntity.getUsuario() != null &&
+                responsibleEntity.getUsuario().getPessoa() != null) {
 
-            responsibleName = responsibleEntity.getUser().getPerson().getFullName();
+            responsibleName = responsibleEntity.getUsuario().getPessoa().getNomeCompleto();
         }
 
         return new ConstructionLicenseRequirementResponseDTO(
@@ -335,10 +335,10 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
 
         if (responsibleEntity != null &&
-                responsibleEntity.getUser() != null &&
-                responsibleEntity.getUser().getPerson() != null) {
+                responsibleEntity.getUsuario() != null &&
+                responsibleEntity.getUsuario().getPessoa() != null) {
 
-            responsibleName = responsibleEntity.getUser().getPerson().getFullName();
+            responsibleName = responsibleEntity.getUsuario().getPessoa().getNomeCompleto();
         }
 
         return new ConstructionLicenseRequirementWithRequestIDResponseDTO(
@@ -420,31 +420,31 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         }
 
         TechnicalResponsible responsibleEntity = entity.getTechnicalResponsible();
-        User responsibleUser = responsibleEntity.getUser();
+        Usuario responsibleUser = responsibleEntity.getUsuario();
 
         TechnicalResponsibleResponseDTO responsibleDTO = new TechnicalResponsibleResponseDTO(
                 responsibleEntity.getId(),
                 responsibleEntity.getRegistrationId(),
                 responsibleEntity.getResponsibleType(),
-                responsibleEntity.getImageUrl(),
-                responsibleUser.getPerson().getFullName(),
-                responsibleUser.getPerson().getCpf(),
+                responsibleEntity.getImagemUrl(),
+                responsibleUser.getPessoa().getNomeCompleto(),
+                responsibleUser.getPessoa().getCpf(),
                 responsibleUser.getEmail(),
-                responsibleUser.getPhone());
+                responsibleUser.getTelefone());
 
-        User applicantUser = entity.getSolicitante();
-        Person applicantPerson = applicantUser.getPerson();
+        Usuario applicantUser = entity.getSolicitante();
+        Pessoa applicantPerson = applicantUser.getPessoa();
 
         ProfilePublicDataResponseDTO applicantDTO = new ProfilePublicDataResponseDTO(
-                applicantUser.getActiveProfile().getId(),
-                applicantUser.getActiveProfile().getType(),
-                applicantUser.getActiveProfile().getImageUrl(),
-                applicantPerson.getFullName(),
+                applicantUser.getPerfilAtivo().getId(),
+                applicantUser.getPerfilAtivo().getTipo(),
+                applicantUser.getPerfilAtivo().getImagemUrl(),
+                applicantPerson.getNomeCompleto(),
                 applicantPerson.getCpf(),
-                applicantUser.getPhone(),
+                applicantUser.getTelefone(),
                 applicantUser.getEmail(),
-                applicantPerson.getGender().toString(),
-                applicantPerson.getBirthDate());
+                applicantPerson.getGenero().toString(),
+                applicantPerson.getDataNascimento());
 
         List<DocumentResponseDTO> documentDTOs = entity.getDocuments().stream()
                 .map(doc -> new DocumentResponseDTO(
@@ -531,7 +531,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         repository.save(license);
 
         // INFO: Updates the monitoring status
-        List<Request> requests = license.getRequests();
+        List<Request> requests = license.getSolicitacoes();
         if (requests.isEmpty()) {
             throw new BusinessException("No requests found for this municipal service.");
         }
@@ -576,7 +576,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         repository.save(license);
 
         // INFO: Updates the monitoring status
-        List<Request> requests = license.getRequests();
+        List<Request> requests = license.getSolicitacoes();
         if (requests.isEmpty()) {
             throw new BusinessException("No requests found for this municipal service.");
         }

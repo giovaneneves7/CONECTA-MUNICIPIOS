@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,5 +35,5 @@ public class UserLoginResponseDTO {
     private String token;
 
     @JsonProperty("userStatus")
-    private UserStatus userStatus;
+    private StatusUsuario userStatus;
 }

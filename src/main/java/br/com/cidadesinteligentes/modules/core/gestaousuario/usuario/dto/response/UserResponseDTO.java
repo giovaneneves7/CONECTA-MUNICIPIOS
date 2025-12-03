@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record UserResponseDTO(
@@ -11,6 +11,6 @@ public record UserResponseDTO(
     String email,
 
     @JsonProperty("userStatus")
-    UserStatus status
+    StatusUsuario status
 ) {
 }

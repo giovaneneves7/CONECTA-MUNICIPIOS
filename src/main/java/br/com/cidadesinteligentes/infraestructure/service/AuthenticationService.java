@@ -3,16 +3,16 @@ package br.com.cidadesinteligentes.infraestructure.service;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.request.UserLoginRequestDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.request.UserRegisterRequestDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserLoginResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Role;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.model.Citizen;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.IRoleRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Person;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.model.Cidadao;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.ICargoRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.repository.IPersonRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IProfileRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
@@ -39,12 +39,12 @@ public class AuthenticationService {
 
     @Autowired
     private final ObjectMapperUtil objectMapperUtil;
-    private final IUserRepository userRepository;
+    private final IUsuarioRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final IPersonRepository personRepository;
-    private final IProfileRepository profileRepository;
-    private final IRoleRepository roleRepository;
+    private final IPerfilRepository profileRepository;
+    private final ICargoRepository roleRepository;
 
     /**
      * Logs in a user based on provided email and password.
@@ -55,19 +55,19 @@ public class AuthenticationService {
      */
     @Transactional
     public UserLoginResponseDTO login(UserLoginRequestDTO request) {
-        User user = userRepository.findByEmail(request.getEmail())
+        Usuario user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage()));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage());
         }
 
-        if (user.getStatus() == UserStatus.INACTIVE) {
+        if (user.getStatus() == StatusUsuario.INATIVO) {
             throw new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage());
         }
 
-        if (user.getProfiles() != null && !user.getProfiles().isEmpty()) {
-            user.setActiveProfile(user.getProfiles().get(0));
+        if (user.getPerfis() != null && !user.getPerfis().isEmpty()) {
+            user.setPerfilAtivo(user.getPerfis().get(0));
         } else {
             throw new BusinessException(BusinessExceptionMessage.USER_WITHOUT_PROFILES.getMessage());
         }
@@ -88,31 +88,31 @@ public class AuthenticationService {
             throw new BusinessException(BusinessExceptionMessage.ATTRIBUTE_VALUE_ALREADY_EXISTS.getMessage());
         }
 
-        Person person = personRepository.save(objectMapperUtil.map(request.getPerson(), Person.class));
+        Pessoa person = personRepository.save(objectMapperUtil.map(request.getPerson(), Pessoa.class));
 
-        User user = objectMapperUtil.map(request, User.class);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setStatus(UserStatus.ACTIVE);
-        user.setPerson(person);
-        user.setProfiles(new ArrayList<>());
+        Usuario user = objectMapperUtil.map(request, Usuario.class);
+        user.setSenha(passwordEncoder.encode(request.getPassword()));
+        user.setStatus(StatusUsuario.ATIVO);
+        user.setPessoa(person);
+        user.setPerfis(new ArrayList<>());
         user = userRepository.save(user);
 
-        Role role = roleRepository.findByName("ROLE_CITIZEN")
+        Cargo role = roleRepository.findByNome("ROLE_CITIZEN")
                 .orElseGet(() -> {
-                    Role newRole = new Role();
-                    newRole.setName("ROLE_CITIZEN");
-                    newRole.setDescription("Role for citizen");
+                    Cargo newRole = new Cargo();
+                    newRole.setNome("ROLE_CITIZEN");
+                    newRole.setDescricao("Role for citizen");
                     return roleRepository.save(newRole);
                 });
 
-        Profile profile = new Citizen();
-        profile.setType("Cidadão");
+        Perfil profile = new Cidadao();
+        profile.setTipo("Cidadão");
         profile.setRole(role);
-        profile.setUser(user);
+        profile.setUsuario(user);
         profile = profileRepository.save(profile);
 
-        user.getProfiles().add(profile);
-        user.setActiveProfile(profile);
+        user.getPerfis().add(profile);
+        user.setPerfilAtivo(profile);
         userRepository.save(user);
 
         String token = tokenService.generateToken(user);

@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.service;
 
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.FlowStep;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IFlowStepRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.EtapaFluxo;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IEtapaFluxoRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.dto.request.MonitoringRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.dto.request.MonitoringUpdateRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.dto.response.MonitoringResponseDTO;
@@ -10,8 +10,8 @@ import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanham
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.repository.IMonitoringRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.IRequestRepository;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Step;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.repository.IStepRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Etapa;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.repository.IEtapaRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
@@ -44,8 +44,8 @@ public class MonitoringService implements IMonitoringService{
     private final ObjectMapperUtil objectMapperUtil;
     private final IRequestRepository requestRepository;
     private final IMonitoringRepository monitoringRepository;
-    private final IStepRepository stepRepository;
-    private final IFlowStepRepository flowStepRepository;
+    private final IEtapaRepository stepRepository;
+    private final IEtapaFluxoRepository flowStepRepository;
 
     @Override
     public MonitoringResponseDTO save(final MonitoringRequestDTO dto) {
@@ -53,12 +53,12 @@ public class MonitoringService implements IMonitoringService{
         Request request = this.requestRepository.findById(dto.requestId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        Step step = this.stepRepository.findById(dto.stepId())
+        Etapa step = this.stepRepository.findById(dto.stepId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         Monitoring monitoring = this.objectMapperUtil.map(dto,  Monitoring.class);
         monitoring.setRequest(request);
-        monitoring.setStep(step);
+        monitoring.setEtapa(step);
 
         return this.objectMapperUtil.mapToRecord(monitoringRepository.save(monitoring), MonitoringResponseDTO.class);
 
@@ -114,19 +114,19 @@ public class MonitoringService implements IMonitoringService{
         if(!approved) return;
 
         // INFO: Search the next flow step
-        FlowStep currentStep = this.flowStepRepository.findByFlowIdAndStepId(
-                request.getMunicipalService().getFlow().getId(),
-                currentMonitoring.getStep().getId()
+        EtapaFluxo currentStep = this.flowStepRepository.findByFluxoIdAndEtapaId(
+                request.getServicoMunicipal().getFluxo().getId(),
+                currentMonitoring.getEtapa().getId()
         ).orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-        FlowStep nextStep = this.flowStepRepository.findNextStep(currentStep.getFlow().getId(), currentStep.getStepOrder())
+        EtapaFluxo nextStep = this.flowStepRepository.buscarProximaEtapa(currentStep.getFluxo().getId(), currentStep.getOrdemEtapa())
                 .orElse(null);
 
         if(nextStep == null) return;
 
         // INFO: Create a new monitoring
         Monitoring nextMonitoring = new Monitoring();
-        nextMonitoring.setStep(nextStep.getStep());
-        nextMonitoring.setCode(nextStep.getStep().getCode());
+        nextMonitoring.setEtapa(nextStep.getEtapa());
+        nextMonitoring.setCode(nextStep.getEtapa().getCode());
         nextMonitoring.setRequest(request);
         nextMonitoring.setMonitoringStatus(MonitoringStatus.PENDING);
 

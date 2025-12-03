@@ -10,7 +10,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.model.AdminProfile;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.service.IAdminService;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.request.PublicServantCreationRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.response.PublicServantRegisterResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.response.TechnicalResponsibleResponseDTO;
@@ -357,15 +357,15 @@ public ResponseEntity<AdminSimpleResponseDTO> update(
             @PageableDefault(size = 10, sort = "person.fullName", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
-        UserStatus userStatusEnum;
+        StatusUsuario userStatusEnum;
         try {
             // Convert string for enum
-            userStatusEnum = UserStatus.valueOf(status.toUpperCase());
+            userStatusEnum = StatusUsuario.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Invalid status value. Must be one of: " + 
-                          java.util.Arrays.toString(UserStatus.values()));
+                          java.util.Arrays.toString(StatusUsuario.values()));
         }
 
         Page<AdminUserDetailResponseDTO> userDetailsPage = adminService.findUserDetailsByStatus(userStatusEnum, pageable);
@@ -428,14 +428,14 @@ public ResponseEntity<AdminSimpleResponseDTO> update(
         if (roleName == null || roleName.isBlank()) {
             return ResponseEntity.badRequest().body("The 'roleName' parameter cannot be empty.");
         }
-        UserStatus userStatusEnum;
+        StatusUsuario userStatusEnum;
         try {
-            userStatusEnum = UserStatus.valueOf(status.toUpperCase());
+            userStatusEnum = StatusUsuario.valueOf(status.toUpperCase());
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Invalid status value. Must be one of: " + 
-                          java.util.Arrays.toString(UserStatus.values()));
+                          java.util.Arrays.toString(StatusUsuario.values()));
         }
         Page<AdminUserDetailResponseDTO> userDetailsPage = adminService.findUserDetailsByRoleNameAndStatus(roleName, userStatusEnum, pageable);
         return ResponseEntity.ok(userDetailsPage);

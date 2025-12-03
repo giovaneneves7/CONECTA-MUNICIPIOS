@@ -6,7 +6,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.AdminUserDetailResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.model.AdminProfile;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.response.PublicServantRegisterResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.response.TechnicalResponsibleResponseDTO;
 
@@ -108,7 +108,7 @@ public interface IAdminService {
      * @return A Page containing AdminUserDetailResponseDTO objects for the filtered users.
      * @author Caio Alves
      */
-    Page<AdminUserDetailResponseDTO> findUserDetailsByStatus(UserStatus status, Pageable pageable);
+    Page<AdminUserDetailResponseDTO> findUserDetailsByStatus(StatusUsuario status, Pageable pageable);
 
    /**
      * Searches for users (with admin details) by name or CPF.
@@ -129,5 +129,5 @@ public interface IAdminService {
      * @return A Page of DTOs with the details of the found users.
      * @author Caio Alves 
      */
-    Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, UserStatus status, Pageable pageable);
+    Page<AdminUserDetailResponseDTO> findUserDetailsByRoleNameAndStatus(String roleName, StatusUsuario status, Pageable pageable);
 }

@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.config.security;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -23,13 +23,13 @@ public class AuthenticatedUserProvider {
      *
      * @return {@link Optional} containing the user if present
      */
-    public Optional<User> getAuthenticatedUser() {
+    public Optional<Usuario> getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             return Optional.empty();
         }
         Object principal = authentication.getPrincipal();
-        if (principal instanceof User user) {
+        if (principal instanceof Usuario user) {
             return Optional.of(user);
         }
         return Optional.empty();

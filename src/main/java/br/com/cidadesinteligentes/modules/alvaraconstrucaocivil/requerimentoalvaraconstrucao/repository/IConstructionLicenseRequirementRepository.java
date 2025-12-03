@@ -38,5 +38,5 @@ public interface IConstructionLicenseRequirementRepository extends JpaRepository
    */
   Page<ConstructionLicenseRequirement> findByRequirementTypeName(String typeName, Pageable pageable);
 
-  Optional<ConstructionLicenseRequirement> findFirstByMunicipalServiceIdOrderByIdDesc(Long municipalServiceId);
+    Optional<ConstructionLicenseRequirement> findFirstByOrderByIdDesc();
 }

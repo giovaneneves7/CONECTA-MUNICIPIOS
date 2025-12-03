@@ -3,7 +3,6 @@ package br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalv
 import java.time.LocalDateTime;
 
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.enums.AssociationStatus;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimento.model.Requirement;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.model.TechnicalResponsible;

@@ -4,7 +4,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profil
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.model.Agendamento;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.disponibilidadeprofissional.model.DisponibilidadeProfissional;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.servico.model.Servico;
-import br.com.cidadesinteligentes.modules.marcacaoatendimento.tipoprofissional.model.TipoProfissionalSaude;
+import br.com.cidadesinteligentes.modules.marcacaoatendimento.tipoprofissionalsaude.model.TipoProfissionalSaude;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.unidadeatendimento.model.UnidadeAtendimento;
 import jakarta.persistence.*;
 import lombok.*;

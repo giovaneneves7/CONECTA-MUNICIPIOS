@@ -1,4 +1,4 @@
-package br.com.cidadesinteligentes.modules.marcacaoatendimento.tipoprofissional.model;
+package br.com.cidadesinteligentes.modules.marcacaoatendimento.tipoprofissionalsaude.model;
 
 import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.profissionalsaude.model.ProfissionalSaude;
@@ -27,5 +27,5 @@ public class TipoProfissionalSaude extends PersistenceEntity {
 
     // N:N com ProfissionalSaude (mappedBy reflete a @ManyToMany acima)
     @ManyToMany(mappedBy = "tiposProfissional")
-    private List<ProfissionalSaude> profissionais;
+    private List<ProfissionalSaude> profissionais = List.of();
 }

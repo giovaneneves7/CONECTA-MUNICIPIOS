@@ -2,7 +2,17 @@ package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomu
 
 import java.util.List;
 
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.service.IFlowService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import jakarta.validation.Valid;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -18,19 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.service.IFluxoService;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.request.MunicipalServiceRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.response.MunicipalServiceResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.response.MunicipalServiceSimpleResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.service.IServicoMunicipalService;
 import br.com.cidadesinteligentes.infraestructure.util.ResultError;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 
 /**
  * Controller responsável pelos endpoints de Serviço Municipal.
@@ -44,7 +48,7 @@ import lombok.RequiredArgsConstructor;
 public class MunicipalServiceController {
 
     private final IServicoMunicipalService servicoMunicipalService;
-    private final IFlowService flowService;
+    private final IFluxoService fluxoService;
 
     /**
      * Endpoint para criar um novo serviço municipal.
@@ -154,6 +158,6 @@ public class MunicipalServiceController {
     )
     public ResponseEntity<?> obterFluxoPorServico(@PathVariable("id") Long id) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(this.flowService.buscarFluxoPorServicoMunicipalId(id));
+                .body(this.fluxoService.buscarFluxoPorServicoMunicipalId(id));
     }
 }

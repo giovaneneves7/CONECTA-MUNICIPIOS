@@ -1,17 +1,24 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class GestorResponseDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public record GestorResponseDTO(
+        @JsonProperty("id")
+        UUID id,
 
-    private UUID id;
-    private String imagemUrl;
-    private String tipo; // Para retornar "GESTOR_MANUTENCAO"
+        @JsonProperty("imagemUrl")
+        String imagemUrl,
+
+        @JsonProperty("tipo")
+        String tipo
+) {
+    // Construtor compacto ou lógica para garantir que o tipo seja sempre retornado caso venha nulo do mapper
+    public GestorResponseDTO {
+        if (tipo == null) {
+            tipo = "GESTOR_MANUTENCAO";
+        }
+    }
 }

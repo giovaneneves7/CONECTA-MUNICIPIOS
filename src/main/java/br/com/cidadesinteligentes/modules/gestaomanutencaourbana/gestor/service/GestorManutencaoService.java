@@ -1,11 +1,13 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.service;
 
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
+import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.request.GestorRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.request.GestorAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.request.GestorCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.response.GestorResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model.GestorSolicitacoesManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.repository.IGestorManutencaoRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,53 +22,67 @@ public class GestorManutencaoService implements IGestorManutencaoService {
     private final IGestorManutencaoRepository repository;
     private final ObjectMapperUtil objectMapperUtil;
 
+    // Constante para garantir o retorno correto do tipo
+    private static final String TIPO_GESTOR = "GESTOR_MANUTENCAO";
+
     @Override
     @Transactional
-    public GestorResponseDTO createGestor(GestorRequestDTO dto) {
-        GestorSolicitacoesManutencaoUrbana gestor = objectMapperUtil.map(dto, GestorSolicitacoesManutencaoUrbana.class);
-        GestorSolicitacoesManutencaoUrbana saved = repository.save(gestor);
-        return mapToResponse(saved);
+    public GestorResponseDTO save(GestorCriarRequestDTO dto) {
+        GestorSolicitacoesManutencaoUrbana entity = objectMapperUtil.map(dto, GestorSolicitacoesManutencaoUrbana.class);
+        GestorSolicitacoesManutencaoUrbana savedEntity = repository.save(entity);
+
+        return mapToResponse(savedEntity);
     }
 
     @Override
-    public List<GestorResponseDTO> findAllGestores() {
-        return repository.findAll().stream()
+    @Transactional(readOnly = true)
+    public List<GestorResponseDTO> findAll() {
+        List<GestorSolicitacoesManutencaoUrbana> list = repository.findAll();
+        return list.stream()
                 .map(this::mapToResponse)
                 .toList();
     }
 
     @Override
-    public GestorResponseDTO findGestorById(UUID id) {
-        GestorSolicitacoesManutencaoUrbana gestor = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Gestor não encontrado com ID: " + id));
-        return mapToResponse(gestor);
+    @Transactional(readOnly = true)
+    public GestorResponseDTO findById(UUID id) {
+        return repository.findById(id)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }
 
     @Override
     @Transactional
-    public GestorResponseDTO updateGestor(UUID id, GestorRequestDTO dto) {
-        GestorSolicitacoesManutencaoUrbana gestor = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Gestor não encontrado com ID: " + id));
+    public GestorResponseDTO update(GestorAtualizarRequestDTO dto) {
+        GestorSolicitacoesManutencaoUrbana gestorExistente = repository.findById(dto.id())
+                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        gestor.setImageUrl(dto.getImagemUrl());
+        // Atualizando propriedades herdadas de Profile
+        gestorExistente.setImageUrl(dto.imagemUrl());
 
-        GestorSolicitacoesManutencaoUrbana updated = repository.save(gestor);
-        return mapToResponse(updated);
+        GestorSolicitacoesManutencaoUrbana updatedEntity = repository.save(gestorExistente);
+        return mapToResponse(updatedEntity);
     }
 
     @Override
     @Transactional
-    public void deleteGestor(UUID id) {
+    public UUID delete(UUID id) {
         if (!repository.existsById(id)) {
-            throw new EntityNotFoundException("Gestor não encontrado com ID: " + id);
+            throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
+
+        return id;
     }
 
-    // Método auxiliar para mapear manualmente o tipo, caso o mapper automático não pegue o @Discriminator
+    // Método auxiliar para garantir que o tipo seja preenchido corretamente no Response
     private GestorResponseDTO mapToResponse(GestorSolicitacoesManutencaoUrbana entity) {
         GestorResponseDTO response = objectMapperUtil.map(entity, GestorResponseDTO.class);
-        response.setTipo("GESTOR_MANUTENCAO");
-        return response;
+
+        return new GestorResponseDTO(
+                response.id(),
+                response.imagemUrl(),
+                TIPO_GESTOR
+        );
     }
 }

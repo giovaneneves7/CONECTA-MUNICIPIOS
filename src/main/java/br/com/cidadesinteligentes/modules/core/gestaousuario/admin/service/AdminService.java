@@ -81,7 +81,7 @@ public class AdminService implements IAdminService{
         roleRepository.save(role);
 
         admin.setRole(role);
-        admin.setUser(user);
+        admin.setUsuario(user);
 
         admin = adminProfileRepository.save(admin);
 
@@ -190,7 +190,7 @@ public class AdminService implements IAdminService{
         TechnicalResponsible profileToRemove = technicalResponsibleRepository.findById(profileId)
             .orElseThrow(() -> new BusinessException("Perfil de Responsável Técnico não encontrado com o ID fornecido."));
 
-        Usuario user = profileToRemove.getUser();
+        Usuario user = profileToRemove.getUsuario();
         user.getPerfis().remove(profileToRemove);
         
         if (user.getPerfilAtivo() != null && user.getPerfilAtivo().getId().equals(profileToRemove.getId())) {
@@ -213,7 +213,7 @@ public class AdminService implements IAdminService{
         PublicServantProfile profileToRemove = publicServantProfileRepository.findById(profileId)
                 .orElseThrow(() -> new BusinessException("Perfil de Funcionário Público não encontrado com o ID fornecido."));
 
-        Usuario user = profileToRemove.getUser();
+        Usuario user = profileToRemove.getUsuario();
 
         user.getPerfis().remove(profileToRemove);
             if (user.getPerfilAtivo() != null && user.getPerfilAtivo().getId().equals(profileToRemove.getId())) {

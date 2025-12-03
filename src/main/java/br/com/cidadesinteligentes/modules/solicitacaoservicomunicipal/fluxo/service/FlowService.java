@@ -1,19 +1,19 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.service;
 
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.request.FlowRequestDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.request.FlowStepRequestDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.response.FlowFullDataResponseDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.response.FlowResponseDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.response.FlowStepResponseDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Flow;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.FlowStep;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IFlowRepository;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IFlowStepRepository;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IMunicipalServiceRepository;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.dto.response.StepFullDataResponseDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Step;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.repository.IStepRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.request.FluxoRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.request.EtapaFluxoRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.response.FluxoDadosCompletosResponseDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.response.FluxoResponseDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.dto.response.FluxoEtapaResponseDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Fluxo;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.EtapaFluxo;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IFluxoRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IEtapaFluxoRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IServicoMunicipalRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.dto.response.EtapaDadosCompletosResponseDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Etapa;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.repository.IEtapaRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
@@ -30,63 +30,63 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class FlowService implements IFlowService {
+public class FlowService implements IFluxoService {
 
     private final ObjectMapperUtil objectMapperUtil;
-    private final IFlowRepository flowRepository;
-    private final IFlowStepRepository flowStepRepository;
-    private final IStepRepository stepRepository;
-    private final IMunicipalServiceRepository municipalServiceRepository;
+    private final IFluxoRepository fluxoRepository;
+    private final IEtapaFluxoRepository etapaFluxoRepository;
+    private final IEtapaRepository etapaRepository;
+    private final IServicoMunicipalRepository servicoMunicipalRepository;
 
     @Override
-    public FlowResponseDTO createFlow(FlowRequestDTO dto) {
+    public FluxoResponseDTO criarFluxo(FluxoRequestDTO dto) {
 
-        MunicipalService municipalService = this.municipalServiceRepository.findById(dto.municipalServiceId())
+        ServicoMunicipal servicoMunicipal = this.servicoMunicipalRepository.findById(dto.servicoMunicipalId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        Flow flow = this.objectMapperUtil.map(dto, Flow.class);
-        flow.setMunicipalService(municipalService);
+        Fluxo fluxo = this.objectMapperUtil.map(dto, Fluxo.class);
+        fluxo.setServicoMunicipal(servicoMunicipal);
 
-        return this.objectMapperUtil.mapToRecord(this.flowRepository.save(flow),  FlowResponseDTO.class);
+        return this.objectMapperUtil.mapToRecord(this.fluxoRepository.save(fluxo),  FluxoResponseDTO.class);
 
     }
 
     @Override
-    public FlowStepResponseDTO createFlowStep(FlowStepRequestDTO dto) {
+    public FluxoEtapaResponseDTO criarEtapaFluxo(EtapaFluxoRequestDTO dto) {
 
-        Flow flow = this.flowRepository.findById(dto.flowId())
+        Fluxo fluxo = this.fluxoRepository.findById(dto.fluxoId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        Step step = this.stepRepository.findById(dto.stepId())
+        Etapa etapa = this.etapaRepository.findById(dto.etapaId())
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        FlowStep flowStep = new FlowStep();
-        flowStep.setFlow(flow);
-        flowStep.setStep(step);
-        flowStep.setStepOrder(dto.stepOrder());
+        EtapaFluxo etapaFluxo = new EtapaFluxo();
+        etapaFluxo.setFluxo(fluxo);
+        etapaFluxo.setEtapa(etapa);
+        etapaFluxo.setOrdemEtapa(dto.ordemEtapa());
 
-        return this.objectMapperUtil.mapToRecord(this.flowStepRepository.save(flowStep), FlowStepResponseDTO.class);
+        return this.objectMapperUtil.mapToRecord(this.etapaFluxoRepository.save(etapaFluxo), FluxoEtapaResponseDTO.class);
 
     }
 
     @Override
-    public List<FlowFullDataResponseDTO> getAllFlows() {
+    public List<FluxoDadosCompletosResponseDTO> buscarTodosFluxos() {
 
-        List<Flow> flows = flowRepository.findAll();
-        List<FlowFullDataResponseDTO> responseList = new ArrayList<>();
+        List<Fluxo> fluxos = fluxoRepository.findAll();
+        List<FluxoDadosCompletosResponseDTO> responseList = new ArrayList<>();
 
-        for(Flow flow : flows) {
+        for(Fluxo fluxo : fluxos) {
 
-            List<StepFullDataResponseDTO> stepDTOs = this.findStepsByFlowId(flow.getId());
+            List<EtapaDadosCompletosResponseDTO> etapaDTOs = this.findStepsByFlowId(fluxo.getId());
 
-            FlowFullDataResponseDTO flowDTO = new FlowFullDataResponseDTO(
-                    flow.getId(),
-                    flow.getName(),
-                    stepDTOs,
-                    flow.getMunicipalService().getId()
+            FluxoDadosCompletosResponseDTO fluxoDTO = new FluxoDadosCompletosResponseDTO(
+                    fluxo.getId(),
+                    fluxo.getNome(),
+                    etapaDTOs,
+                    fluxo.getServicoMunicipal().getId()
             );
 
-            responseList.add(flowDTO);
+            responseList.add(fluxoDTO);
 
         }
         return responseList;
@@ -94,70 +94,76 @@ public class FlowService implements IFlowService {
     }
 
     @Override
-    public FlowFullDataResponseDTO getFlowById(final UUID id) {
+    public FluxoDadosCompletosResponseDTO buscarFluxoPorId(final UUID id) {
 
-        Flow flow = this.flowRepository.findById(id)
+        Fluxo fluxo = this.fluxoRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        List<StepFullDataResponseDTO> stepDTOs = this.findStepsByFlowId(flow.getId());
+        List<EtapaDadosCompletosResponseDTO> etapaDTOs = this.findStepsByFlowId(fluxo.getId());
 
-        return new FlowFullDataResponseDTO(
-                flow.getId(),
-                flow.getName(),
-                stepDTOs,
-                flow.getMunicipalService().getId()
+        return new FluxoDadosCompletosResponseDTO(
+                fluxo.getId(),
+                fluxo.getNome(),
+                etapaDTOs,
+                fluxo.getServicoMunicipal().getId()
         );
 
     }
 
-    @Override
-    public FlowFullDataResponseDTO getFlowByMunicipalServiceId(Long id) {
+        @Override
+        public FluxoDadosCompletosResponseDTO buscarFluxoPorServicoMunicipalId(Long id) {
 
-        MunicipalService municipalService = this.municipalServiceRepository.findById(id)
+        ServicoMunicipal servicoMunicipal = this.servicoMunicipalRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
-        Flow flow = this.flowRepository.findByMunicipalService(municipalService);
 
-        List<StepFullDataResponseDTO> stepDTOs = this.findStepsByFlowId(flow.getId());
+        Fluxo fluxo = this.fluxoRepository.findByServicoMunicipal(servicoMunicipal);
 
-        return new FlowFullDataResponseDTO(
-                flow.getId(),
-                flow.getName(),
-                stepDTOs,
-                flow.getMunicipalService().getId()
+        if (fluxo == null) {
+                throw new BusinessException("Nenhum fluxo encontrado para este serviço municipal.");
+        }
+
+        List<EtapaDadosCompletosResponseDTO> etapaDTOs = this.findStepsByFlowId(fluxo.getId());
+
+        return new FluxoDadosCompletosResponseDTO(
+                fluxo.getId(),
+                fluxo.getNome(),
+                etapaDTOs,
+                fluxo.getServicoMunicipal().getId()
         );
 
-    }
+        }
+
 
     @Override
-    public FlowStep getFirstFlowStepByFlowUd(UUID flowId) {
+    public EtapaFluxo buscarPrimeiraEtapaFluxoPorFluxoId(UUID fluxoId) {
 
-        Flow flow = this.flowRepository.findById(flowId)
+        Fluxo fluxo = this.fluxoRepository.findById(fluxoId)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        return flowStepRepository.findFirstByFlowOrderByStepOrderAsc(flow)
+        return this.etapaFluxoRepository.findFirstByFluxoOrderByOrdemEtapaAsc(fluxo)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
     }
 
-    private List<StepFullDataResponseDTO> findStepsByFlowId(final UUID flowId){
-        List<Step> steps = stepRepository.findAllByFlowId(flowId);
+    private List<EtapaDadosCompletosResponseDTO> findStepsByFlowId(final UUID flowId){
+        List<Etapa> etapas = etapaRepository.findAllByFlowId(flowId);
 
-        return steps.stream()
-                .map(step -> {
+        return etapas.stream()
+                .map(etapa -> {
 
-                    FlowStep flowStep = flowStepRepository.findByFlowIdAndStepId(flowId, step.getId())
+                    EtapaFluxo etapaFluxo = etapaFluxoRepository.findByFluxoIdAndEtapaId(flowId, etapa.getId())
                             .orElse(null);
-                    long order = (flowStep != null) ? flowStep.getStepOrder() : 0;
+                    long ordem = (etapaFluxo != null) ? etapaFluxo.getOrdemEtapa() : 0;
 
-                    return new StepFullDataResponseDTO(
-                            step.getId(),
-                            step.getName(),
-                            step.getCode(),
-                            step.getImageUrl(),
-                            order
+                    return new EtapaDadosCompletosResponseDTO(
+                            etapa.getId(),
+                            etapa.getNome(),
+                            etapa.getCode(),
+                            etapa.getImageUrl(),
+                            ordem
                     );
                 })
-                .sorted(Comparator.comparingLong(StepFullDataResponseDTO::order))
+                .sorted(Comparator.comparingLong(EtapaDadosCompletosResponseDTO::ordem))
                 .toList();
     }
 

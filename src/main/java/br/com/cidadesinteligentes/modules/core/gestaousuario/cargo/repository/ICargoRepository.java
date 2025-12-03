@@ -11,5 +11,5 @@ import java.util.Optional;
  * @author Jorge Roberto, Caio Alves
  */
 public interface ICargoRepository extends JpaRepository<Cargo, Long> {
-    Optional<Cargo> findByName(String name);
+    Optional<Cargo> findByNome(String nome);
 }

@@ -26,13 +26,13 @@ public class DataLoader implements CommandLineRunner {
                 "REJECT_LICENSE_REQUEST", "MANAGE_ROLES", "DEACTIVATE_USER", "VIEW_SYSTEM_LOGS"
         );
 
-        requiredPermissions.forEach(name -> {
+        requiredPermissions.forEach(nome -> {
             //avoid duplication
-            if (permissionRepository.findByName(name).isEmpty()) {
+            if (permissionRepository.findByNome(nome).isEmpty()) {
                 Permissao permission = new Permissao();
-                permission.setNome(name);
+                permission.setNome(nome);
                 permissionRepository.save(permission);
-                System.out.println("Permissão criada: " + name);
+                System.out.println("Permissão criada: " + nome);
             }
         });
     }

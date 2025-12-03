@@ -51,7 +51,7 @@ public class PublicServantProfileService implements IPublicServantProfileService
         roleRepository.save(role);
 
         employee.setRole(role);
-        employee.setUser(user);
+        employee.setUsuario(user);
 
         employee = publicServantRepository.save(employee);
 

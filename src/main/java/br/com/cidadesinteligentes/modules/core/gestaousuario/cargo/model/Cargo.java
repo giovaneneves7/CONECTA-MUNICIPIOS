@@ -33,6 +33,6 @@ public class Cargo extends SimplePersistenceEntity implements Serializable {
     )
     private Set<Permissao> permissoes;
 
-    @OneToMany(mappedBy = "cargo")
+    @OneToMany(mappedBy = "role")
     private List<Perfil> perfis = new ArrayList<>();
 }

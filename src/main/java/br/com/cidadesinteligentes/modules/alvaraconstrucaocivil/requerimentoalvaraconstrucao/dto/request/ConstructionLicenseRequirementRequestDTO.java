@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -37,10 +37,10 @@ public record ConstructionLicenseRequirementRequestDTO (
     @JsonProperty("solicitanteProfileId")
     @NotNull(message = "Solicitante ID is mandatory.")
     UUID solicitanteProfileId,
-    
-    @JsonProperty("municipalServiceId")
-    @NotNull(message = "Municipal Service ID is mandatory.")
-    Long municipalServiceId,
+
+    @JsonProperty("servicoMunicipalId")
+    @NotNull(message = "Serviço Municipal ID is mandatory.")
+    Long servicoMunicipalId,
 
     @JsonProperty("requirementTypeId")
     @NotNull(message = "Requirement Type ID is mandatory.")

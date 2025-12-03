@@ -61,10 +61,10 @@ public interface IRequestRepository extends JpaRepository<Request, UUID>{
      * ordered by creation date in descending order.
      * <p>
      * This is typically used to find the most recently created Request linked to a service.
-     * * @param municipalServiceId The ID of the Municipal Service.
+     * @param servicoMunicipalId The ID of the Municipal Service.
      * @return An Optional containing the most recent Request found.
      */
-    Optional<Request> findFirstByMunicipalServiceIdOrderByCreatedAtDesc(Long municipalServiceId);
+    Optional<Request> findFirstByServicoMunicipalIdOrderByCreatedAtDesc(Long servicoMunicipalId);
 
     /**
      * Finds a Request entity by its unique protocol number.
@@ -73,4 +73,7 @@ public interface IRequestRepository extends JpaRepository<Request, UUID>{
      * @return An Optional containing the Request found.
      */
     Optional<Request> findByProtocolNumber(String protocolNumber);
+
+    List<Request> findAllByServicoMunicipalId(Long servicoMunicipalId);
+
 }

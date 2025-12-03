@@ -1,6 +1,7 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.repository;
 
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Step;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.etapa.model.Etapa;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,19 +11,19 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * @author Giovane Neves
+ * @author Giovane Neves, Andesson Reis
  */
 @Repository
-public interface IStepRepository extends JpaRepository<Step, UUID> {
+public interface IEtapaRepository extends JpaRepository<Etapa, UUID> {
 
     @Query("""
         SELECT s 
-        FROM Step s
-        JOIN FlowStep fs ON fs.step = s
-        WHERE fs.flow.id = :flowId
-        ORDER BY fs.stepOrder ASC
+        FROM Etapa s
+        JOIN EtapaFluxo fs ON fs.etapa = s
+        WHERE fs.fluxo.id = :fluxoId
+        ORDER BY fs.ordemEtapa ASC
     """)
-    List<Step> findAllByFlowId(@Param("flowId") UUID flowId);
+    List<Etapa> findAllByFlowId(@Param("fluxoId") UUID fluxoId);
 
 
 }

@@ -47,7 +47,7 @@ public abstract class Perfil extends PersistenceEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Usuario user;
+    private Usuario usuario;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", nullable = false)

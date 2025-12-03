@@ -20,10 +20,10 @@ import java.util.UUID;
  */
 @Repository
 public interface IUsuarioRepository extends JpaRepository<Usuario, UUID> {
-    @Query("SELECT u FROM User u WHERE u.email = :email")
+    @Query("SELECT u FROM Usuario u WHERE u.email = :email")
     Optional<Usuario> findByEmail(@Param("email") String email);
 
-    @Query("SELECT u FROM User u WHERE u.id = :id")
+    @Query("SELECT u FROM Usuario u WHERE u.id = :id")
     Optional<Usuario> findById(@Param("id") UUID id);
 
     /**
@@ -35,7 +35,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, UUID> {
      * @return A Page containing the Users matching the role name criteria.
      * @author Caio Alves
      */
-    @Query("SELECT u FROM User u JOIN u.profiles p JOIN p.role r WHERE r.name = :roleName")
+@Query("SELECT DISTINCT u FROM Usuario u JOIN u.perfis p JOIN p.role r WHERE r.nome = :roleName")
     Page<Usuario> findByProfileRoleName(@Param("roleName") String roleName, Pageable pageable);
 
     /**
@@ -58,10 +58,11 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, UUID> {
      * @return A Page of Users matching the criteria.
      * @author Caio Alves
      */
-    @Query("SELECT u FROM User u JOIN u.person p " +
-           "WHERE lower(p.fullName) LIKE lower(concat('%', :term, '%')) " +
-           "OR p.cpf LIKE concat('%', :term, '%')")
-    Page<Usuario> findByFullNameOrCpfContaining(@Param("term") String term, Pageable pageable);
+@Query("SELECT u FROM Usuario u JOIN u.pessoa p " +
+       "WHERE lower(p.nomeCompleto) LIKE lower(concat('%', :term, '%')) " +
+       "OR p.cpf LIKE concat('%', :term, '%')")
+Page<Usuario> findByFullNameOrCpfContaining(@Param("term") String term, Pageable pageable);
+
 
     /**
      * Finds a paginated list of users filtered by both their status AND a specific role name
@@ -73,7 +74,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, UUID> {
      * @return A Page containing the Users matching both criteria.
      * @author Caio Alves
      */
-    @Query("SELECT u FROM User u JOIN u.profiles p JOIN p.role r " +
-           "WHERE r.name = :roleName AND u.status = :status")
+    @Query("SELECT u FROM Usuario u JOIN u.perfis p JOIN p.role r " +
+       "WHERE r.nome = :roleName AND u.status = :status")
     Page<Usuario> findByProfileRoleNameAndStatus(@Param("roleName") String roleName, @Param("status") StatusUsuario status, Pageable pageable);
 }

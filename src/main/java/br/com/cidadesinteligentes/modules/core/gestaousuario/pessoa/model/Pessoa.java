@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
@@ -27,7 +26,7 @@ import java.time.LocalDate;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
-public class Pessoa extends PersistenceEntity implements Serializable {
+public class Pessoa extends PersistenceEntity {
 
     @Column(name = "cpf", nullable = false, unique = true, length = 11)
     private String cpf;

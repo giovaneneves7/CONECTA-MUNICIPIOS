@@ -1,5 +1,6 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,26 +10,26 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 /**
- * Data Transfer Object (DTO) for sending person data in API responses.
- * Contains basic person information without sensitive data.
- *
+ * DTO de resposta com os dados de Pessoas, sem o ID
  * @author Jorge Roberto
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class PersonResponseDTO {
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class PessoaResponseDTO {
 
     @JsonProperty("cpf")
     private String cpf;
 
-    @JsonProperty("fullName")
-    private String fullName;
+    @JsonProperty("nomeCompleto")
+    private String nomeCompleto;
 
-    @JsonProperty("birthDate")
-    private LocalDate birthDate;
+    @JsonProperty("dataNascimento")
+    private LocalDate dataNascimento;
 
-    @JsonProperty("gender")
-    private String gender;
+    @JsonProperty("genero")
+    private String genero;
 }

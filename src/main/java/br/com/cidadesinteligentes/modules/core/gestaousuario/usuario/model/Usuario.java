@@ -27,19 +27,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Entity representing a user in the system.
+ * Entidade que representa um usuário no sistema
  *
- * Implements {@link UserDetails} for integration with Spring Security.
- * Includes auditing fields, status, and access role.
- *
- * Uses Lombok and JPA annotations for persistence and auditing.
+ * Implementa {@link UserDetails} para a integração com o Spring Security.
  *
  * @author Jorge Roberto, Giovane Neves, Caio Alves
  */
@@ -49,10 +45,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true) //apenas o campo id
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = true)
 @ToString(onlyExplicitlyIncluded = true,  callSuper = true)
-@EntityListeners(AuditingEntityListener.class) //Auditoria
-public class Usuario extends PersistenceEntity implements UserDetails, Serializable {
+@EntityListeners(AuditingEntityListener.class)
+public class Usuario extends PersistenceEntity implements UserDetails {
 
     @Email
     @Column(name = "email", nullable = false, length = 100, unique = true)
@@ -76,19 +72,19 @@ public class Usuario extends PersistenceEntity implements UserDetails, Serializa
     private Pessoa pessoa;
 
     @CreatedDate
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "criado_em")
+    private LocalDateTime criadoEm;
 
     @LastModifiedDate
-    @Column(name = "update_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "ultimo_login_em")
+    private LocalDateTime ultimoLoginEm;
 
     @OneToMany(mappedBy = "usuario")
     private List<Perfil> perfis = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_perfil_ativo")
-    private Perfil perfilAtivo;
+    @JoinColumn(name = "tipo_ativo_id")
+    private Perfil tipoAtivo;
 
     //TODO: Implementar lógica de autoridades
     @Override

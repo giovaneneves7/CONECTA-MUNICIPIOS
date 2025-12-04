@@ -8,7 +8,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.I
 import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.model.Permissao;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.repository.IPermissaoRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.repository.IPersonRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.repository.IPessoaRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
@@ -41,7 +41,7 @@ public class DataLoader implements CommandLineRunner {
     // Injeções
     private final IPermissaoRepository permissaoRepository;
     private final ICargoRepository cargoRepository;
-    private final IPersonRepository pessoaRepository;
+    private final IPessoaRepository pessoaRepository;
     private final IUsuarioRepository usuarioRepository;
     private final IPerfilRepository perfilRepository;
     private final PasswordEncoder passwordEncoder;
@@ -152,7 +152,7 @@ public class DataLoader implements CommandLineRunner {
         usuario.setPerfis(todosPerfis);
 
         // Define o primeiro perfil (ADMIN) como o ativo para login inicial
-        usuario.setPerfilAtivo(perfilAdmin);
+        usuario.setTipoAtivo(perfilAdmin);
 
         usuarioRepository.save(usuario);
     }

@@ -69,7 +69,7 @@ public class PerfilService implements IPerfilService {
 
         if (user != null) {
 
-            if (profile.equals(user.getPerfilAtivo())) {
+            if (profile.equals(user.getTipoAtivo())) {
                 throw new BusinessException(BusinessExceptionMessage.CLASS_IN_USE.getMessage());
             }
 
@@ -133,7 +133,7 @@ public class PerfilService implements IPerfilService {
                 .findFirst()
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_PROFILE.getMessage()));
 
-        user.setPerfilAtivo(newActiveProfile);
+        user.setTipoAtivo(newActiveProfile);
         userRepository.save(user);
 
         return new PerfilVerificarTipoAtivoResponseDTO(novoTipoAtivo, newActiveProfile.getCargo().getNome());

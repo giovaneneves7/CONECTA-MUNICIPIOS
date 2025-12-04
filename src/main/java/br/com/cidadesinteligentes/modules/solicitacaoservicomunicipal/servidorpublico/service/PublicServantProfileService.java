@@ -57,8 +57,8 @@ public class PublicServantProfileService implements IPublicServantProfileService
 
         user.getPerfis().add(employee);
 
-        if (user.getPerfilAtivo() == null) {
-            user.setPerfilAtivo(employee);
+        if (user.getTipoAtivo() == null) {
+            user.setTipoAtivo(employee);
         }
 
         userRepository.save(user);

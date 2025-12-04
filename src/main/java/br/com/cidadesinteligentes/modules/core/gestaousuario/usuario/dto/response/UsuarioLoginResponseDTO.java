@@ -2,6 +2,7 @@ package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.respon
 
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -11,16 +12,18 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 /**
- * User login response DTO.
+ * DTO de resposta para login corretoo
  *
- * Returned to the client after successful authentication.
+ * Retorna alguns dados depois da autenticação correta do cliente, como o token
  *
  * @author Jorge Roberto
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLoginResponseDTO {
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class UsuarioLoginResponseDTO {
 
     @JsonProperty("id")
     private UUID id;
@@ -28,12 +31,12 @@ public class UserLoginResponseDTO {
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("nome")
+    private String nome;
 
     @JsonProperty("token")
     private String token;
 
-    @JsonProperty("userStatus")
-    private StatusUsuario userStatus;
+    @JsonProperty("statusUsuario")
+    private StatusUsuario statusUsuario;
 }

@@ -8,7 +8,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.AdminUserDetailResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.model.AdminProfile;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.repository.IAdminProfileRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UsuarioResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.ICargoRepository;
@@ -87,8 +87,8 @@ public class AdminService implements IAdminService{
 
         user.getPerfis().add(admin);
 
-        if (user.getPerfilAtivo() == null) {
-            user.setPerfilAtivo(admin);
+        if (user.getTipoAtivo() == null) {
+            user.setTipoAtivo(admin);
         }
 
         userRepository.save(user);
@@ -193,8 +193,8 @@ public class AdminService implements IAdminService{
         Usuario user = profileToRemove.getUsuario();
         user.getPerfis().remove(profileToRemove);
         
-        if (user.getPerfilAtivo() != null && user.getPerfilAtivo().getId().equals(profileToRemove.getId())) {
-            user.setPerfilAtivo(null); 
+        if (user.getTipoAtivo() != null && user.getTipoAtivo().getId().equals(profileToRemove.getId())) {
+            user.setTipoAtivo(null);
         }
         
         userRepository.save(user);
@@ -216,8 +216,8 @@ public class AdminService implements IAdminService{
         Usuario user = profileToRemove.getUsuario();
 
         user.getPerfis().remove(profileToRemove);
-            if (user.getPerfilAtivo() != null && user.getPerfilAtivo().getId().equals(profileToRemove.getId())) {
-            user.setPerfilAtivo(null);
+            if (user.getTipoAtivo() != null && user.getTipoAtivo().getId().equals(profileToRemove.getId())) {
+            user.setTipoAtivo(null);
         }
         
         userRepository.save(user);
@@ -232,7 +232,7 @@ public class AdminService implements IAdminService{
      * @author Caio Alves
      */
     @Override @Transactional
-    public UserDataResponseDTO activateUser(UUID userId){
+    public UsuarioResponseDTO activateUser(UUID userId){
         return updateUserStatus(userId, StatusUsuario.ATIVO);
     }
 
@@ -244,7 +244,7 @@ public class AdminService implements IAdminService{
      * @author Caio Alves
      */    
     @Override @Transactional
-    public UserDataResponseDTO deactivateUser(UUID userId) {
+    public UsuarioResponseDTO deactivateUser(UUID userId) {
         return updateUserStatus(userId, StatusUsuario.INATIVO); 
     }
 
@@ -256,7 +256,7 @@ public class AdminService implements IAdminService{
      * @return A DTO with the updated user data.
      * @author Caio Alves
      */
-    private UserDataResponseDTO updateUserStatus(UUID userId, StatusUsuario newStatus){
+    private UsuarioResponseDTO updateUserStatus(UUID userId, StatusUsuario newStatus){
 
         Usuario user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
@@ -265,7 +265,7 @@ public class AdminService implements IAdminService{
 
         Usuario updatedUser = userRepository.save(user);
 
-        return objectMapperUtil.map(updatedUser, UserDataResponseDTO.class);
+        return objectMapperUtil.map(updatedUser, UsuarioResponseDTO.class);
     }
 
     /**
@@ -328,7 +328,7 @@ public class AdminService implements IAdminService{
     @Override
     @Transactional(readOnly = true)
     public Page<AdminUserDetailResponseDTO> findUserDetailsByNameOrCpf(String term, Pageable pageable) {
-        Page<Usuario> userPage = userRepository.findByFullNameOrCpfContaining(term, pageable);
+        Page<Usuario> userPage = userRepository.findByNomeCompletoOrCpfContaining(term, pageable);
         return userPage.map(this::mapUserToAdminDetailDto);
     }
 
@@ -355,7 +355,7 @@ public class AdminService implements IAdminService{
      */
     private AdminUserDetailResponseDTO mapUserToAdminDetailDto(Usuario user) {
         Pessoa person = user.getPessoa();
-        Perfil activeProfile = user.getPerfilAtivo();
+        Perfil activeProfile = user.getTipoAtivo();
 
         AdminUserContentResponseDTO contentDto = new AdminUserContentResponseDTO(
                 user.getId(),

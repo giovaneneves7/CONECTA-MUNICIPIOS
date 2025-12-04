@@ -436,9 +436,9 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         Pessoa applicantPerson = applicantUser.getPessoa();
 
         PerfilDadosPublicosResponseDTO applicantDTO = new PerfilDadosPublicosResponseDTO(
-                applicantUser.getPerfilAtivo().getId(),
-                applicantUser.getPerfilAtivo().getTipo(),
-                applicantUser.getPerfilAtivo().getImagemUrl(),
+                applicantUser.getTipoAtivo().getId(),
+                applicantUser.getTipoAtivo().getTipo(),
+                applicantUser.getTipoAtivo().getImagemUrl(),
                 applicantPerson.getNomeCompleto(),
                 applicantPerson.getCpf(),
                 applicantUser.getTelefone(),

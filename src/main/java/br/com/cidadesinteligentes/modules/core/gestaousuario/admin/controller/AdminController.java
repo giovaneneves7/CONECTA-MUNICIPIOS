@@ -9,7 +9,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.AdminUserDetailResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.model.AdminProfile;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.service.IAdminService;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UsuarioResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.request.PublicServantCreationRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.response.PublicServantRegisterResponseDTO;
@@ -255,11 +255,11 @@ public ResponseEntity<AdminSimpleResponseDTO> update(
                description = "Allows an administrator to change a user's status to ACTIVE.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User activated successfully",
-                         content = @Content(schema = @Schema(implementation = UserDataResponseDTO.class))),
+                         content = @Content(schema = @Schema(implementation = UsuarioResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @PutMapping("/user/{userId}/activate")
-    public ResponseEntity<UserDataResponseDTO> activateUser(@PathVariable UUID userId) {
+    public ResponseEntity<?> activateUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(adminService.activateUser(userId));
     }
 
@@ -274,11 +274,11 @@ public ResponseEntity<AdminSimpleResponseDTO> update(
                description = "Allows an administrator to change a user's status to INACTIVE, preventing them from logging in.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User deactivated successfully",
-                         content = @Content(schema = @Schema(implementation = UserDataResponseDTO.class))),
+                         content = @Content(schema = @Schema(implementation = UsuarioResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
     @PutMapping("/user/{userId}/deactivate")
-    public ResponseEntity<UserDataResponseDTO> deactivateUser(@PathVariable UUID userId) {
+    public ResponseEntity<?> deactivateUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(adminService.deactivateUser(userId));
     }
 

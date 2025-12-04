@@ -56,9 +56,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         // CORS and generic public endpoints
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Pré-voo CORS
                         // Authentication
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/sessions/session").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/users/user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/users/user/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/autenticacao/sessoes/sessao").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/autenticacao/usuarios/usuario").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/autenticacao/usuarios/usuario/**").permitAll()
 
                         //Employees function /api/v1/function
                         .requestMatchers(HttpMethod.POST, "/api/v1/functions/function").permitAll()
@@ -120,10 +120,10 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/api/v1/perfis/perfil/**").permitAll()
 
                         //Users - /api/v1/users
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/users/user/status").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/users/user/status/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/usuarios/usuario/status").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/usuarios/usuarios/status/**").permitAll()
 
                         //Monitorings - /api/v1/monitorings
                         .requestMatchers(HttpMethod.POST, "/api/v1/monitorings").permitAll()

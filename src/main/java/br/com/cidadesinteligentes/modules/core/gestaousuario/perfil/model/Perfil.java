@@ -45,7 +45,7 @@ public abstract class Perfil extends PersistenceEntity {
     private String imagemUrl;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

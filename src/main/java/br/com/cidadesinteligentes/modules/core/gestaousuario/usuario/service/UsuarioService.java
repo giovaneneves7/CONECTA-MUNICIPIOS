@@ -1,11 +1,10 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.service;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilComCargoResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UsuarioResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
@@ -29,26 +28,26 @@ public class UsuarioService implements IUsuarioService {
     private final IPerfilRepository profileRepository;
     private final IUsuarioRepository userRepository;
 
-    /**
-     * Searches for a user by the ID passed as a parameter
-     *
-     * @author Giovane Neves
-     *
-     * @param id The id of the user to be found
-     * @return DTO with the found user data
-     */
+
+    @Override
     @Transactional(readOnly = true)
-    public UserDataResponseDTO getUserById(final UUID id){
+    public UsuarioResponseDTO findById(final UUID id){
 
         Usuario user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.INVALID_CREDENTIALS.getMessage()));
 
-        return objectMapperUtil.map(user, UserDataResponseDTO.class);
+        return new UsuarioResponseDTO(
+                user.getId(),
+                user.getNomeUsuario(),
+                user.getEmail(),
+                user.getStatus()
+        );
 
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public List<PerfilComCargoResponseDTO> getUserProfiles(final UUID id, final Pageable pageable) {
+    public List<PerfilComCargoResponseDTO> getUsuarioPerfis(final UUID id, final Pageable pageable) {
 
         Page<Perfil> profiles = this.profileRepository.findAllByUsuarioId(id, pageable);
 
@@ -65,15 +64,15 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public PerfilComCargoResponseDTO findActiveProfileByUserId(final UUID id) {
+    public PerfilComCargoResponseDTO findPerfilAtivoByUsuarioId(final UUID id) {
         Usuario user = this.userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
-        if (user.getPerfilAtivo() == null) {
+        if (user.getTipoAtivo() == null) {
             throw new BusinessException(BusinessExceptionMessage.USER_WITHOUT_PROFILES.getMessage());
         }
 
-        Perfil profile = user.getPerfilAtivo();
+        Perfil profile = user.getTipoAtivo();
 
         return new PerfilComCargoResponseDTO(
                 profile.getId(),
@@ -86,25 +85,20 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponseDTO> findAllUsers(final Pageable pageable) {
+    public List<UsuarioResponseDTO> findAll(final Pageable pageable) {
 
         Page<Usuario> users = userRepository.findAll(pageable);
         return users.stream()
-                .map(user -> this.objectMapperUtil.mapToRecord(user, UserResponseDTO.class))
+                .map(user -> this.objectMapperUtil.mapToRecord(user, UsuarioResponseDTO.class))
                 .toList();
     }
 
     @Override
     @Transactional
-    public void updateUserStatus(UUID userId, StatusUsuario newStatus) {
-            Usuario user = this.findById(userId);
+    public void updateStatusUsuario(UUID usuarioId, StatusUsuario newStatus) {
+            Usuario user = this.userRepository.findById(usuarioId)
+                    .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
             user.setStatus(newStatus);
             this.userRepository.save(user);
-    }
-
-    @Transactional(readOnly = true)
-    public Usuario findById(UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
     }
 }

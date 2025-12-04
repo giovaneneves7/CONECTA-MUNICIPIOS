@@ -5,7 +5,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.request.A
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.AdminResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.dto.response.AdminUserDetailResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.admin.model.AdminProfile;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UserDataResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UsuarioResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.response.PublicServantRegisterResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.dto.response.TechnicalResponsibleResponseDTO;
@@ -68,7 +68,7 @@ public interface IAdminService {
      * @return A DTO with the updated data of the activated user.
      * @author Caio Alves 
      */
-    UserDataResponseDTO activateUser(UUID userId);
+    UsuarioResponseDTO activateUser(UUID userId);
 
     /**
      * Changes a user's status to INACTIVE, effectively disabling their account.
@@ -77,7 +77,7 @@ public interface IAdminService {
      * @return A DTO with the updated data of the deactivated user.
      * @author Caio Alves
      */
-    UserDataResponseDTO deactivateUser(UUID userId);
+    UsuarioResponseDTO deactivateUser(UUID userId);
 
 /**
      * Retrieves a paginated list of detailed information for all users.

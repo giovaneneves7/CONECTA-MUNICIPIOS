@@ -1,17 +1,23 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.service;
 
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.responsaveltecnico.model.TechnicalResponsible;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilComCargoResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UsuarioCompletoResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UsuarioDetalheResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.dto.response.UsuarioResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.model.PublicServantProfile;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import lombok.RequiredArgsConstructor;
@@ -95,10 +101,91 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     @Transactional
-    public void updateStatusUsuario(UUID usuarioId, StatusUsuario newStatus) {
+    public UsuarioResponseDTO updateStatusUsuario(final UUID usuarioId, StatusUsuario newStatus) {
             Usuario user = this.userRepository.findById(usuarioId)
                     .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
             user.setStatus(newStatus);
-            this.userRepository.save(user);
+
+            Usuario updatedUser = this.userRepository.save(user);
+            
+            return new UsuarioResponseDTO(
+                updatedUser.getId(),
+                updatedUser.getNomeUsuario(),
+                updatedUser.getEmail(),
+                updatedUser.getStatus()
+            );
+    }
+
+    @Override @Transactional
+    public Page<UsuarioCompletoResponseDTO> findAllDetalhesUsuarios(final Pageable pageable) {
+
+        Page<Usuario> userPage = userRepository.findAll(pageable);
+
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UsuarioCompletoResponseDTO> findDetalhesUsuarioByNomeCargo(final String nomeCargo, Pageable pageable) {
+
+        Page<Usuario> userPage = userRepository.findByPerfisCargoNome(nomeCargo, pageable);
+
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UsuarioCompletoResponseDTO> findDetalhesUsuariosByStatus(final StatusUsuario status, Pageable pageable) {
+        Page<Usuario> userPage = userRepository.findByStatus(status, pageable);
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UsuarioCompletoResponseDTO> findDetalhesUsuarioByNomeOuCpf(final String termo, Pageable pageable) {
+        Page<Usuario> userPage = userRepository.findByNomeCompletoOrCpfContaining(termo, pageable);
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
+
+    @Override @Transactional(readOnly = true)
+    public Page<UsuarioCompletoResponseDTO> findDetalhesUsuarioByNomeCargoEStatus(final String nomeCargo, StatusUsuario status, Pageable pageable){
+        Page<Usuario> userPage = userRepository.findByPerfisCargoNomeAndStatus(nomeCargo, status, pageable);
+        return userPage.map(this::mapUserToAdminDetailDto);
+    }
+
+    private UsuarioCompletoResponseDTO mapUserToAdminDetailDto(Usuario user) {
+        Pessoa person = user.getPessoa();
+        Perfil activeProfile = user.getTipoAtivo();
+
+        UsuarioDetalheResponseDTO contentDto = new UsuarioDetalheResponseDTO(
+                user.getId(),
+                activeProfile != null ? activeProfile.getTipo() : null,
+                activeProfile != null ? activeProfile.getImagemUrl() : null,
+                person != null ? person.getNomeCompleto() : null,
+                person != null ? person.getCpf() : null,
+                user.getTelefone(),
+                user.getEmail(),
+                person != null && person.getGenero() != null ? person.getGenero().toString() : null,
+                person != null ? person.getDataNascimento() : null,
+                user.getStatus() != null ? user.getStatus().toString() : null
+        );
+
+        List<PerfilComCargoResponseDTO> profileListDto = user.getPerfis().stream()
+                .map(profile -> {
+                    
+                        String roleName = profile.getCargo() != null ? profile.getCargo().getNome() : "SEM_ROLE";
+                
+                        String cargoReal = profile.getTipo();
+
+                        return new PerfilComCargoResponseDTO(
+                        profile.getId(),
+                        cargoReal,             
+                        roleName,             
+                        profile.getImagemUrl() 
+                        );
+                })
+                .collect(Collectors.toList());
+
+        return new UsuarioCompletoResponseDTO(contentDto, profileListDto);
     }
 }

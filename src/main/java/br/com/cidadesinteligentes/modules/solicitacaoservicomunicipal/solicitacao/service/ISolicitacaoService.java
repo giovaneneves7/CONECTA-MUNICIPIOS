@@ -1,8 +1,10 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.service;
 
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.dto.response.DocumentWithStatusResponseDTO;
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.enums.DocumentStatus;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.dto.response.AcompanhamentoResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoAtualizacaoRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoFinalizadaRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoDetalhadaResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoResponseDTO;
@@ -64,10 +66,12 @@ public interface ISolicitacaoService {
      * @param pageable Critérios de paginação e ordenação.
      * @return Uma página de {@link SolicitacaoDetalhadaResponseDTO} contendo as solicitações finalizadas.
      */
-    Page<SolicitacaoDetalhadaResponseDTO> listarSolicitacoesFinalizadas(Pageable pageable);
-
-    List<DocumentWithStatusResponseDTO> listarDocumentosAprovadosPorSolicitacaoId(UUID solicitacaoId);
+    Page<SolicitacaoDetalhadaResponseDTO> listarSolicitacoesFinalizadas(
+            SolicitacaoFinalizadaRequestDTO filtro, 
+            Pageable pageable
+        );
 
     List<DocumentWithStatusResponseDTO> listarTodosDocumentosPorSolicitacaoId(UUID solicitacaoId);
+    List<DocumentWithStatusResponseDTO> listarDocumentosDaSolicitacaoPorStatus(UUID solicitacaoId, DocumentStatus statusFilter);
 
 }

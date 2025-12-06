@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.enums.SolicitacaoStatus;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Solicitacao;
 
 /**
@@ -89,5 +90,9 @@ public interface ISolicitacaoRepository extends JpaRepository<Solicitacao, UUID>
      * @return Lista de solicitações encontradas.
      */
     List<Solicitacao> findAllByServicoMunicipalId(Long servicoMunicipalId);
+
+    Page<Solicitacao> findAllByStatusIn(List<SolicitacaoStatus> status, Pageable pageable);
+
+    Page<Solicitacao> findByIdAndStatusIn(UUID id, List<SolicitacaoStatus> status, Pageable pageable);
 
 }

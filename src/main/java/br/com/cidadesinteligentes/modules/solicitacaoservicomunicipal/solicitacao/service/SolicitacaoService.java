@@ -20,6 +20,7 @@ import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomun
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IServicoMunicipalRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoAtualizacaoRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoFinalizadaRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.enums.SolicitacaoStatus;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoDetalhadaResponseDTO;
@@ -218,68 +219,6 @@ public class SolicitacaoService implements ISolicitacaoService {
                                                 solicitacao, SolicitacaoResponseDTO.class));
         }
 
-        @Override
-        @Transactional(readOnly = true)
-        public Page<SolicitacaoDetalhadaResponseDTO> listarSolicitacoesFinalizadas(Pageable pageable) {
-
-                Page<Solicitacao> paginaSolicitacoes = solicitacaoRepository.findAllByHistoricoStatus_NewStatusIn(
-                                List.of("COMPLETE", "REJECTED"),
-                                pageable);
-
-                return paginaSolicitacoes.map(solicitacao -> {
-                        String valorStatus = null;
-                        if (solicitacao.getHistoricoStatus() != null) {
-                                valorStatus = solicitacao.getHistoricoStatus().getNewStatus();
-                        }
-
-                        SolicitacaoDetalhadaResponseDTO baseDto = objectMapperUtil.mapToRecord(
-                                        solicitacao,
-                                        SolicitacaoDetalhadaResponseDTO.class);
-
-                        return new SolicitacaoDetalhadaResponseDTO(
-                                        baseDto.id(),
-                                        baseDto.numeroProtocolo(),
-                                        baseDto.dataCriacao(),
-                                        baseDto.dataPrevisaoConclusao(),
-                                        baseDto.dataAtualizacao(),
-                                        baseDto.tipo(),
-                                        baseDto.observacao(),
-                                        baseDto.servicoMunicipalId(),
-                                        valorStatus,
-                                        solicitacao.getPerfil().getUsuario().getPessoa().getNomeCompleto(),
-                                        solicitacao.getPerfil().getUsuario().getPessoa().getCpf());
-                });
-        }
-
-        @Override
-        @Transactional(readOnly = true)
-        public List<DocumentWithStatusResponseDTO> listarDocumentosAprovadosPorSolicitacaoId(UUID solicitacaoId) {
-                Solicitacao solicitacao = solicitacaoRepository
-                                .findById(solicitacaoId)
-                                .orElseThrow(() -> new BusinessException(
-                                                "Solicitação não encontrada com ID: " + solicitacaoId));
-
-                ServicoMunicipal servicoMunicipal = solicitacao.getServicoMunicipal();
-                if (servicoMunicipal == null) {
-                        throw new BusinessException("A solicitação não está associada a um Serviço Municipal.");
-                }
-
-                ConstructionLicenseRequirement requerimento = requerimentoRepository
-                                .findById(servicoMunicipal.getId())
-                                .orElseThrow(() -> new BusinessException(
-                                                "Nenhum Requerimento encontrado para o Serviço Municipal ID: "
-                                                                + servicoMunicipal.getId()));
-
-                return requerimento
-                                .getDocuments()
-                                .stream()
-                                .filter(documento -> documento.getStatus() == DocumentStatus.APPROVED)
-                                .map(
-                                                doc -> new DocumentWithStatusResponseDTO(doc.getId(), doc.getName(),
-                                                                doc.getFileExtension(),
-                                                                doc.getFileUrl(), doc.getStatus()))
-                                .collect(Collectors.toList());
-        }
 
         @Override
         @Transactional(readOnly = true)
@@ -309,4 +248,104 @@ public class SolicitacaoService implements ISolicitacaoService {
                                                 doc.getFileUrl(), doc.getStatus()))
                                 .collect(Collectors.toList());
         }
+
+        @Override
+        @Transactional(readOnly = true)
+        public List<DocumentWithStatusResponseDTO> listarDocumentosDaSolicitacaoPorStatus(UUID solicitacaoId,
+                        DocumentStatus statusFilter) {
+
+                Solicitacao solicitacao = solicitacaoRepository.findById(solicitacaoId)
+                                .orElseThrow(() -> new BusinessException(
+                                                "Solicitação não encontrada com ID: " + solicitacaoId));
+
+                ServicoMunicipal servicoMunicipal = solicitacao.getServicoMunicipal();
+                if (servicoMunicipal == null) {
+                        throw new BusinessException("A solicitação não está associada a um Serviço Municipal.");
+                }
+
+                ConstructionLicenseRequirement requerimento = requerimentoRepository.findById(servicoMunicipal.getId())
+                                .orElseThrow(() -> new BusinessException(
+                                                "Nenhum Requerimento encontrado para o Serviço Municipal ID: "
+                                                                + servicoMunicipal.getId()));
+
+                return requerimento.getDocuments().stream()
+
+                                .filter(doc -> statusFilter == null || doc.getStatus() == statusFilter)
+
+                                .map(doc -> new DocumentWithStatusResponseDTO(
+                                                doc.getId(),
+                                                doc.getName(),
+                                                doc.getFileExtension(),
+                                                doc.getFileUrl(),
+                                                doc.getStatus()))
+                                .collect(Collectors.toList());
+        }
+
+
+
+        @Override
+    @Transactional(readOnly = true)
+    public Page<SolicitacaoDetalhadaResponseDTO> listarSolicitacoesFinalizadas(
+            SolicitacaoFinalizadaRequestDTO filtro, 
+            Pageable pageable) {
+
+        // 1. Definição defensiva do filtro (caso venha nulo do controller)
+        SolicitacaoFinalizadaRequestDTO filtroSeguro = (filtro != null) 
+                ? filtro 
+                : new SolicitacaoFinalizadaRequestDTO(null, null);
+
+        // 2. Definição dos Status Alvo
+        // Se a lista vier vazia ou nula, assumimos os status finais padrão: ACEITO e REJEITADO.
+        List<SolicitacaoStatus> statusAlvo;
+        if (filtroSeguro.status() != null && !filtroSeguro.status().isEmpty()) {
+            statusAlvo = filtroSeguro.status();
+        } else {
+            statusAlvo = List.of(SolicitacaoStatus.ACEITO, SolicitacaoStatus.REJEITADO);
+        }
+
+        Page<Solicitacao> paginaSolicitacoes;
+
+        // 3. Execução da Consulta (Com ID ou Sem ID)
+        if (filtroSeguro.solicitacaoId() != null) {
+            // Busca específica: ID + Status Permitido
+            paginaSolicitacoes = solicitacaoRepository.findByIdAndStatusIn(
+                    filtroSeguro.solicitacaoId(),
+                    statusAlvo,
+                    pageable);
+        } else {
+            // Busca geral: Apenas Status
+            paginaSolicitacoes = solicitacaoRepository.findAllByStatusIn(
+                    statusAlvo,
+                    pageable);
+        }
+
+        // 4. Mapeamento para DTO de Resposta
+        return paginaSolicitacoes.map(solicitacao -> {
+            
+            // Pega o status atual direto da entidade (Enum convertido para String)
+            String valorStatus = (solicitacao.getStatus() != null) 
+                    ? solicitacao.getStatus().name() 
+                    : null;
+
+            // Mapeamento automático dos campos comuns
+            SolicitacaoDetalhadaResponseDTO baseDto = objectMapperUtil.mapToRecord(
+                    solicitacao,
+                    SolicitacaoDetalhadaResponseDTO.class);
+
+            // Construção do objeto final
+            return new SolicitacaoDetalhadaResponseDTO(
+                    baseDto.id(),
+                    baseDto.numeroProtocolo(),
+                    baseDto.dataCriacao(),
+                    baseDto.dataPrevisaoConclusao(),
+                    baseDto.dataAtualizacao(),
+                    baseDto.tipo(),
+                    baseDto.observacao(),
+                    baseDto.servicoMunicipalId(),
+                    valorStatus, // Status vindo do Enum
+                    solicitacao.getPerfil().getUsuario().getPessoa().getNomeCompleto(),
+                    solicitacao.getPerfil().getUsuario().getPessoa().getCpf()
+            );
+        });
+    }
 }

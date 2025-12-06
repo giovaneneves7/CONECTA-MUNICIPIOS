@@ -87,12 +87,16 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/solicitacoes/solicitacao/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/solicitacoes/solicitacao").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/v1/solicitacoes/solicitacao/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/solicitacoes/solicitacao").permitAll()
+
+
 
                         .requestMatchers(HttpMethod.POST, "/api/v1/solicitacoes/solicitacao/*/review/accept").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/solicitacoes/solicitacao/*/review/reject").permitAll()
 
                         // Functions for Requirement Types /api/v1/requirement-types
-                        .requestMatchers(HttpMethod.POST, "/api/v1/requirement-types/requerimento").permitAll()
+                       .requestMatchers(HttpMethod.POST, "/api/v1/requirement-types/requirement-type").permitAll()
+                       .requestMatchers(HttpMethod.POST, "/api/v1/requirement-types/requirement-type/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types/**").permitAll()
@@ -198,8 +202,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.PUT, "/api/v1/documents/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/documents").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/documents/**").permitAll()
-
-
 
                         // flow controller
                         .requestMatchers(HttpMethod.GET, "/api/v1/fluxos").permitAll()

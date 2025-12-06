@@ -1,11 +1,15 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.controller;
 
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.dto.request.RejectionRequestDTO;
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.enums.AssociationStatus;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.service.ConstructionLicenseRequirementService;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.dto.response.DocumentResponseDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.dto.response.DocumentWithStatusResponseDTO;
+import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.enums.DocumentStatus;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoAnaliseRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoAtualizacaoRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoFinalizadaRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoDetalhadaResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoSimplesResponseDTO;
@@ -234,45 +238,21 @@ public class SolicitacaoController {
     return ResponseEntity.status(HttpStatus.OK).body(this.solicitacaoService.listarAtualizacoesPorSolicitacaoId(id, pageable));
   }
 
-  /**
-   * Endpoint para aprovar uma solicitação.
-   * @param id O ID da solicitação (Requerimento).
-   * @return A solicitação com seu novo status.
-   */
-  @Operation(summary = "Aprovar uma Solicitação", description = "Define o status de uma solicitação como Aprovada.")
-  @ApiResponses(
-    value = {
-      @ApiResponse(responseCode = "200", description = "Solicitação aprovada com sucesso"),
-      @ApiResponse(responseCode = "404", description = "Solicitação não encontrada"),
-      @ApiResponse(responseCode = "400", description = "A solicitação já foi processada"),
-    }
-  )
-  @PostMapping("/solicitacao/{id}/analise/aceitar")
-  public ResponseEntity<?> aceitarSolicitacao(@PathVariable Long id) {
-    var response = requerimentoAlvaraConstrucaoService.acceptRequest(id);
-    return ResponseEntity.ok(response);
-  }
 
-  /**
-   * Endpoint para rejeitar uma solicitação.
-   * @param id O ID da solicitação (Requerimento).
-   * @param dto DTO contendo a justificativa da rejeição.
-   * @return A solicitação com seu novo status.
-   */
-  @Operation(summary = "Rejeitar uma Solicitação", description = "Define o status de uma solicitação como Rejeitada.")
-  @ApiResponses(
-    value = {
-      @ApiResponse(responseCode = "200", description = "Solicitação rejeitada com sucesso"),
-      @ApiResponse(responseCode = "400", description = "Corpo da requisição inválido ou justificativa ausente"),
-      @ApiResponse(responseCode = "404", description = "Solicitação não encontrada"),
-    }
-  )
-  @PostMapping("/solicitacao/{id}/analise/rejeitar")
-  public ResponseEntity<?> rejeitarSolicitacao(@PathVariable Long id, @RequestBody @Valid RejectionRequestDTO dto) {
-    var response = requerimentoAlvaraConstrucaoService.rejectRequest(id, dto);
-    return ResponseEntity.ok(response);
-  }
+    @Operation(summary = "Realizar Análise (Aprovar/Rejeitar)", 
+                description = "Atualiza o status da solicitação. Se Rejeitado, exige justificativa.")
+      @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Análise processada com sucesso"),
+          @ApiResponse(responseCode = "400", description = "Justificativa ausente para rejeição ou status inválido"),
+          @ApiResponse(responseCode = "404", description = "Solicitação não encontrada")
+      })
+      @PutMapping("/solicitacao/analises/analise/status")
+      public ResponseEntity<?> processarAnalise(@RequestBody @Valid SolicitacaoAnaliseRequestDTO dto) {
+        var response = requerimentoAlvaraConstrucaoService.processarAnalise(dto);
+        return ResponseEntity.ok(response);
+      }
 
+      
   /**
    * Endpoint para recuperar uma lista paginada de solicitações filtradas por tipo OU status.
    * Ambos os filtros (tipo e status) são opcionais e fornecidos como parâmetros de consulta.
@@ -338,37 +318,41 @@ public class SolicitacaoController {
       @ApiResponse(responseCode = "404", description = "Nenhuma solicitação finalizada encontrada."),
     }
   )
-  @GetMapping("/finalizadas")
-  public ResponseEntity<Page<?>> listarSolicitacoesFinalizadas(
-    @ParameterObject @PageableDefault(size = 20, sort = "dataCriacao", direction = Sort.Direction.DESC) Pageable pageable
+  @GetMapping("/finalizadas") 
+  public ResponseEntity<Page<SolicitacaoDetalhadaResponseDTO>> listarFinalizadas(
+      @ParameterObject SolicitacaoFinalizadaRequestDTO filtro, 
+      @ParameterObject Pageable pageable
   ) {
-    Page<SolicitacaoDetalhadaResponseDTO> solicitacoes = solicitacaoService.listarSolicitacoesFinalizadas(pageable);
-    return ResponseEntity.ok(solicitacoes);
+      return ResponseEntity.ok(solicitacaoService.listarSolicitacoesFinalizadas(filtro, pageable));
   }
 
-  /**
-   * Endpoint para retornar todos os Documentos Aprovados associados a uma solicitação.
+
+  
+/**
+   * Endpoint unificado para listar documentos de uma solicitação, com filtro opcional por status.
    *
-   * @param id O ID da solicitação.
-   * @return Uma lista de DocumentoResponseDTO (Status 200 OK).
+   * @param id O ID da solicitação (Path Variable).
+   * @param status O status para filtrar (Query Param opcional).
+   * @return Lista de documentos.
    */
   @Operation(
-    summary = "Listar Documentos Aprovados por ID da Solicitação",
-    description = "Recupera uma lista de documentos aprovados associados a uma solicitação específica."
+    summary = "Listar Documentos da Solicitação",
+    description = "Recupera os documentos da solicitação. Use o parâmetro 'status' para filtrar (ex: APROVADO OU REJEITADO)."
   )
   @ApiResponses(
     value = {
-      @ApiResponse(
-        responseCode = "200",
-        description = "Lista de documentos aprovados recuperada com sucesso",
-        content = @Content(array = @ArraySchema(schema = @Schema(implementation = DocumentWithStatusResponseDTO.class)))
-      ),
-      @ApiResponse(responseCode = "404", description = "Nenhum documento aprovado encontrado para a solicitação."),
+      @ApiResponse(responseCode = "200", description = "Lista recuperada com sucesso"),
+      @ApiResponse(responseCode = "404", description = "Solicitação não encontrada"),
     }
   )
-  @GetMapping(value = "/solicitacao/{id}/documentos-aprovados", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<List<DocumentWithStatusResponseDTO>> listarDocumentosAprovados(@PathVariable UUID id) {
-    List<DocumentWithStatusResponseDTO> documentos = solicitacaoService.listarDocumentosAprovadosPorSolicitacaoId(id);
+  @GetMapping(value = "/solicitacao/{id}/documentos/status", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<List<DocumentWithStatusResponseDTO>> listarDocumentos(
+      @PathVariable UUID id,
+      @RequestParam(required = false) DocumentStatus status 
+  ) {
+      
+    List<DocumentWithStatusResponseDTO> documentos = solicitacaoService.listarDocumentosDaSolicitacaoPorStatus(id, status);
+    
     return ResponseEntity.ok(documentos);
   }
 
@@ -385,7 +369,7 @@ public class SolicitacaoController {
     @ApiResponse(responseCode = "200", description = "Documentos encontrados."),
     @ApiResponse(responseCode = "404", description = "Solicitação ou Requerimento não encontrado.")
   })
-  @GetMapping(value = "/solicitacao/{id}/todos-documentos", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/solicitacao/{id}/documentos", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<List<DocumentWithStatusResponseDTO>> listarTodosDocumentosPorSolicitacaoId(
     @PathVariable UUID id
   ) {

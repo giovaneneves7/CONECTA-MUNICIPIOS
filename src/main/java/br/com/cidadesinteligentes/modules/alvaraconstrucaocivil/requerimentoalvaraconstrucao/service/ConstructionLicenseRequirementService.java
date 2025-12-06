@@ -12,7 +12,7 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalva
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.service.IAcompanhamentoService;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.model.PublicServantProfile;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.repository.IPublicServantProfileRepository;
-
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoAnaliseRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Solicitacao;
 
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.ISolicitacaoRepository;
@@ -371,37 +371,29 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         return entity;
     }
 
-    /**
-     * Approves a construction license request.
-     *
-     * @param requirementId The ID of the request to be approved.
-     * @return DTO with the data of the updated request.
+/**
+     * Processa a análise (Aprovação ou Rejeição) de uma solicitação.
+     * * @param dto DTO contendo o ID, o Status e a Justificativa.
+     * @return DTO atualizado.
      * @author Andesson Reis
      */
-    public ConstructionLicenseRequirementResponseDTO acceptRequest(Long requirementId) {
-        ConstructionLicenseRequirement entity = findRequirementForReview(requirementId);
+    public ConstructionLicenseRequirementResponseDTO processarAnalise(SolicitacaoAnaliseRequestDTO dto) {
+        ConstructionLicenseRequirement entity = findRequirementForReview(dto.constructionLicenseRequirementId());
 
-        entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
-        entity.setRejectionJustification(null);
+        if (dto.status() == AssociationStatus.REJECTED) {
+            if (dto.justification() == null || dto.justification().trim().isEmpty()) {
+                throw new IllegalArgumentException("Para rejeitar a solicitação, a justificativa é obrigatória.");
+            }
+            entity.setRejectionJustification(dto.justification());
 
-        ConstructionLicenseRequirement updatedEntity = repository.save(entity);
+        } else if (dto.status() == AssociationStatus.APPROVED) {
+            entity.setRejectionJustification(null);
+            
+        } else {
+            throw new IllegalArgumentException("Apenas APROVADO ou REJEITADO são permitidos nesta operação.");
+        }
 
-        return toResponseDTO(updatedEntity);
-    }
-
-    /**
-     * Rejects a construction license request.
-     *
-     * @param requirementId The ID of the request to be rejected.
-     * @param dto           DTO containing the rejection justification.
-     * @return DTO with the data of the updated request.
-     * @author Andesson Reis
-     */
-    public ConstructionLicenseRequirementResponseDTO rejectRequest(Long requirementId, RejectionRequestDTO dto) {
-        ConstructionLicenseRequirement entity = findRequirementForReview(requirementId);
-
-        entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
-        entity.setRejectionJustification(dto.justification());
+        entity.setTechnicalResponsibleStatus(dto.status());
 
         ConstructionLicenseRequirement updatedEntity = repository.save(entity);
 

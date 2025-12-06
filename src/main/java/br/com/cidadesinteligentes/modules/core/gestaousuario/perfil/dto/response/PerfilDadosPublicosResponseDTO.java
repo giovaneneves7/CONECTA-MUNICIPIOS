@@ -38,7 +38,7 @@ public record PerfilDadosPublicosResponseDTO(
     @JsonProperty("genero")
     String genero,
 
-    @JsonProperty("birthdate")
+    @JsonProperty("dataNascimento")
     LocalDate dataNascimento
 
 ) {

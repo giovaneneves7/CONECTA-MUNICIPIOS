@@ -33,7 +33,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, UUID> {
      * @return Página com as especificações dos cargos buscados.
      * @author Caio Alves
      */
-    @Query("SELECT DISTINCT u FROM Usuario u JOIN u.perfis p JOIN p.cargo c WHERE c.nome = :cargoNome")
+    @Query("SELECT u FROM Usuario u JOIN u.perfis p JOIN p.cargo c WHERE c.nome = :cargoNome")
     Page<Usuario> findByPerfisCargoNome(@Param("cargoNome") String cargoNome, Pageable pageable);
 
     /**

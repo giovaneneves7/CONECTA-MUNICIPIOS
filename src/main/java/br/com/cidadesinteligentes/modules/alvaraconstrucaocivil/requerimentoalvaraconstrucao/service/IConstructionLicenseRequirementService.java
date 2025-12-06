@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.dto.response.*;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

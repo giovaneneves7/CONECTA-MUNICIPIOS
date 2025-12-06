@@ -2,8 +2,7 @@ package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomu
 
 import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Fluxo;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
-
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Solicitacao;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -50,7 +49,7 @@ public class ServicoMunicipal extends SimplePersistenceEntity {
     private String descricao;
 
     @OneToMany(mappedBy = "servicoMunicipal", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Request> solicitacoes = new ArrayList<>();
+    private List<Solicitacao> solicitacoes = new ArrayList<>();
 
     @OneToOne(mappedBy = "servicoMunicipal")
     private Fluxo fluxo;

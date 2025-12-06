@@ -6,14 +6,14 @@ import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.model.Fluxo;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IEtapaFluxoRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IAtividadeFluxoRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.fluxo.repository.IFluxoRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.request.MunicipalServiceRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.response.MunicipalServiceResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IServicoMunicipalRepository;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.IRequestRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Solicitacao;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.ISolicitacaoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,8 +41,8 @@ public class ServicoMunicipalService implements IServicoMunicipalService {
     private final ObjectMapperUtil objectMapperUtil;
     private final IServicoMunicipalRepository servicoMunicipalRepository;
     private final IFluxoRepository fluxoRepository;
-    private final IEtapaFluxoRepository etapaFluxoRepository;
-    private final IRequestRepository requestRepository;
+    private final IAtividadeFluxoRepository atividadeFluxoRepository;
+    private final ISolicitacaoRepository solicitacaoRepository;
 
     /**
      * Salva um novo serviço municipal no banco de dados.
@@ -118,15 +118,15 @@ public class ServicoMunicipalService implements IServicoMunicipalService {
         List<Fluxo> fluxos = fluxoRepository.findAllByServicoMunicipal(servico);
 
         for (Fluxo fluxo : fluxos) {
-            etapaFluxoRepository.deleteAllByFluxoId(fluxo.getId());
+            atividadeFluxoRepository.deleteAllByFluxoId(fluxo.getId());
 
             fluxoRepository.delete(fluxo);
         }
         servico.setFluxo(null); 
 
-        List<Request> requests = requestRepository.findAllByServicoMunicipalId(servico.getId());
+        List<Solicitacao> solicitacoes = solicitacaoRepository.findAllByServicoMunicipalId(servico.getId());
 
-        requestRepository.deleteAll(requests); 
+        solicitacaoRepository.deleteAll(solicitacoes);
 
         servicoMunicipalRepository.delete(servico);
     }

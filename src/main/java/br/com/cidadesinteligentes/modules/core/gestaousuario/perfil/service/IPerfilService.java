@@ -3,7 +3,7 @@ package br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.service;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.PerfilAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.*;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.response.PermissaoResponseDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.RequestResponseDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoResponseDTO;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +40,7 @@ public interface IPerfilService {
     /**
      * Encontra todas as requisições ligadas a um perfil de usuário, usando o ID do perfil, para buscar
      */
-    Page<RequestResponseDTO> findAllRequestsByPerfilId(UUID perfilId, Pageable pageable);
+    Page<SolicitacaoResponseDTO> findAllRequestsByPerfilId(UUID perfilId, Pageable pageable);
 
     /**
      * Essa função atualiza o perfil ativo de um usuário, por outro perfil,

@@ -76,22 +76,23 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/servicos-municipais/servico-municipal/**").permitAll()
 
                         // Functions for Requests /api/v1/requests
-                        .requestMatchers(HttpMethod.POST, "/api/v1/requests/request").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/requests").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/request").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/finalized").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/requests/request/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/request").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/requests/request/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/requests/request/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/solicitacoes/solicitacao").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/solicitacoes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/solicitacoes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/solicitacoes/solicitacao").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/solicitacoes/solicitacao/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/solicitacoes/solicitacao").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/solicitacoes/solicitacao/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/solicitacoes/solicitacao").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/solicitacoes/solicitacao/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/solicitacoes/solicitacao").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/solicitacoes/solicitacao/**").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/v1/requests/request/*/review/accept").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/requests/request/*/review/reject").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/solicitacoes/solicitacao/*/review/accept").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/solicitacoes/solicitacao/*/review/reject").permitAll()
 
                         // Functions for Requirement Types /api/v1/requirement-types
-                        .requestMatchers(HttpMethod.POST, "/api/v1/requirement-types/requirement-type").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/requirement-types/requerimento").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/requirement-types/**").permitAll()
@@ -131,18 +132,18 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/usuario/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/tipo-e-status").permitAll()
 
-                        //Monitorings - /api/v1/monitorings
-                        .requestMatchers(HttpMethod.POST, "/api/v1/monitorings").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/monitorings/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/monitorings/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/monitorings").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/monitorings/**").permitAll()
+                        //Monitorings - /api/v1/acompanhamentos
+                        .requestMatchers(HttpMethod.POST, "/api/v1/acompanhamentos").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/acompanhamentos/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/acompanhamentos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/acompanhamentos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/acompanhamentos/**").permitAll()
 
-                        // Updates - /api/v1/updates
-                        .requestMatchers(HttpMethod.POST, "/api/v1/updates").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/updates/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/updates").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/updates/**").permitAll()
+                        // Updates - /api/v1/atualizacoes
+                        .requestMatchers(HttpMethod.POST, "/api/v1/atualizacoes").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/atualizacoes/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/atualizacoes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/atualizacoes/**").permitAll()
 
                         // Technical Responsibles - /api/v1/technical-responsibles
                         .requestMatchers(HttpMethod.POST, "/api/v1/technical-responsibles/technical-responsible").permitAll()
@@ -201,21 +202,22 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
 
                         // flow controller
-                        .requestMatchers(HttpMethod.GET, "/api/v1/flows").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/flows/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/flows/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/fluxos").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/fluxos/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/fluxos/**").permitAll()
 
-                        // Step controller
-                        .requestMatchers(HttpMethod.GET, "/api/v1/steps").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/steps/**").permitAll()
+                        // Atividade controller
+                        .requestMatchers(HttpMethod.GET, "/api/v1/atividades").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/atividades/**").permitAll()
 
-                        //General Evaluation Item
-                        .requestMatchers(HttpMethod.POST, "/api/v1/general-evaluation-items").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/general-evaluation-items/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/general-evaluation-items/general-evaluation-item").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/general-evaluation-items/general-evaluation-item/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/general-evaluation-items/general-evaluation-item/request").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/general-evaluation-items/general-evaluation-item/request/**").permitAll()
+                        //General Evaluation Item - /api/v1/itens-avaliacao-geral
+                        .requestMatchers(HttpMethod.POST, "/api/v1/itens-avaliacao-geral").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/itens-avaliacao-geral/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/itens-avaliacao-geral/item-avaliacao-geral").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/itens-avaliacao-geral/item-avaliacao-geral/**").permitAll()
+                         .requestMatchers(HttpMethod.GET, "/api/v1/itens-avaliacao-geral/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/itens-avaliacao-geral/item-avaliacao-geral/request").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/itens-avaliacao-geral/item-avaliacao-geral/request/**").permitAll()
 
                         //Evaluation Item
                         .requestMatchers(HttpMethod.POST, "/api/v1/evaluation-items/evaluation-item").permitAll()

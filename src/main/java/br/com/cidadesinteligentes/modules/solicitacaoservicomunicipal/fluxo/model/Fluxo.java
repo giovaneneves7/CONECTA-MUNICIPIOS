@@ -24,7 +24,7 @@ import java.util.List;
  * <p>
  * Esta classe é a principal entidade para os fluxos de serviços municipais,
  * contendo informações básicas, como código, nome, descrição e
- * relacionamento com as etapas associadas.
+ * relacionamento com as atividades associadas.
  * </p>
  *
  * @author Giovane Neves, Andesson Reis
@@ -41,11 +41,11 @@ public class Fluxo extends PersistenceEntity {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @OneToMany(mappedBy = "fluxo")
-    private List<EtapaFluxo> etapasFluxo = new ArrayList<>();
-
     @OneToOne
-    @JoinColumn(name = "municipal_service_id", nullable = false, unique = true)
+    @JoinColumn(name = "servico_municipal_id", nullable = false, unique = true)
     private ServicoMunicipal servicoMunicipal;
+
+    @OneToMany(mappedBy = "fluxo")
+    private List<AtividadeFluxo> atividadeFluxos = new ArrayList<>();
 
 }

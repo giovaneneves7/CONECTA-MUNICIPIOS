@@ -8,6 +8,7 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.Statu
 import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.service.IUsuarioService;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -248,18 +249,29 @@ public class UsuarioController {
                             array = @ArraySchema(schema = @Schema(implementation = UsuarioCompletoResponseDTO.class)))),
             @ApiResponse(responseCode = "400", description = "Termo de busca vazio.", content = @Content)
     })
-    @GetMapping(value = "/buscar", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> buscaDetalhesUsuarioByNomeOuCpf(
-            @RequestParam String termo, 
+    @GetMapping(value = "/usuario", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> buscaDetalhesUsuarioPorFiltro(
+            @Parameter(description = "Tipo do filtro (valores aceitos: 'cpf' ou 'nome')", example = "cpf", required = true)
+            @RequestParam(name = "tipo_filtro") String tipoFiltro,
+            
+            @Parameter(description = "Valor do filtro a ser pesquisado", example = "12345678900", required = true)
+            @RequestParam(name = "valor_filtro") String valorFiltro,
+            
             @ParameterObject
             @PageableDefault(size = 10, sort = "pessoa.nomeCompleto", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
-        if (termo == null || termo.isBlank()) {
-            return ResponseEntity.badRequest().body("O parametro 'termo' não pode estar vazio.");
+        if (tipoFiltro == null || tipoFiltro.isBlank() || valorFiltro == null || valorFiltro.isBlank()) {
+            return ResponseEntity.badRequest().body("Os parâmetros 'tipo_filtro' e 'valor_filtro' são obrigatórios.");
         }
-        
-        Page<UsuarioCompletoResponseDTO> userDetailsPage = userService.findDetalhesUsuarioByNomeOuCpf(termo, pageable);
+
+        String filtro = tipoFiltro.trim().toLowerCase();
+
+        if (!filtro.equals("cpf") && !filtro.equals("nome")) {
+            return ResponseEntity.badRequest().body("Tipo de filtro inválido. Valores aceitos: 'cpf' ou 'nome'.");
+        }
+        Page<UsuarioCompletoResponseDTO> userDetailsPage = userService.findDetalhesUsuarioByNomeOuCpf(valorFiltro, pageable);
+
         return ResponseEntity.ok(userDetailsPage);
     }
 

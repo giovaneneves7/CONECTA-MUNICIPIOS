@@ -1,7 +1,7 @@
 package br.com.cidadesinteligentes.config.security;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.service.TokenAuthenticationService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,11 +34,11 @@ import java.util.Optional;
 public class JWTLoginFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JWTLoginFilter.class);
-    private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/auth/users/user", "/api/v1/auth/sessions/session",
-            "/h2-console/**", "/api/v1/auth/**", "/api/v1/functions/**", "/api/v1/functions", "/api/v1/categories/**", "/api/v1/categories"
-            , "/api/v1/municipal-services/**", "/api/v1/municipal-services", "/api/v1/requests/**", "/api/v1/requests", "/api/v1/requirement-types/**",
-            "/api/v1/requirement-types", "/api/v1/construction-license-requirements", "/api/v1/profiles", "/api/v1/profiles/**", "/api/v1/users", "/api/v1/users/**",
-            "/api/v1/public-servant-profiles", "/api/v1/public-servant-profiles/**", "/api/v1/roles", "/api/v1/roles/**", "/api/v1/admin-profiles",
+    private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/autenticacao/usuarios/usuario", "/api/v1/autenticacao/sessoes/sessao",
+            "/h2-console/**", "/api/v1/autenticacao/**", "/api/v1/functions/**", "/api/v1/functions", "/api/v1/categories/**", "/api/v1/categories"
+            , "/api/v1/servicos-municipais/**", "/api/v1/servicos-municipais", "/api/v1/requests/**", "/api/v1/requests", "/api/v1/requirement-types/**",
+            "/api/v1/requirement-types", "/api/v1/construction-license-requirements", "/api/v1/perfis", "/api/v1/perfis/**", "/api/v1/usuarios", "/api/v1/usuarios/**",
+            "/api/v1/public-servant-profiles", "/api/v1/public-servant-profiles/**", "/api/v1/cargos", "/api/v1/cargos/**", "/api/v1/admin-profiles",
             "/api/v1/admin-profiles/**", "/api/v1/general-evaluation-items", "/api/v1/general-evaluation-items/**", "/api/v1/documents", "/api/v1/documents/**",
             "/api/v1/evaluation-items", "/api/v1/evaluation-items/**");
 
@@ -46,11 +46,11 @@ public class JWTLoginFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final TokenAuthenticationService tokenAuthenticationService;
-    private final IUserRepository userRepository;
+    private final IUsuarioRepository userRepository;
 
 
     public JWTLoginFilter(TokenAuthenticationService tokenAuthenticationService,
-                          IUserRepository userRepository) {
+                          IUsuarioRepository userRepository) {
         this.tokenAuthenticationService = tokenAuthenticationService;
         this.userRepository = userRepository;
     }
@@ -79,7 +79,7 @@ public class JWTLoginFilter extends OncePerRequestFilter {
                 String email = tokenAuthenticationService.validateToken(tokenOpt.get());
 
                 if (email != null) {
-                    User user = userRepository.findByEmail(email)
+                    Usuario user = userRepository.findByEmail(email)
                             .orElseThrow(() -> new IllegalStateException("User not found for email: " + email));
 
                     UsernamePasswordAuthenticationToken authToken =

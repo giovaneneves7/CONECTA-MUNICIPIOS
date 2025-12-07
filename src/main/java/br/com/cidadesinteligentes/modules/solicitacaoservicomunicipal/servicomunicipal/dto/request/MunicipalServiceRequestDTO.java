@@ -1,29 +1,23 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.request;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Data Transfer Object for receiving MunicipalService data in API requests.
- * Used when creating or updating municipal service information.
- * Includes the service's name, description, and associated category IDs.
+ * Representa o DTO utilizado para receber dados de um Serviço Municipal em requisições da API.
+ * Este record carrega informações essenciais do serviço, tais como nome, descrição e IDs das categorias associadas.
  *
- * @author Caio Alves
+ * @author: Caio Alves, Andesson Reis
  */
 public record MunicipalServiceRequestDTO (
-    @JsonProperty("name")
-    @NotNull(message = "Name is mandatory.")
-    @NotBlank(message = "Name is cannot be blank.")
-    String name,
 
-    @JsonProperty("description")
-    String description,
+    @JsonProperty("nome")
+    @NotNull(message = "O nome é obrigatório.")
+    @NotBlank(message = "O nome não pode estar em branco.")
+    String nome,
 
-    @NotEmpty(message = "At least one category must be informed.")
-    List<Integer> categoryIds
+    @JsonProperty("descricao")
+    String descricao
 ) {}

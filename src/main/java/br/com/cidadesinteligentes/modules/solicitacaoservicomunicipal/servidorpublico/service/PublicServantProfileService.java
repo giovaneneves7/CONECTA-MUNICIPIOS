@@ -1,13 +1,13 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.service;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.UserStatus;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Role;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.IRoleRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.enums.StatusUsuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.model.Cargo;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.cargo.repository.ICargoRepository;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.dto.response.PublicServantRegisterResponseDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.model.PublicServantProfile;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.repository.IPublicServantProfileRepository;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.User;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUserRepository;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.model.Usuario;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.usuario.repository.IUsuarioRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +21,9 @@ import java.util.UUID;
 @Service
 public class PublicServantProfileService implements IPublicServantProfileService{
 
-    private final IUserRepository userRepository;
+    private final IUsuarioRepository userRepository;
     private final IPublicServantProfileRepository publicServantRepository;
-    private final IRoleRepository roleRepository;
+    private final ICargoRepository roleRepository;
 
     @Override @Transactional
     public PublicServantRegisterResponseDTO createPublicServantProfile(UUID userId, PublicServantProfile employee) {
@@ -31,34 +31,34 @@ public class PublicServantProfileService implements IPublicServantProfileService
             throw new BusinessException(BusinessExceptionMessage.INVALID_DATA.getMessage());
         }
 
-        User user = userRepository.findById(userId).orElseThrow(
+        Usuario user = userRepository.findById(userId).orElseThrow(
                 () -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage())
         );
 
-        if (user.getStatus() != UserStatus.ACTIVE){
+        if (user.getStatus() != StatusUsuario.ATIVO){
             throw new BusinessException("User must be ACTIVE to be assigned a Public Servant profile.");
         }
 
-        boolean alreadyHasPublicServantProfile = user.getProfiles().stream().anyMatch(p -> p instanceof PublicServantProfile);
+        boolean alreadyHasPublicServantProfile = user.getPerfis().stream().anyMatch(p -> p instanceof PublicServantProfile);
 
         if (alreadyHasPublicServantProfile) {
             throw new BusinessException(BusinessExceptionMessage.USER_ALREADY_HAS_THIS_PROFILE.getMessage());
         }
 
-        Role role = new Role();
-        role.setName("ROLE_PUBLIC_SERVANT");
-        role.setDescription("Role for public servant");
+        Cargo role = new Cargo();
+        role.setNome("ROLE_PUBLIC_SERVANT");
+        role.setDescricao("Role for public servant");
         roleRepository.save(role);
 
-        employee.setRole(role);
-        employee.setUser(user);
+        employee.setCargo(role);
+        employee.setUsuario(user);
 
         employee = publicServantRepository.save(employee);
 
-        user.getProfiles().add(employee);
+        user.getPerfis().add(employee);
 
-        if (user.getActiveProfile() == null) {
-            user.setActiveProfile(employee);
+        if (user.getTipoAtivo() == null) {
+            user.setTipoAtivo(employee);
         }
 
         userRepository.save(user);

@@ -5,21 +5,21 @@ import org.springframework.stereotype.Component;
 
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.event.ConstructionLicenseRequirementCreatedEvent;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.model.ConstructionLicenseRequirement;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.RequestPostRequestDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.service.IRequestService;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.service.ISolicitacaoService;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class ConstructionLicenseRequirementListener {
 
-    private final IRequestService requestService;
+    private final ISolicitacaoService solicitacaoService;
 
     @EventListener
         public void handleConstructionLicenseRequirementCreated(ConstructionLicenseRequirementCreatedEvent event) {
         ConstructionLicenseRequirement requirement = event.getRequirement();
 
-        RequestPostRequestDTO requestDto = new RequestPostRequestDTO(
+        SolicitacaoRequestDTO requestDto = new SolicitacaoRequestDTO(
             requirement.getId().toString(),    
                             //    Check logic for estimating work completion
             requirement.getEndDate(),  
@@ -29,6 +29,6 @@ public class ConstructionLicenseRequirementListener {
             requirement.getId()
         );
 
-        requestService.save(requestDto);
+        solicitacaoService.save(requestDto);
     }
 }

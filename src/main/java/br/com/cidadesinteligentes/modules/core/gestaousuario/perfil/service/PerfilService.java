@@ -11,8 +11,8 @@ import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilVerificarTipoAtivoResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.RequestResponseDTO;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.IRequestRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.response.SolicitacaoResponseDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.ISolicitacaoRepository;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
@@ -38,7 +38,7 @@ public class PerfilService implements IPerfilService {
 
     private final IPerfilRepository repository;
     private final ObjectMapperUtil objectMapperUtil;
-    private final IRequestRepository requestRepository;
+    private final ISolicitacaoRepository solicitacaoRepository;
     private  final IUsuarioRepository userRepository;
 
     @Override @Transactional
@@ -116,10 +116,10 @@ public class PerfilService implements IPerfilService {
     }
 
     @Override
-    public Page<RequestResponseDTO> findAllRequestsByPerfilId(UUID perfilId, Pageable pageable) {
+    public Page<SolicitacaoResponseDTO> findAllRequestsByPerfilId(UUID perfilId, Pageable pageable) {
 
-        return this.requestRepository.findAllByProfileId(perfilId, pageable)
-                .map(request -> this.objectMapperUtil.mapToRecord(request, RequestResponseDTO.class));
+        return this.solicitacaoRepository.findAllByPerfilId(perfilId, pageable)
+                .map(request -> this.objectMapperUtil.mapToRecord(request, SolicitacaoResponseDTO.class));
 
     }
 

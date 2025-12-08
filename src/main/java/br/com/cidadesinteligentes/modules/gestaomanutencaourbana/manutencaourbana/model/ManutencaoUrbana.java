@@ -5,7 +5,7 @@ import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model.
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model.GestorSolicitacoesManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Prioridade;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.enums.Viabilidade;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.MunicipalService;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requisicao_servico")
+@Table(name = "solicitacao_manutencao_urbana")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @PrimaryKeyJoinColumn(name = "id")
-public class ManutencaoUrbana extends MunicipalService {
+public class ManutencaoUrbana extends ServicoMunicipal {
 
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)

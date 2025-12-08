@@ -3,6 +3,7 @@ package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.servi
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.request.EnderecoAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.request.EnderecoCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.response.EnderecoResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.response.EnderecoRetornarIdResponseDTO;
 
 import java.util.List;
 
@@ -40,5 +41,5 @@ public interface IEnderecoService {
      * @param id Identificador do endereço a ser removido.
      * @return O ID do endereço que foi excluído.
      */
-    Long delete(Long id);
+    public EnderecoRetornarIdResponseDTO delete(Long id);
 }

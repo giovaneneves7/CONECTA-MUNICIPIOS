@@ -1,6 +1,6 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model;
 
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Profile;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,6 +9,6 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @DiscriminatorValue("GESTOR_MANUTENCAO")
-public class GestorSolicitacoesManutencaoUrbana extends Profile {
+public class GestorSolicitacoesManutencaoUrbana extends Perfil {
 
 }

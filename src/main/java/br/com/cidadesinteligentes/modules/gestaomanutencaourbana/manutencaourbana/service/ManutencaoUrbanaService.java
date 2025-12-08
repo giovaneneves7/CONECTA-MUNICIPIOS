@@ -12,6 +12,7 @@ import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.reposito
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.request.ManutencaoUrbanaAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.request.ManutencaoUrbanaCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.response.ManutencaoUrbanaResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.dto.response.ManutencaoUrbanaRetornarIdResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.model.ManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.manutencaourbana.repository.IManutencaoUrbanaRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,8 @@ public class ManutencaoUrbanaService implements IManutencaoUrbanaService {
         ManutencaoUrbana entity = new ManutencaoUrbana();
 
         // Mapeamento manual dos campos simples para garantir a tradução DTO(PT) -> Entity(EN/Inherited)
-        entity.setName(dto.nome());
-        entity.setDescription(dto.descricao());
+        entity.setNome(dto.nome());
+        entity.setDescricao(dto.descricao());
         entity.setPrioridade(dto.prioridade());
         entity.setImageURL(dto.urlImagem());
         entity.setProtocolo(dto.protocolo());
@@ -82,8 +83,8 @@ public class ManutencaoUrbanaService implements IManutencaoUrbanaService {
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         // Atualização dos campos simples
-        entity.setName(dto.nome());
-        entity.setDescription(dto.descricao());
+        entity.setNome(dto.nome());
+        entity.setDescricao(dto.descricao());
         entity.setPrioridade(dto.prioridade());
         entity.setViabilidade(dto.viabilidade());
         entity.setImageURL(dto.urlImagem());
@@ -120,11 +121,11 @@ public class ManutencaoUrbanaService implements IManutencaoUrbanaService {
 
     @Override
     @Transactional
-    public Long delete(Long id) {
+    public ManutencaoUrbanaRetornarIdResponseDTO delete(Long id) {
         if (!repository.existsById(id)) {
             throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
-        return id;
+        return new ManutencaoUrbanaRetornarIdResponseDTO(id);
     }
 }

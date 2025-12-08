@@ -85,7 +85,7 @@ public class CategoriaManutencaoUrbanaController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = CategoriaResponseDTO.class))))
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CategoriaResponseDTO>> findAll() {
+    public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(categoriaService.findAll());
     }
 
@@ -102,7 +102,7 @@ public class CategoriaManutencaoUrbanaController {
             @ApiResponse(responseCode = "404", description = "Categoria não encontrada com o ID fornecido.")
     })
     @GetMapping("/categoria/{id}")
-    public ResponseEntity<CategoriaResponseDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(categoriaService.findById(id));
     }
 
@@ -151,9 +151,8 @@ public class CategoriaManutencaoUrbanaController {
             @ApiResponse(responseCode = "404", description = "Categoria não encontrada.")
     })
     @DeleteMapping("/categoria/{id}")
-    public ResponseEntity<CategoriaRetornarIdResponseDTO> excluir(@PathVariable Long id) {
-        // Recebe o ID do service (Long)
-        Long idDeletado = categoriaService.delete(id);
-        return ResponseEntity.ok(new CategoriaRetornarIdResponseDTO(idDeletado));
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        CategoriaRetornarIdResponseDTO dtoDeletado = categoriaService.delete(id);
+        return ResponseEntity.ok(dtoDeletado);
     }
 }

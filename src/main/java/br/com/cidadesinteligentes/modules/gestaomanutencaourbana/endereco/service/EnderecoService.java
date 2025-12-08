@@ -6,6 +6,7 @@ import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.request.EnderecoAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.request.EnderecoCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.response.EnderecoResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.dto.response.EnderecoRetornarIdResponseDTO; // Import necessário
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.model.Endereco;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.endereco.repository.IEnderecoRepository;
 import lombok.RequiredArgsConstructor;
@@ -66,12 +67,11 @@ public class EnderecoService implements IEnderecoService {
 
     @Override
     @Transactional
-    public Long delete(Long id) {
+    public EnderecoRetornarIdResponseDTO delete(Long id) {
         if (!repository.existsById(id)) {
             throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
-
-        return id;
+        return new EnderecoRetornarIdResponseDTO(id);
     }
 }

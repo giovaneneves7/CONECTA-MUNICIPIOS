@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ICategoriaManutencaoUrbanaRepository extends JpaRepository<CategoriaManutencaoUrbana, Long> {
 
-    // Método para evitar duplicidade de nomes
+    // Verifica se já existe uma categoria com o nome fornecido, evitando duplicidade
     boolean existsByNome(String nome);
 }

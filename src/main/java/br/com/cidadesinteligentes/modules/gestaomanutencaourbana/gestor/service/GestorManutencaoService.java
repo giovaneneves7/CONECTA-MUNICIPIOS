@@ -6,6 +6,7 @@ import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.request.GestorAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.request.GestorCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.response.GestorResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.response.GestorRetornarIdResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.model.GestorSolicitacoesManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.repository.IGestorManutencaoRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,27 +59,28 @@ public class GestorManutencaoService implements IGestorManutencaoService {
                 .orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
         // Atualizando propriedades herdadas de Profile
-        gestorExistente.setImageUrl(dto.imagemUrl());
+        gestorExistente.setImagemUrl(dto.imagemUrl());
 
         GestorSolicitacoesManutencaoUrbana updatedEntity = repository.save(gestorExistente);
         return mapToResponse(updatedEntity);
     }
 
+
     @Override
     @Transactional
-    public UUID delete(UUID id) {
+    public GestorRetornarIdResponseDTO delete(UUID id) {
         if (!repository.existsById(id)) {
             throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
-
-        return id;
+        return new GestorRetornarIdResponseDTO(id);
     }
 
     // Método auxiliar para garantir que o tipo seja preenchido corretamente no Response
     private GestorResponseDTO mapToResponse(GestorSolicitacoesManutencaoUrbana entity) {
+        // Assume que GestorResponseDTO tem um construtor ou record que aceita id, imagemUrl e tipo
+        // para mapear id e imagemUrl
         GestorResponseDTO response = objectMapperUtil.map(entity, GestorResponseDTO.class);
-
         return new GestorResponseDTO(
                 response.id(),
                 response.imagemUrl(),

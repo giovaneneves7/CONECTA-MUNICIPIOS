@@ -50,7 +50,8 @@ public class ManutencaoUrbanaController {
             @ApiResponse(responseCode = "201", description = "Solicitação criada com sucesso."),
             @ApiResponse(responseCode = "422", description = "Erro de validação nos dados enviados.")
     })
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/solicitacao",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> save(@RequestBody @Valid ManutencaoUrbanaCriarRequestDTO dto, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -85,8 +86,8 @@ public class ManutencaoUrbanaController {
             @ApiResponse(responseCode = "200", description = "Solicitação encontrada."),
             @ApiResponse(responseCode = "404", description = "Solicitação não encontrada.")
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<ManutencaoUrbanaResponseDTO> findById(@PathVariable Long id) {
+    @GetMapping("/solicitacao/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -104,7 +105,7 @@ public class ManutencaoUrbanaController {
             @ApiResponse(responseCode = "404", description = "Solicitação não encontrada."),
             @ApiResponse(responseCode = "422", description = "Erro de validação.")
     })
-    @PutMapping("/{id}")
+    @PutMapping("/solicitacao/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @RequestBody @Valid ManutencaoUrbanaAtualizarRequestDTO dto,
                                     BindingResult result) {
@@ -124,16 +125,16 @@ public class ManutencaoUrbanaController {
      * Remove uma solicitação.
      *
      * @param id ID da solicitação.
-     * @return ID removido.
+     * @return ID da solicitação removida.
      */
     @Operation(summary = "Deletar Solicitação", description = "Remove uma solicitação do sistema.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Removido com sucesso."),
             @ApiResponse(responseCode = "404", description = "Solicitação não encontrada.")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ManutencaoUrbanaRetornarIdResponseDTO> delete(@PathVariable Long id) {
-        Long idDeletado = service.delete(id);
-        return ResponseEntity.ok(new ManutencaoUrbanaRetornarIdResponseDTO(idDeletado));
+    @DeleteMapping("/solicitacao/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        ManutencaoUrbanaRetornarIdResponseDTO dtoDeletado = service.delete(id);
+        return ResponseEntity.ok(dtoDeletado);
     }
 }

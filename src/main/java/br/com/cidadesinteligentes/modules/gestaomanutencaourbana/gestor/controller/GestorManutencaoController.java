@@ -55,7 +55,7 @@ public class GestorManutencaoController {
             @ApiResponse(responseCode = "201", description = "Gestor criado com sucesso."),
             @ApiResponse(responseCode = "422", description = "Erro de validação: Um ou mais campos na requisição são inválidos.")
     })
-    @PostMapping(
+    @PostMapping(value = "/gestor",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -83,7 +83,7 @@ public class GestorManutencaoController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = GestorResponseDTO.class))))
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<GestorResponseDTO>> findAll() {
+    public ResponseEntity<?> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
@@ -99,8 +99,8 @@ public class GestorManutencaoController {
                     content = @Content(schema = @Schema(implementation = GestorResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Gestor não encontrado com o ID fornecido.")
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<GestorResponseDTO> findById(@PathVariable UUID id) {
+    @GetMapping("/gestor/{id}")
+    public ResponseEntity<?> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -118,7 +118,7 @@ public class GestorManutencaoController {
             @ApiResponse(responseCode = "404", description = "Gestor não encontrado."),
             @ApiResponse(responseCode = "422", description = "Erro de validação ou inconsistência de ID.")
     })
-    @PutMapping("/{id}")
+    @PutMapping("/gestor/{id}")
     public ResponseEntity<?> update(
             @PathVariable UUID id,
             @RequestBody @Valid GestorAtualizarRequestDTO dto,
@@ -148,9 +148,9 @@ public class GestorManutencaoController {
             @ApiResponse(responseCode = "200", description = "Gestor excluído com sucesso."),
             @ApiResponse(responseCode = "404", description = "Gestor não encontrado.")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<GestorRetornarIdResponseDTO> delete(@PathVariable UUID id) {
-        UUID idDeletado = service.delete(id);
-        return ResponseEntity.ok(new GestorRetornarIdResponseDTO(idDeletado));
+    @DeleteMapping("/gestor/{id}")
+    public ResponseEntity<?> delete(@PathVariable UUID id) {
+        GestorRetornarIdResponseDTO dtoDeletado = service.delete(id);
+        return ResponseEntity.ok(dtoDeletado);
     }
 }

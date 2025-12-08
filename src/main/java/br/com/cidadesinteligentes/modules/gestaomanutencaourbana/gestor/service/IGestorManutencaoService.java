@@ -3,6 +3,7 @@ package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.service
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.request.GestorAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.request.GestorCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.response.GestorResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.gestor.dto.response.GestorRetornarIdResponseDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,5 +42,6 @@ public interface IGestorManutencaoService {
      * @param id Identificador do gestor a ser removido.
      * @return O ID do gestor que foi excluído.
      */
-    UUID delete(UUID id);
+    public GestorRetornarIdResponseDTO delete(UUID id);
+
 }

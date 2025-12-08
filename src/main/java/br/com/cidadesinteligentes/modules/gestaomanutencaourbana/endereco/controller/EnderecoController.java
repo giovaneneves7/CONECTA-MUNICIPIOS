@@ -54,7 +54,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "201", description = "Endereço criado com sucesso."),
             @ApiResponse(responseCode = "422", description = "Erro de validação: Um ou mais campos na requisição são inválidos.")
     })
-    @PostMapping(
+    @PostMapping(value = "/endereco",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -98,8 +98,8 @@ public class EnderecoController {
                     content = @Content(schema = @Schema(implementation = EnderecoResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado com o ID fornecido.")
     })
-    @GetMapping("/{id}")
-    public ResponseEntity<EnderecoResponseDTO> findById(@PathVariable Long id) {
+    @GetMapping("/endereco/{id}")
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
@@ -117,7 +117,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado."),
             @ApiResponse(responseCode = "422", description = "Erro de validação ou inconsistência de ID.")
     })
-    @PutMapping("/{id}")
+    @PutMapping("/endereco/{id}")
     public ResponseEntity<?> update(
             @PathVariable Long id,
             @RequestBody @Valid EnderecoAtualizarRequestDTO dto,
@@ -140,16 +140,16 @@ public class EnderecoController {
      * Exclui um endereço pelo ID.
      *
      * @param id ID do endereço.
-     * @return ID do endereço excluído.
+     * @return DTO contendo o ID do endereço excluído.
      */
     @Operation(summary = "Excluir Endereço", description = "Remove um endereço do sistema identificado pelo seu ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço excluído com sucesso."),
             @ApiResponse(responseCode = "404", description = "Endereço não encontrado.")
     })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<EnderecoRetornarIdResponseDTO> delete(@PathVariable Long id) {
-        Long idDeletado = service.delete(id);
-        return ResponseEntity.ok(new EnderecoRetornarIdResponseDTO(idDeletado));
+    @DeleteMapping("/endereco/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        EnderecoRetornarIdResponseDTO dtoDeletado = service.delete(id);
+        return ResponseEntity.ok(dtoDeletado);
     }
 }

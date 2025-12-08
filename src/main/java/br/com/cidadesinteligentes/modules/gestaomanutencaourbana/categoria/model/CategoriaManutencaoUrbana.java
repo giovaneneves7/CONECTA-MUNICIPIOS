@@ -1,6 +1,5 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model;
 
-import br.com.cidadesinteligentes.infraestructure.model.PersistenceEntity;
 import br.com.cidadesinteligentes.infraestructure.model.SimplePersistenceEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

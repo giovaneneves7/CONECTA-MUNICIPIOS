@@ -3,6 +3,7 @@ package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.serv
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCriarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaRetornarIdResponseDTO;
 
 import java.util.List;
 
@@ -40,5 +41,5 @@ public interface ICategoriaManutencaoUrbanaService {
      * @param id Identificador da categoria a ser removida.
      * @return O ID da categoria que foi excluída.
      */
-    Long delete(Long id);
+    CategoriaRetornarIdResponseDTO delete(Long id);
 }

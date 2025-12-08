@@ -1,16 +1,18 @@
 package br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.service;
 
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaAtualizarRequestDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.request.CategoriaCriarRequestDTO;
-import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaResponseDTO;
+import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.dto.response.CategoriaRetornarIdResponseDTO;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.model.CategoriaManutencaoUrbana;
 import br.com.cidadesinteligentes.modules.gestaomanutencaourbana.categoria.repository.ICategoriaManutencaoUrbanaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -63,12 +65,11 @@ public class CategoriaManutencaoUrbanaService implements ICategoriaManutencaoUrb
 
     @Override
     @Transactional
-    public Long delete(Long id) {
+    public CategoriaRetornarIdResponseDTO delete(Long id) {
         if (!repository.existsById(id)) {
             throw new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage());
         }
         repository.deleteById(id);
-
-        return id;
+        return new CategoriaRetornarIdResponseDTO(id);
     }
 }

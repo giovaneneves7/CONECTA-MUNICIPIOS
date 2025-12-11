@@ -1,0 +1,3 @@
+Olá {{nome}}, seu agendamento marcado para o dia {{data}} às {{hora}} foi cancelado.
+Caso necessário, você pode realizar um novo agendamento pelo portal ou aplicativo.
+x'

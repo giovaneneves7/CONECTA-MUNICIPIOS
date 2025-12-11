@@ -1,0 +1,3 @@
+Olá {{nome}}, seu agendamento foi reagendado.
+Nova data: {{data}} às {{hora}}.
+Local: {{local}}.

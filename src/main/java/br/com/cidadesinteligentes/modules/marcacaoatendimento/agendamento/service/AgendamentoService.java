@@ -7,6 +7,8 @@ import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.model.
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.agendamento.repository.IAgendamentoRepository;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.disponibilidadeprofissional.enums.DiaSemana;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.disponibilidadeprofissional.repository.IDisponibilidadeProfissionalRepository;
+import br.com.cidadesinteligentes.modules.marcacaoatendimento.notificacao.email.service.IEmailService;
+import br.com.cidadesinteligentes.modules.marcacaoatendimento.notificacao.sms.service.ISmsService;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.profissionalsaude.model.ProfissionalSaude;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.profissionalsaude.repository.IProfissionalSaudeRepository;
 import br.com.cidadesinteligentes.modules.marcacaoatendimento.servico.model.Servico;
@@ -31,6 +33,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AgendamentoService implements IAgendamentoService {
+
+    private final ISmsService smsService;
+    private final IEmailService emailService;
 
     private final IAgendamentoRepository agendamentoRepository;
     private final IProfissionalSaudeRepository profissionalSaudeRepository;
@@ -68,9 +73,6 @@ public class AgendamentoService implements IAgendamentoService {
             throw new BusinessException("O Paciente é obrigatório.");
         }
 
-        // --- SOLUÇÃO SEM REPOSITORY DE CIDADÃO ---
-        // Utilizamos getReference para criar um proxy apenas com o ID.
-        // O Hibernate usará esse ID para preencher a FK 'paciente_id' ao salvar o agendamento.
         // Nota: Se o ID não existir no banco, ocorrerá um erro de ConstraintViolation no momento do commit.
         Cidadao paciente = entityManager.getReference(Cidadao.class, agendamento.getPaciente().getId());
 
@@ -91,7 +93,13 @@ public class AgendamentoService implements IAgendamentoService {
         agendamento.setPaciente(paciente);
         agendamento.setStatus(StatusAgendamento.AGENDADO);
 
-        return agendamentoRepository.save(agendamento);
+        Agendamento saved = agendamentoRepository.save(agendamento);
+
+        // Chama notificação após salvar
+        // smsService.enviarNotificacaoConfirmaAgendamento(saved);
+        emailService.enviarNotificacaoConfirmaAgendamento(saved);
+
+        return saved;
     }
 
     @Override
@@ -139,7 +147,13 @@ public class AgendamentoService implements IAgendamentoService {
         agendamentoAtual.setHora(dadosAtualizados.getHora());
         agendamentoAtual.setStatus(StatusAgendamento.REAGENDADO);
 
-        return agendamentoRepository.save(agendamentoAtual);
+        Agendamento update = agendamentoRepository.save(agendamentoAtual);
+
+        // Chama notificação após salvar
+        // smsService.enviarNotificacaoReagendamento(update);
+        // emailService.enviarNotificacaoReagendamento(update);
+
+        return update;
     }
 
     @Override
@@ -165,8 +179,17 @@ public class AgendamentoService implements IAgendamentoService {
             throw new IllegalStateException("Status inválido para cancelamento/exclusão");
         }
 
+        // Atualiza o status
         agendamento.setStatus(StatusAgendamento.CANCELADO);
-        return agendamentoRepository.save(agendamento);
+
+        // Salva o cancelamento
+        Agendamento atualizado = agendamentoRepository.save(agendamento);
+
+        // Envia notificação de cancelamento
+        // smsService.enviarNotificacaoCancelamento(atualizado);
+        // emailService.enviarNotificacaoCancelamento(atualizado);
+
+        return atualizado;
     }
 
     // --- Métodos Auxiliares Privados ---

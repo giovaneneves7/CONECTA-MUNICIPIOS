@@ -1,0 +1,2 @@
+Olá {{nome}}, seu agendamento foi confirmado para o dia {{data}} às {{hora}}.
+Local: {{local}}.

@@ -9,11 +9,13 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.comentariorequer
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.dto.request.ConstructionLicenseRequirementFinalizeRequestDTO;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.enums.DocumentStatus;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimentoalvaraconstrucao.dto.response.*;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.service.IMonitoringService;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.acompanhamento.service.IAcompanhamentoService;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.model.PublicServantProfile;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servidorpublico.repository.IPublicServantProfileRepository;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Request;
-import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.IRequestRepository;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.dto.request.SolicitacaoAnaliseRequestDTO;
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.model.Solicitacao;
+
+import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.solicitacao.repository.ISolicitacaoRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.requerimento.enums.RequirementStatus;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessException;
 import br.com.cidadesinteligentes.infraestructure.exception.BusinessExceptionMessage;
@@ -38,7 +40,7 @@ import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.documento.model.
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.model.ServicoMunicipal;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.repository.IServicoMunicipalRepository;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.pessoa.model.Pessoa;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfilePublicDataResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilDadosPublicosResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.repository.IPerfilRepository;
 import br.com.cidadesinteligentes.modules.alvaraconstrucaocivil.tiporequerimento.model.RequirementType;
@@ -77,7 +79,7 @@ import jakarta.validation.constraints.NotNull;
 @RequiredArgsConstructor
 public class ConstructionLicenseRequirementService implements IConstructionLicenseRequirementService {
 
-    private final IMonitoringService monitoringService;
+    private final IAcompanhamentoService monitoringService;
 
     private final IConstructionLicenseRequirementRepository repository;
     private final IServicoMunicipalRepository municipalServiceRepository;
@@ -87,7 +89,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
     private final ApplicationEventPublisher eventPublisher;
     private final IUsuarioRepository userRepository;
     private final IPerfilRepository profileRepository;
-    private final IRequestRepository requestRepository;
+    private final ISolicitacaoRepository requestRepository;
     private final IPublicServantProfileRepository publicServantProfileRepository;
     private final ICommentRepository commentRepository;
 
@@ -140,7 +142,7 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
 
         eventPublisher.publishEvent(new ConstructionLicenseRequirementCreatedEvent(saved));
 
-        Request createdRequest = requestRepository.findFirstByServicoMunicipalIdOrderByCreatedAtDesc(
+        Solicitacao createdRequest = requestRepository.findFirstByServicoMunicipalIdOrderByDataCriacaoDesc(
                 saved.getId()
         ).orElseThrow(() -> new BusinessException(BusinessExceptionMessage.NOT_FOUND.getMessage()));
 
@@ -240,9 +242,9 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
         repository.save(entity);
 
-        List<Request> requests = entity.getSolicitacoes();
-        Request request = requests.get(requests.size() - 1);
-        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, true);
+        List<Solicitacao> requests = entity.getSolicitacoes();
+        Solicitacao request = requests.get(requests.size() - 1);
+        this.monitoringService.concluirAcompanhamentoAtualEAtivarProximo(request, false);
     }
 
     @Override
@@ -271,9 +273,9 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         entity.setRejectionJustification(dto.justification());
         ConstructionLicenseRequirement saved = repository.save(entity);
 
-        List<Request> requests = entity.getSolicitacoes();
-        Request request = requests.get(requests.size() - 1);
-        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, false);
+        List<Solicitacao> requests = entity.getSolicitacoes();
+        Solicitacao request = requests.get(requests.size() - 1);
+        this.monitoringService.concluirAcompanhamentoAtualEAtivarProximo(request, false);
 
         return new ConstructionLicenseRequirementTechnicalResponsibleRejectDTO(
                 saved.getId(),
@@ -369,37 +371,29 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         return entity;
     }
 
-    /**
-     * Approves a construction license request.
-     *
-     * @param requirementId The ID of the request to be approved.
-     * @return DTO with the data of the updated request.
+/**
+     * Processa a análise (Aprovação ou Rejeição) de uma solicitação.
+     * * @param dto DTO contendo o ID, o Status e a Justificativa.
+     * @return DTO atualizado.
      * @author Andesson Reis
      */
-    public ConstructionLicenseRequirementResponseDTO acceptRequest(Long requirementId) {
-        ConstructionLicenseRequirement entity = findRequirementForReview(requirementId);
+    public ConstructionLicenseRequirementResponseDTO processarAnalise(SolicitacaoAnaliseRequestDTO dto) {
+        ConstructionLicenseRequirement entity = findRequirementForReview(dto.constructionLicenseRequirementId());
 
-        entity.setTechnicalResponsibleStatus(AssociationStatus.APPROVED);
-        entity.setRejectionJustification(null);
+        if (dto.status() == AssociationStatus.REJECTED) {
+            if (dto.justification() == null || dto.justification().trim().isEmpty()) {
+                throw new IllegalArgumentException("Para rejeitar a solicitação, a justificativa é obrigatória.");
+            }
+            entity.setRejectionJustification(dto.justification());
 
-        ConstructionLicenseRequirement updatedEntity = repository.save(entity);
+        } else if (dto.status() == AssociationStatus.APPROVED) {
+            entity.setRejectionJustification(null);
+            
+        } else {
+            throw new IllegalArgumentException("Apenas APROVADO ou REJEITADO são permitidos nesta operação.");
+        }
 
-        return toResponseDTO(updatedEntity);
-    }
-
-    /**
-     * Rejects a construction license request.
-     *
-     * @param requirementId The ID of the request to be rejected.
-     * @param dto           DTO containing the rejection justification.
-     * @return DTO with the data of the updated request.
-     * @author Andesson Reis
-     */
-    public ConstructionLicenseRequirementResponseDTO rejectRequest(Long requirementId, RejectionRequestDTO dto) {
-        ConstructionLicenseRequirement entity = findRequirementForReview(requirementId);
-
-        entity.setTechnicalResponsibleStatus(AssociationStatus.REJECTED);
-        entity.setRejectionJustification(dto.justification());
+        entity.setTechnicalResponsibleStatus(dto.status());
 
         ConstructionLicenseRequirement updatedEntity = repository.save(entity);
 
@@ -435,10 +429,10 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         Usuario applicantUser = entity.getSolicitante();
         Pessoa applicantPerson = applicantUser.getPessoa();
 
-        ProfilePublicDataResponseDTO applicantDTO = new ProfilePublicDataResponseDTO(
-                applicantUser.getPerfilAtivo().getId(),
-                applicantUser.getPerfilAtivo().getTipo(),
-                applicantUser.getPerfilAtivo().getImagemUrl(),
+        PerfilDadosPublicosResponseDTO applicantDTO = new PerfilDadosPublicosResponseDTO(
+                applicantUser.getTipoAtivo().getId(),
+                applicantUser.getTipoAtivo().getTipo(),
+                applicantUser.getTipoAtivo().getImagemUrl(),
                 applicantPerson.getNomeCompleto(),
                 applicantPerson.getCpf(),
                 applicantUser.getTelefone(),
@@ -531,12 +525,12 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         repository.save(license);
 
         // INFO: Updates the monitoring status
-        List<Request> requests = license.getSolicitacoes();
+        List<Solicitacao> requests = license.getSolicitacoes();
         if (requests.isEmpty()) {
             throw new BusinessException("No requests found for this municipal service.");
         }
-        Request request = requests.get(requests.size() - 1);
-        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, false);
+        Solicitacao request = requests.get(requests.size() - 1);
+        this.monitoringService.concluirAcompanhamentoAtualEAtivarProximo(request, false);
 
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,
@@ -576,12 +570,12 @@ public class ConstructionLicenseRequirementService implements IConstructionLicen
         repository.save(license);
 
         // INFO: Updates the monitoring status
-        List<Request> requests = license.getSolicitacoes();
+        List<Solicitacao> requests = license.getSolicitacoes();
         if (requests.isEmpty()) {
             throw new BusinessException("No requests found for this municipal service.");
         }
-        Request request = requests.get(requests.size() - 1);
-        this.monitoringService.completeCurrentMonitoringAndActivateNext(request, true);
+        Solicitacao request = requests.get(requests.size() - 1);
+        this.monitoringService.concluirAcompanhamentoAtualEAtivarProximo(request, true);
 
         return new ConstructionLicenseRequirementFinalizeResponseDTO(
                 constructionLicenseRequirementId,

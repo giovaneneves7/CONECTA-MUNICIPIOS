@@ -1,12 +1,11 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.controller;
 
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.PerfilAlterarTipoAtivoRequestDTO;
 import br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.response.MunicipalServiceResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.response.PermissionResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.ProfileRequestUpdateChangeProfileTypeDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.ProfileUpdateRequestDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileResponseCurrentTypeDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.ProfileSimpleResponseDTO;
-import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.model.Perfil;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.permissao.dto.response.PermissaoResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.request.PerfilAtualizarRequestDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilVerificarTipoAtivoResponseDTO;
+import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.dto.response.PerfilApenasIdResponseDTO;
 import br.com.cidadesinteligentes.modules.core.gestaousuario.perfil.service.IPerfilService;
 import br.com.cidadesinteligentes.infraestructure.util.ObjectMapperUtil;
 import br.com.cidadesinteligentes.infraestructure.util.ResultError;
@@ -40,130 +39,158 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 /**
- * REST Controller responsible for managing {@link Perfil} resources.
- *
- * @author Jorge Roberto
+ * REST Controller responsável por gerenciar perfil
  */
 @RestController
-@RequestMapping("/api/v1/profiles")
+@RequestMapping("/api/v1/perfis")
 @RequiredArgsConstructor
 public class PerfilController {
     private final IPerfilService profileService;
     private final ObjectMapperUtil objectMapperUtil;
 
-    @Operation(summary = "Update an existing Profile",
-            description = "Updates a profile by replacing its data with the provided payload.")
+    /**
+     * Atualiza o tipo e a URL da imagem de um perfil existente.
+     *
+     * @param body O DTO contendo o ID do perfil e as novas informações (tipo e imagemUrl).
+     * @param result Resultado da validação do DTO.
+     * @return ResponseEntity com o DTO do perfil atualizado e status 200 OK.
+     */
+    @Operation(summary = "Atualiza um perfil existente",
+            description = "Atualiza um perfil, com as novas informações enviadas.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Profile successfully updated"),
-            @ApiResponse(responseCode = "400", description = "Invalid request content", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Profile not found"),
-            @ApiResponse(responseCode = "422", description = "One or some fields are invalid", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Perfil atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Conteúdo de requisição inválido", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado."),
+            @ApiResponse(responseCode = "422", description = "Um ou mais campos são inválidos", content = @Content)
     })
-    @PutMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(@RequestBody @Valid ProfileUpdateRequestDTO body, BindingResult result) {
+    @PutMapping(path = "/perfil", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(@RequestBody @Valid PerfilAtualizarRequestDTO body, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result));
         }
 
-        this.profileService.update(objectMapperUtil.map(body, Perfil.class));
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(this.profileService.update(body));
     }
 
-    @Operation(summary = "Delete a profile",
-            description = "Deletes a profile by its ID.")
+    /**
+     * Exclui um perfil existente com base no seu ID.
+     *
+     * @param id O UUID do perfil a ser excluído.
+     * @return ResponseEntity com o DTO contendo o ID do perfil excluído e status 200 OK.
+     */
+    @Operation(summary = "Apaga um perfil existente",
+            description = "Apaga um perfil existente, usando o ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Profile successfully deleted"),
-            @ApiResponse(responseCode = "404", description = "Profile not found"),
-            @ApiResponse(responseCode = "409", description = "Profile is in use " +
-                    "by another class"),
+            @ApiResponse(responseCode = "204", description = "Perfil foi removido/deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
+            @ApiResponse(responseCode = "409", description = "Esse perfil está relacionado a alguma classe, por isso não pode ser excluído no momento."),
     })
-    @DeleteMapping(value = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProfileSimpleResponseDTO> delete(@PathVariable("id") UUID id) {
-        profileService.delete(id);
-        return ResponseEntity.ok(new ProfileSimpleResponseDTO(id));
+    @DeleteMapping(value = "/perfil/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PerfilApenasIdResponseDTO> delete(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(profileService.delete(id));
     }
 
-    @Operation(summary = "List all Profiles with pagination",
-            description = "Retrieves a paginated list of profiles")
+    /**
+     * Lista todos os perfis do sistema com suporte à paginação.
+     *
+     * @param pageable Parâmetros de paginação e ordenação (padrão: 10 itens, ordenado por 'id' ascendente).
+     * @return ResponseEntity contendo a lista paginada de perfis com status 200 OK.
+     */
+    @Operation(summary = "Lista todos os perfis com paginação ",
+            description = "Retorna a paginação de uma lista de perfis")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Paginated list of profiles",
+            @ApiResponse(responseCode = "200", description = "Lista de perfis paginada",
                     content = @Content(schema = @Schema(implementation = PageableDTO.class)))
     })
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll(@ParameterObject @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(this.profileService.getAllProfiles(pageable));
+                .body(this.profileService.findAll(pageable));
 
     }
 
 
     /**
-     * Endpoint to get the profile by the attribute passed as a parameter.
+     * Busca um perfil específico pelo seu ID e retorna dados públicos e de usuário.
      *
-     * @author Giovane Neves
-     * @return
+     * @param profileId O UUID do perfil a ser buscado.
+     * @return ResponseEntity contendo o DTO de dados públicos do perfil e status 200 OK.
      */
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "200", description = "Usuário encontrado", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
     })
-    @GetMapping(path = "/profile/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getUserId(@Valid @PathVariable("id") final UUID profileId){
+    @GetMapping(path = "/perfil/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getUsuarioId(@Valid @PathVariable("id") final UUID profileId){
 
         return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findById(profileId));
 
     }
 
     /**
-     * Endpoint to get all requests by the profile ID.
+     * Retorna uma lista paginada de todas as solicitações de serviço atreladas a um perfil.
      *
-     * @author Giovane Neves
-     * @return
+     * @param profileId O UUID do perfil para o qual as solicitações serão buscadas.
+     * @param pageable Parâmetros de paginação e ordenação.
+     * @return ResponseEntity contendo uma Page de DTOs de solicitações com status 200 OK.
      */
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Request list found", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Request list not found")
+            @ApiResponse(responseCode = "200", description = "Lista de Solicitações foi encontrada", content = @Content(schema = @Schema(implementation = MunicipalServiceResponseDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Lista de Solicitações foi encontrada")
     })
-    @GetMapping(path = "/profile/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<?>> getRequestListByUserId(@Valid @PathVariable("id") final UUID profileId, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+    @GetMapping(path = "/perfil/{id}/requests", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<?>> getRequestListByUsuarioId(@Valid @PathVariable("id") final UUID profileId, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
 
-        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllRequestsByProfileId(profileId, pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllRequestsByPerfilId(profileId, pageable));
 
     }
 
-    @Operation(summary = "Update the active profile type for the current user",
-            description = "Changes the active profile of the authenticated user to a new valid type.")
+    /**
+     * Altera o perfil ativo do usuário autenticado para um novo perfil existente.
+     *
+     * @param dto O DTO contendo o ID do usuário e o tipo do novo perfil que deve se tornar ativo.
+     * @param result Resultado da validação do DTO.
+     * @return ResponseEntity com o DTO de verificação do novo perfil ativo e status 201 Created.
+     */
+    @Operation(summary = "Altera/Troca o perfil ativo do usuário",
+            description = "Altera/Troca o perfil ativo do usuário autenticado, por um novo perfil")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Profile type successfully updated",
-                    content = @Content(schema = @Schema(implementation = ProfileResponseCurrentTypeDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid profile type provided",
+            @ApiResponse(responseCode = "200", description = "Tipo de perfil alterado com sucesso",
+                    content = @Content(schema = @Schema(implementation = PerfilVerificarTipoAtivoResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Tipo de perfil fornecido é inválido",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "User not found or Profile not found",
+            @ApiResponse(responseCode = "404", description = "O usuário ou perfil não foram encontrados",
                     content = @Content),
-            @ApiResponse(responseCode = "422", description = "Validation error in the request body",
+            @ApiResponse(responseCode = "422", description = "Um ou mais campos estão incorretos.",
                     content = @Content)
     })
-    @PatchMapping(path = "/profile", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateActiveTypeProfile(
-            @RequestBody @Valid ProfileRequestUpdateChangeProfileTypeDTO dto,
+    @PatchMapping(path = "/perfil", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateTipoAtivoPerfil(
+            @RequestBody @Valid PerfilAlterarTipoAtivoRequestDTO dto,
             BindingResult result
     ) {
         return result.hasErrors()
                 ? ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ResultError.getResultErrors(result))
-                : ResponseEntity.status(HttpStatus.CREATED).body(this.profileService.changeActiveProfile(dto.userId(), dto.activeType()));
+                : ResponseEntity.status(HttpStatus.CREATED).body(this.profileService.changeActivePerfil(dto.usuarioId(), dto.tipoAtivo()));
     }
 
+    /**
+     * Retorna todas as permissões associadas ao cargo de um perfil específico.
+     *
+     * @param perfilId O UUID do perfil para buscar as permissões.
+     * @param pageable Parâmetros de paginação e ordenação (embora a paginação possa ser ignorada se a lista for pequena).
+     * @return ResponseEntity contendo a lista de permissões e status 200 OK.
+     */
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Find all permissions for a profile",
-                    content = @Content(schema = @Schema(implementation = PermissionResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "List not found")
+            @ApiResponse(responseCode = "200", description = "Permissões encontradas para o perfil"),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado")
     })
-    @GetMapping(path = "/profile/{profileId}/permissions", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAllPermissionsByProfile (
-            @PathVariable("profileId") UUID profileId,
+    @GetMapping(path = "/perfil/{perfilId}/permissoes", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAllPermissoesByPerfil (
+            @PathVariable("perfilId") UUID perfilId,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllPermissionsByProfile(profileId, pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(this.profileService.findAllPermissoesByPerfil(perfilId, pageable));
     }
 }

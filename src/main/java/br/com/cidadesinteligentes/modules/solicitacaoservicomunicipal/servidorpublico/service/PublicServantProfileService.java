@@ -50,15 +50,15 @@ public class PublicServantProfileService implements IPublicServantProfileService
         role.setDescricao("Role for public servant");
         roleRepository.save(role);
 
-        employee.setRole(role);
+        employee.setCargo(role);
         employee.setUsuario(user);
 
         employee = publicServantRepository.save(employee);
 
         user.getPerfis().add(employee);
 
-        if (user.getPerfilAtivo() == null) {
-            user.setPerfilAtivo(employee);
+        if (user.getTipoAtivo() == null) {
+            user.setTipoAtivo(employee);
         }
 
         userRepository.save(user);

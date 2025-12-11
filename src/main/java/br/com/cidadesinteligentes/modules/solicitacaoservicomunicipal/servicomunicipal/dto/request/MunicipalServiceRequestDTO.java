@@ -1,11 +1,8 @@
 package br.com.cidadesinteligentes.modules.solicitacaoservicomunicipal.servicomunicipal.dto.request;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -22,10 +19,5 @@ public record MunicipalServiceRequestDTO (
     String nome,
 
     @JsonProperty("descricao")
-    String descricao,
-
-    @JsonProperty("ids_categorias")
-    @NotEmpty(message = "Pelo menos uma categoria deve ser informada.")
-    List<Long> idsCategorias
-
+    String descricao
 ) {}

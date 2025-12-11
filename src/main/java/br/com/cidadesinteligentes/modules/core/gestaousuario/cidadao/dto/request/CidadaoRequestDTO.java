@@ -1,6 +1,5 @@
 package br.com.cidadesinteligentes.modules.core.gestaousuario.cidadao.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Objeto de transferência de dados de Cidadão.
@@ -9,6 +8,4 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * @author Jorge Roberto
  */
 public record CidadaoRequestDTO (
-        @JsonInclude(JsonInclude.Include.NON_NULL)
-        String perfilGovSnapshot
 ) {}

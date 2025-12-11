@@ -21,11 +21,10 @@ public interface IPerfilRepository extends JpaRepository<Perfil, UUID> {
      * Obtém todos os perfis vinculados a um usuário pelo ID do usuário passado como parâmetro
      *
      * @author Giovane Neves
-     * @param userId O id do usuário
+     * @param usuarioId O id do usuário
      * @return Uma lista dos perfis vinculados ao usuário
      */
     @Query("SELECT p FROM Perfil p WHERE p.usuario.id = :usuarioId")
-    Page<Perfil> findAllByUserId(@Param("usuarioId") UUID usuarioId, Pageable pageable);
-
+    Page<Perfil> findAllByUsuarioId(@Param("usuarioId") UUID usuarioId, Pageable pageable);
 
 }
